@@ -31,6 +31,7 @@ import lib.marktex
 
 class Liderbukh():
     def __init__(self, settings, debug):
+        self.debug = debug
         self.render_tex = mistune.Markdown(renderer=lib.marktex.LyricsRenderer(escape=False)) # Load Markdown parser with TeX renderer
         with open(settings) as f: # Open Settings file
             try:
@@ -39,16 +40,6 @@ class Liderbukh():
                 print ( "Invalid settings file: %s\nYAML error: %s" 
                        % (settings, e) )
                 sys.exit(1)
-        
-        try:
-            self.book_data = self.build_book_data()
-            #print(self.book_data)
-        except Exception as e:
-            print ( "Failed to build book data" )
-            if debug: 
-                raise
-            sys.exit(1)
-    
     def load_file(self, file_name, dir=''): # Method to load files
         try:
             with open( os.path.join(self.settings['root_dir'], 
@@ -251,6 +242,12 @@ class Liderbukh():
 
 def main(settings_file, debug, no_write):
     book = Liderbukh(settings_file, debug)
+    try:
+        book.book_data = book.build_book_data()
+    except Exception as e:
+        print ( "Failed to build book data" )
+        if debug: raise
+        sys.exit(1)
     if not no_write:
         book.write_files()
 
