@@ -20,6 +20,7 @@
 
 import mistune 
 import warnings
+import pdb
 
 class LyricsRenderer(mistune.Renderer):
     # Unsupported Elements
@@ -34,11 +35,7 @@ output may be broken.' % \
 
     def block_code(self, string, *_):
         return self.not_supported(string)
-    def block_quote(self, string, *_):
-        return self.not_supported(string)
     def block_html(self, string, *_):
-        return self.not_supported(string)
-    def header(self, string, *_):
         return self.not_supported(string)
     def hrule(self, *_):
         return self.not_supported('')
@@ -64,6 +61,8 @@ output may be broken.' % \
         return self.not_supported(string)
     def inline_html(self, string, *_):
         return self.not_supported(string)
+    def block_quote(self, string, *_):
+        return self.not_supported(string)
     # Verse Elements
     
     def paragraph(self, text):
@@ -76,3 +75,24 @@ output may be broken.' % \
         return('\\\\*\n')
     def newline(self):
         return('\\\\*\n')
+    
+    def header(self, text, level, more):
+        levels_begin = {
+          1: '\\hskip-1em{\\Large ',
+          2: '{\\hskip-0.5em\\large '
+        }
+        levels_end = {
+          1: '}\n\n',
+          2: '}\\\\*\n'
+        }
+        return levels_begin.get(level, 2) + text + levels_end.get(level, 2)
+      
+    def link(self, link, text=None, title=None):
+        if text is None:
+            text = link
+
+        return '\\link{' + (text or link) + '}'
+      
+    #def block_quote(self, text):
+        #print('boop')
+        #return '\n\\begin{verse}[\\versewidth]\n' + text + '\n\\end{verse}'
