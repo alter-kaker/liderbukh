@@ -1,0 +1,28 @@
+templates_dir: 'templates'
+root_dir: ''
+data_dir: 'data'
+lyrics_ext: '.md'
+output_dir: 'output'
+temp_dir: 'tmp'
+
+book:
+    chapters: 
+    - סאָציאַליסטישע און אַנטיפֿאַשיסטישע לידער
+    - ליבעלידער
+    - לידער װעגן ייִדיש און ייִדישקײַט
+    - לידער װעגן משפּחה און לעבן
+    - לידער װעגן נױט און אָרעמקײַט
+    - אימיגראַנטישע לידער
+    - װיגלידער
+    - קינדערלידער
+    - קאָמישע לידער
+    name:    ייִדישע פֿאָלקסלידער
+    filename: yidishe-folkslider
+    
+song_meta:
+  - songname
+  - songname_eng
+  - transcriber
+  - linewidth
+  - textby
+  - musicby
