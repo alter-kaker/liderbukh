@@ -41,3 +41,4 @@ Options:
 * Add transposition support?
 * Add support for multiple templates based on, for example, language and target format
 * Show song category in lead sheet template
+* Add option to process one song at a time, or a list of songs, or only new songs
