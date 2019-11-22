@@ -33,3 +33,11 @@ Options:
   -n, --no-write            Generate song data but don't write any files
   --help                    Show this message and exit.
 ```
+## TODO (in no particular order):
+
+* Add option to create a single, book-style pdf
+* Add html export
+* Add metadata fields for source, arranger, etc
+* Add transposition support?
+* Add support for multiple templates based on, for example, language and target format
+* Show song category in lead sheet template
