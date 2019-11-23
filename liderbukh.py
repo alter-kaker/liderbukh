@@ -81,8 +81,16 @@ class Liderbukh():
                     print('Error processing chapter number %s for %s: %s' % (
                         song['meta']['chapter'], song['meta']['filename'], e))
                     raise
+            except ValueError:
+                print(
+                    'Error processing chapter number for %s: \
+                    \nValue should be a number, but is %s !' 
+                    %  ( song['meta']['filename'], song['meta']['chapter'] ) )
+                raise
+            
+            print('Data processing complete for %s.\n' % song['meta']['filename'])
         
-        print('Book data complete\n')
+        print('Book data complete.\n')
         return book_data
       
     def process_song(self, filename):
@@ -141,7 +149,7 @@ class Liderbukh():
                 print( 'Error loading lyrics for %s' % ( song['meta']['filename'] ) ) 
                 raise
             
-            print('Rendering TeX')
+            print('Rendering TeX...')
             try:
                 song['tex'] = self.render_tex( song['lyrics'] )
             except Exception:
@@ -156,12 +164,11 @@ class Liderbukh():
                 print( 'Error building TeX template for %s' % ( song['meta']['filename'] ) )
                 raise
             
-            print('Processing complete for %s\n' % filename)
             return song
     
     def build_template(self, data, template):
         
-        print('Applying %s' % template)
+        print('Applying %s...' % template)
         template_args = {}
         template_args['string'] = self.load_file(
                 template, self.settings['templates_dir'])
@@ -220,7 +227,7 @@ class Liderbukh():
         
         filename = song['meta']['filename']
         
-        print('Writing:\t\t%s:' % (pdf_path) )
+        print('Writing:\t\t%s:\n' % (pdf_path) )
         print('Running lilypond-book...')
 
         try:
@@ -246,7 +253,7 @@ class Liderbukh():
                 'mv',
                 '%s/%s.pdf' % (temp_dir, filename),
                 '%s/%s.pdf' % (self.settings['output_dir'], filename)])
-            print('Success!\n')
+            print('\n%s/%s.pdf written successfully!\n' % (self.settings['output_dir'], filename))
         except Exception as e:
             print ( 'Error: %s' % (e) )
             raise
@@ -280,17 +287,19 @@ def main(settings_file, debug, no_write, filename):
     if filename:
         try:
             data = book.process_song(filename)
+            print('Data processing complete for %s.\n' % filename)
         except Exception as e:
-            print( "Failed to build song data" )
+            print( "Failed to build song data." )
             if debug: raise
             sys.exit(1)
+        
         if not no_write:
                 book.write_files(data)
     else:
         try:
             data = book.build_book_data()
         except Exception as e:
-            print ( "Failed to build book data" )
+            print ( "Failed to build book data." )
             if debug: raise
             sys.exit(1)
         if not no_write:
