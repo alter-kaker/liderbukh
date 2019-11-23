@@ -31,7 +31,10 @@ Options:
   -s, --settings-file PATH  Settings file. Default: settings.yaml
   -d, --debug               Turn debug mode on
   -n, --no-write            Generate song data but don't write any files
+  -f, --filename TEXT       Only process this song file. Please provide
+                            filename without extension.
   --help                    Show this message and exit.
+
 ```
 ## TODO (in no particular order):
 

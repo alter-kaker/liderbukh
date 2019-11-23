@@ -279,8 +279,7 @@ class Liderbukh():
 @click.option('--filename',
               '-f',
               default=None,
-              help='Only process this song file. \
-              Please provide filename without extension.')
+              help='Only process this song file. Please provide filename without extension.')
 
 def main(settings_file, debug, no_write, filename):
     book = Liderbukh(settings_file, debug)
