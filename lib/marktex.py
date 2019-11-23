@@ -92,7 +92,3 @@ output may be broken.' % \
             text = link
 
         return '\\link{' + (text or link) + '}'
-      
-    #def block_quote(self, text):
-        #print('boop')
-        #return '\n\\begin{verse}[\\versewidth]\n' + text + '\n\\end{verse}'
