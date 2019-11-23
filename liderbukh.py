@@ -278,7 +278,12 @@ class Liderbukh():
 def main(settings_file, debug, no_write, filename):
     book = Liderbukh(settings_file, debug)
     if filename:
-        data = book.process_song(filename)
+        try:
+            data = book.process_song(filename)
+        except Exception as e:
+            print( "Failed to build song data" )
+            if debug: raise
+            sys.exit(1)
         if not no_write:
                 book.write_files(data)
     else:
