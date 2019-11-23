@@ -35,10 +35,11 @@ Options:
 ```
 ## TODO (in no particular order):
 
-* Add option to create a single, book-style pdf
+* Add option to create a single, book-style pdf 
 * Add html export
 * Add metadata fields for source, arranger, etc
 * Add transposition support?
 * Add support for multiple templates based on, for example, language and target format
 * Show song category in lead sheet template
-* Add option to process one song at a time, or a list of songs, or only new songs
+* Add option to process one song at a time (done), or a list of songs, or only new songs 
+* Generate index file for songs
