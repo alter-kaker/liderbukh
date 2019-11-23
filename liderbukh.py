@@ -53,8 +53,9 @@ class Liderbukh():
     
     def build_book_data(self): # Build all the book data
         book_data = []
-        
+        print('Building book data...\n')
         try:
+            print('Reading data directory...\n')
             songlist = [
                 os.path.splitext(metafile)[0] for metafile in os.listdir( os.path.join(
                     self.settings['root_dir'], 
@@ -63,9 +64,14 @@ class Liderbukh():
             print("Could not read song meta files: %s" % (e))
             raise
         
-        for chapter_name in self.settings['book']['chapters']:
-            book_data.append( {'name': chapter_name, 'songs': [] } )
+        try:
+            print('Reading chapter list...\n')
+            for chapter_name in self.settings['book']['chapters']:
+                book_data.append( {'name': chapter_name, 'songs': [] } )
+        except Exception as e:
+            print('Failed: %s' % e )
         
+        print('Processing songs...\n')
         for filename in songlist:
             song = self.process_song(filename)
             try:
@@ -75,9 +81,11 @@ class Liderbukh():
                         song['meta']['chapter'], song['meta']['filename'], e))
                     raise
         
+        print('Book data complete\n')
         return book_data
       
     def process_song(self, filename):
+            print('Processing %s...' % filename)
             base_path = os.path.join(self.settings['root_dir'],  # For output file paths
                     self.settings['temp_dir'], filename )
             song = {
@@ -90,6 +98,7 @@ class Liderbukh():
             for field in self.settings['song_meta']:
                 song['meta'].update({field: None})
             
+            print('Loading song meta...')
             try:
                 meta = yaml.load(self.load_file('%s.yaml' % filename ))
             except yaml.scanner.ScannerError as e:
@@ -104,7 +113,7 @@ class Liderbukh():
                       % (song, e) )
                 raise
             
-            # Load the music data
+            print('Loading music data...')
             try:
                 song['music'] = self.load_file(
                     ''.join([song['meta']['filename'],'.ly'])).replace(
@@ -123,7 +132,7 @@ class Liderbukh():
                 print( 'Error building Lilypond template for %s' % ( song['meta']['filename'] ) )
                 raise
             
-            # Load the lyrics data
+            print('Loading lyrics...')
             try:
                 song['lyrics'] = self.load_file(''.join([song['meta']['filename'],
                         self.settings['lyrics_ext']]))
@@ -131,7 +140,7 @@ class Liderbukh():
                 print( 'Error loading lyrics for %s' % ( song['meta']['filename'] ) ) 
                 raise
             
-            # Render TeX
+            print('Rendering TeX')
             try:
                 song['tex'] = self.render_tex( song['lyrics'] )
             except Exception:
@@ -146,10 +155,12 @@ class Liderbukh():
                 print( 'Error building TeX template for %s' % ( song['meta']['filename'] ) )
                 raise
             
+            print('Processing complete for %s\n' % filename)
             return song
     
     def build_template(self, data, template):
         
+        print('Applying %s' % template)
         template_args = {}
         template_args['string'] = self.load_file(
                 template, self.settings['templates_dir'])
@@ -164,6 +175,7 @@ class Liderbukh():
     
     # Write files
     def write_files(self, song):
+        print('Preparing to write output for %s...\n' % song['meta']['filename'])
         
         output_dir = self.settings['output_dir']
         temp_dir = self.settings['temp_dir']
@@ -199,7 +211,7 @@ class Liderbukh():
         filename = song['meta']['filename']
         
         print('Writing:\t\t%s:' % (pdf_path) )
-        print('Running lilypond-book')
+        print('Running lilypond-book...')
 
         try:
             subprocess.run([
@@ -208,11 +220,10 @@ class Liderbukh():
                 '--output=%s' % ( temp_dir ),
                 '--loglevel=ERROR',
                 song['meta']['tex_path']])
-            print('Success!\n')
         except Exception as e:
             print( 'Error: %s' % (e) )
         
-        print( 'Running XeLaTeX' )
+        print( 'Running XeLaTeX...' )
         try:
             os.chdir( temp_dir )
             subprocess.run([
