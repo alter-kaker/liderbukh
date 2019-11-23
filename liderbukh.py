@@ -171,7 +171,7 @@ class Liderbukh():
             return pyratemp.Template(**template_args)()
         except Exception:
             print( 'Error processing template %s for %s' %
-                  ( template, data['meta']['songname_eng'] ) )
+                  ( template, data['meta']['filename'] ) )
             raise
     
     # Write files
