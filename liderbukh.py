@@ -70,6 +70,7 @@ class Liderbukh():
                 book_data.append( {'name': chapter_name, 'songs': [] } )
         except Exception as e:
             print('Failed: %s' % e )
+            raise
         
         print('Processing songs...\n')
         for filename in songlist:
@@ -182,9 +183,18 @@ class Liderbukh():
         root_dir = os.getcwd()
         
         if not os.path.isdir(output_dir):
-            os.mkdir(output_dir)
+            try:
+                os.mkdir(output_dir)
+            except Exception as e:
+                print('Failed to create output directory at %s: %s' % (output_dir, e))
+                raise
+
         if not os.path.isdir(temp_dir):
-            os.mkdir(temp_dir)
+            try:
+                os.mkdir(temp_dir)
+            except Exception as e:
+                print('Failed to create output directory at %s: %s' % (output_dir, e))
+                raise
         
         tex_path = song['meta']['tex_path']
         ly_path = song['meta']['ly_path']
@@ -250,8 +260,8 @@ class Liderbukh():
               type=click.Path(exists=True))
 
 @click.option(
-  '--debug', '-d', default=False, is_flag=True,
-  help='Turn debug mode on')
+            '--debug', '-d', default=False, is_flag=True,
+            help='Turn debug mode on')
 
 @click.option('--no-write',
               '-n',
