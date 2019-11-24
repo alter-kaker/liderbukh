@@ -46,3 +46,4 @@ Options:
 * Show song category in lead sheet template
 * Add option to process one song at a time (done), or a list of songs, or only new songs 
 * Generate index file for songs
+* Make some meta fields required
