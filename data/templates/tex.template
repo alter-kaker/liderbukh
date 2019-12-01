@@ -67,6 +67,7 @@
     }
   
   \begin{document}
+  {\ss\bfa @!meta['chapter_name']!@}
   \lilypondfile[noindent]{@!meta['ly_path']!@}
   \begin{multicols}{2}
   \settowidth{\versewidth}{@!meta['linewidth']!@}

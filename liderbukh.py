@@ -75,18 +75,7 @@ class Liderbukh():
         print('Processing songs...\n')
         for filename in songlist:
             song = self.process_song(filename)
-            try:
-                    book_data[int(song['meta']['chapter'])]['songs'].append(song)
-            except IndexError as e:
-                    print('Error processing chapter number %s for %s: %s' % (
-                        song['meta']['chapter'], song['meta']['filename'], e))
-                    raise
-            except ValueError:
-                print(
-                    'Error processing chapter number for %s: \
-                    \nValue should be a number, but is %s !' 
-                    %  ( song['meta']['filename'], song['meta']['chapter'] ) )
-                raise
+            book_data[int(song['meta']['chapter'])]['songs'].append(song)
             
             print('Data processing complete for %s.\n' % song['meta']['filename'])
         
@@ -121,6 +110,22 @@ class Liderbukh():
                 print("Invalid song file: %s\nField %s not known." 
                       % (song, e) )
                 raise
+            
+            # Add chapter name to meta
+            try:
+                    song['meta']['chapter_name'] = self.settings['book']['chapters'][
+                      int(song['meta']['chapter'])]
+            except IndexError as e:
+                    print('Error processing chapter number %s for %s: %s' % (
+                        song['meta']['chapter'], song['meta']['filename'], e))
+                    raise
+            except (ValueError, TypeError):
+                print(
+                    'Error processing chapter number for %s: \
+                    \nValue should be a number, but is %s!' 
+                    %  ( song['meta']['filename'], song['meta']['chapter'] ) )
+                raise
+            
             
             print('Loading music data...')
             try:
