@@ -2,7 +2,7 @@
   
   \usepackage[letterpaper, top=1in, bottom=1.25in, left=1.25in, right=1.25in]{geometry}
   
-  \usepackage{multicol, verse, fontspec, graphicx, polyglossia}
+  \usepackage{multicol, verse, fontspec, graphicx, polyglossia, fancyhdr}
   \setmainlanguage{hebrew}
   \setmainfont{Drugulin CLM}
   \newfontfamily{\hebrewfont}{Drugulin CLM}[
@@ -66,8 +66,15 @@
     \fi
     }
   
+  \rhead{@!meta['chapter_name']!@}
+  \lhead{@!meta['songname']!@}
+  \chead{\large לידערבוך}
+  \cfoot{\thepage}
+  
+  \pagestyle{fancy}
+  
   \begin{document}
-  {\ss\bfa @!meta['chapter_name']!@}
+  
   \lilypondfile[noindent]{@!meta['ly_path']!@}
   \begin{multicols}{2}
   \settowidth{\versewidth}{@!meta['linewidth']!@}
