@@ -29,6 +29,13 @@ import sys
 
 import lib.marktex
 
+def runerror(exception):
+  if exception.stderr:
+    print ( exception.stderr.decode() )
+  else:
+    print ( exception.stdout.decode() )
+  sys.exit()
+
 class Liderbukh():
     def __init__(self, settings, debug):
         self.debug = debug
@@ -236,27 +243,45 @@ class Liderbukh():
                 '--latex-program=xelatex',
                 '--output=%s' % ( temp_dir ),
                 '--loglevel=ERROR',
-                song['meta']['tex_path']])
-        except Exception as e:
-            print( 'Error: %s' % (e) )
+                song['meta']['tex_path']],
+                check=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE)
+        except subprocess.CalledProcessError as e:
+          runerror(e)
         
         print( 'Running XeLaTeX...' )
         try:
             os.chdir( temp_dir )
+        except Exception as e:
+            print( 'Cannot open temporary directory: %s' %
+                  e )
+        try:
             subprocess.run([
                 'xelatex',
-                '-interaction=batchmode',
+                '-interaction=nonstopmode',
                 '-halt-on-error',
-                '%s.tex' % ( filename )])
+                '%s.tex' % ( filename )],
+                check=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE)
             os.chdir(root_dir)
+        except subprocess.CalledProcessError as e:
+          runerror(e)
+        
+        print('Copying %s.pdf to output folder...' % filename )
+        try:
             subprocess.run([
                 'mv',
                 '%s/%s.pdf' % (temp_dir, filename),
-                '%s/%s.pdf' % (self.settings['output_dir'], filename)])
-            print('\n%s/%s.pdf written successfully!\n' % (self.settings['output_dir'], filename))
-        except Exception as e:
-            print ( 'Error: %s' % (e) )
-            raise
+                '%s/%s.pdf' % (self.settings['output_dir'], filename)],
+                check=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE)
+        except subprocess.CalledProcessError as e:
+            runerror(e)
+        print('\n%s/%s.pdf written successfully!\n' %
+              (self.settings['output_dir'], filename))
     
 
 @click.command()
