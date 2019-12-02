@@ -44,7 +44,6 @@ Options:
 * Add metadata fields for source, arranger, etc
 * Add transposition support?
 * Add support for multiple templates based on, for example, language and target format
-* Show song category in lead sheet template
-* Add option to process one song at a time (done), or a list of songs, or only new songs 
+* Add option to process a list of songs, or only new songs 
 * Generate index file for songs
 * Make some meta fields required
