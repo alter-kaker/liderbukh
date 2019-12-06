@@ -1,12 +1,12 @@
 <!--(set_escape)-->None<!--(end)-->
 \header {
-  <!--(if meta['textby'])-->
-  poet = "טעקסט: @!meta['textby']!@"
+  <!--(if textby)-->
+  poet = "טעקסט: @!textby!@"
   <!--(end)-->
-  <!--(if meta['musicby'])-->
-  composer = "מוזיק: @!meta['musicby']!@"
+  <!--(if musicby)-->
+  composer = "מוזיק: @!musicby!@"
   <!--(end)-->
-  title = "@!meta['songname']!@"
-  subtitle = "@!meta['songname_eng']!@"
+  title = "@!songname!@"
+  subtitle = "@!songname_eng!@"
   }
 @!music!@
