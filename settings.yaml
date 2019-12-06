@@ -1,7 +1,7 @@
 templates_dir: 'templates'
 root_dir: ''
 data_dir: 'data'
-output_dir: 'output'
+output_dir: 'docs'
 temp_dir: 'tmp'
     
 song_meta:
