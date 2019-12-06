@@ -4,8 +4,10 @@
   <title>לידערבוך</title>
   <link rel="canonical" href="https://liderbukh.jews.international/">
   <body>
-    <main>
+    <header>
       <h1>לידערבוך</h1>
+    </header>
+    <main>
         <ul>
           <!--(for category in index_data)-->
           <li><h2>@!category['meta']['category_name']!@</h2></li>
@@ -19,5 +21,6 @@
           <!--(end)-->
         </ul>
     </main>
+    <footer><a href="https://github.com/derpayatz/liderbukh/">GitHub</a></footer>
   </body>
 </html>
