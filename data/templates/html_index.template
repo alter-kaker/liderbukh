@@ -1,0 +1,39 @@
+<!--(set_escape)-->None<!--(end)-->
+<html lang="yi" dir='rtl'><head>
+  <meta charset="utf-8"> 
+  <title>לידערבוך</title>
+  <link rel="canonical" href="https://liderbukh.jews.international/">
+  <body>
+  
+    <header>
+      <h1>לידערבוך</h1>
+      <nav>
+        <h2>אינהאַלט</h2>
+        <ul>
+          <!--(for chapter in book_data)-->
+          <li><h3><a href="#@!chapter['name']!@">@!chapter['name']!@</a></h3></li>
+            <ul>
+              <!--(for song in chapter['songs'])-->
+                <li><a href="#@!song['meta']['filename']!@">@!song['meta']['songname']!@</a></li>
+              <!--(end)-->
+            
+            </ul>
+          </li>
+          <!--(end)-->
+        </ul>
+      </nav>
+    </header>
+    <main>
+      <!--(for chapter in book_data)-->
+      <section id="@!chapter['name']!@">
+        <h1>@!chapter['name']!@</h1>
+        <!--(for song in chapter['songs'])-->
+        <article>
+          <a id="@!song['meta']['filename']!@"><h1>@!song['meta']['songname']!@</h1></a>
+        </article><!-- @!chapter['name']!@ -->
+        <!--(end)-->
+      </section>
+      <!--(end)-->
+    </main>
+  </body>
+</html>
