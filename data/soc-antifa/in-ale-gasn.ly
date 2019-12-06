@@ -73,7 +73,7 @@ acc-b = \chordmode {
   >>
 }
 \score {
-  \header { piece = "דאַלאָײ פּאָליצײ" }
+  \header { piece = "דאַלאָיי פּאָליציי" }
   <<
     \new ChordNames {
       \acc-b
