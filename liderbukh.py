@@ -299,6 +299,15 @@ class Liderbukh():
         index = self.build_template(data,
                                     'html_index.template')
         return index
+    def write_html(self, data, path):
+        print('Writing %s...' % path )
+        try:
+            with open('', '+w') as f:
+                f.write(data)
+        except Exception as e:
+            print('failed to write %s. %s' % path, e )
+            raise
+        print('%s written successfully!' % path)
 
 
 @click.command()
@@ -359,14 +368,7 @@ def main(settings_file, debug, no_write, path):
         index_html = book.make_html_index(index)
         
         if not no_write:
-            print('Writing index.html...')
-            try:
-                with open('output/index.html', '+w') as f:
-                    f.write(index_html)
-            except Exception as e:
-                print('failed to write index file. %s' % e )
-                raise
-            print('index.html written successfully!')
+            book.write_html(index_html, os.path.join(book.setting['output_dir'], 'index.html'))
     except:
         
         if debug: raise
