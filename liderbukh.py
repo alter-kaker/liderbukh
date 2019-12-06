@@ -60,10 +60,12 @@ class Liderbukh():
     
     def build_index(self): # Build the index
         index = []
-        print('Building book data...\n')
+        data_dir = os.path.join(self.settings['root_dir'], self.settings['data_dir'])
+        
+        print('Building index...\n')
         try:
             print('Scanning data directory...\n')
-            for entry in os.scandir('data'):
+            for entry in os.scandir(data_dir):
                 if entry.is_dir():
                     try:
                         cat = open(
@@ -81,9 +83,17 @@ class Liderbukh():
                     category_meta['category_path'] = entry.name
                     
                     category_index = []
-                    for metafile in os.listdir(entry.path):
-                        if not os.path.isdir(metafile) and metafile.endswith('.yaml') and metafile != 'cat.yaml':
-                            category_index.append(os.path.splitext(metafile)[0])
+                    for metafile in os.scandir(entry.path):
+                        if metafile.is_file() and metafile.name.endswith('.yaml') and metafile.name != 'cat.yaml':
+                            category_index.append(
+                                os.path.splitext(
+                                    os.path.relpath(
+                                        metafile.path, start=os.path.join(
+                                            os.curdir, data_dir
+                                        )
+                                    )
+                                )[0]
+                            )
                     index.append(
                         {
                             'songs': category_index,
@@ -92,13 +102,12 @@ class Liderbukh():
                     )
         
         except Exception as e:
-            print("Could not read song meta files: %s" % (e))
-            raise
+            print ( "Failed to build index." )
         
-        print(index)
+        print('Index built successfully')
         return index
       
-    def process_song(self, path, chapter):
+    def process_song(self,  path, chapter ):
             print( 'Processing %s...' % path )
             temp_path = os.path.join(self.settings['root_dir'],
                                     self.settings['temp_dir'], path )
@@ -195,10 +204,15 @@ class Liderbukh():
     
     # Write files
     def write_files(self, song):
-        print('Preparing to write output for %s...\n' % song['meta']['filename'])
+        print('Preparing to write output for %s...\n' % song['meta']['path'])
         
-        output_dir = self.settings['output_dir']
-        temp_dir = self.settings['temp_dir']
+        tex_path = song['meta']['tex_path']
+        ly_path = song['meta']['ly_path']
+        pdf_path = song['meta']['pdf_path']
+        xetex_path = os.path.splitext(os.path.split(song['meta']['tex_path'])[1])[0] + '.tex'
+        
+        output_dir = os.path.dirname(pdf_path)
+        temp_dir = os.path.dirname(tex_path)
         root_dir = os.getcwd()
         
         if not os.path.isdir(output_dir):
@@ -215,9 +229,6 @@ class Liderbukh():
                 print('Failed to create output directory at %s: %s' % (output_dir, e))
                 raise
         
-        tex_path = song['meta']['tex_path']
-        ly_path = song['meta']['ly_path']
-        pdf_path = song['meta']['pdf_path']
             
         print('Writing:\t\t%s' % tex_path)
         try:
@@ -235,8 +246,6 @@ class Liderbukh():
         except Exception as e:
             print( 'Error: %s\n' % (e) )
         
-        filename = song['meta']['filename']
-        
         print('Writing:\t\t%s:\n' % (pdf_path) )
         print('Running lilypond-book...')
 
@@ -246,7 +255,7 @@ class Liderbukh():
                 '--latex-program=xelatex',
                 '--output=%s' % ( temp_dir ),
                 '--loglevel=ERROR',
-                song['meta']['tex_path']],
+                tex_path],
                 check=True,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE)
@@ -264,7 +273,7 @@ class Liderbukh():
                 'xelatex',
                 '-interaction=nonstopmode',
                 '-halt-on-error',
-                '%s.tex' % ( filename )],
+                xetex_path],
                 check=True,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE)
@@ -272,19 +281,19 @@ class Liderbukh():
         except subprocess.CalledProcessError as e:
           runerror(e)
         
-        print('Copying %s.pdf to output folder...' % filename )
+        print('Copying %s to output folder...' % pdf_path )
         try:
             subprocess.run([
                 'mv',
-                '%s/%s.pdf' % (temp_dir, filename),
-                '%s/%s.pdf' % (self.settings['output_dir'], filename)],
+                '%s/%s' % ( temp_dir, os.path.split(pdf_path)[1] ),
+                '%s' % ( pdf_path )],
                 check=True,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE)
         except subprocess.CalledProcessError as e:
             runerror(e)
-        print('\n%s/%s.pdf written successfully!\n' %
-              (self.settings['output_dir'], filename))
+        print('\n%s written successfully!\n' %
+              pdf_path)
         
     def make_html_index(self, book_data):
         data = {'book_data': book_data, 'print': print }
@@ -309,35 +318,52 @@ class Liderbukh():
               is_flag=True,
               help='Generate song data but don\'t write any files')
 
-@click.option('--filename',
-              '-f',
+@click.option('--path',
+              '-p',
               default=None,
-              help='Only process this song file. Please provide filename without extension.')
+              help='Only process this song file. Please provide path without extension.')
 
-def main(settings_file, debug, no_write, filename):
+def main(settings_file, debug, no_write, path):
     book = Liderbukh(settings_file, debug)
-    if filename:
-        try:
-            data = book.process_song(filename)
-            print('Data processing complete for %s.\n' % filename)
-        except Exception as e:
-            print( "Failed to build song data." )
-            if debug: raise
-            sys.exit(1)
+    
+    try:
+        index = book.build_index()
+        batch = []
+        
+        for category in index:
+            print(category)
+            for song in category['songs']:
+                print(song)
+                if path is None or path == song['path']:
+                    print(song)
+                    batch.append( ( song, category['meta']['category_name'] ) )
+        print(batch)
         
         if not no_write:
-                book.write_files(data)
-    else:
-        try:
-            data = book.build_book_data()
-        except Exception as e:
-            print ( "Failed to build book data." )
-            if debug: raise
-            sys.exit(1)
-        if not no_write:
-            for chapter in data:
-                for song in chapter['songs']:
-                    book.write_files(song)
+            temp_dir = book.settings['temp_dir']
+            output_dir = book.settings['output_dir']
+            if not os.path.isdir(output_dir):
+                try:
+                    os.mkdir(output_dir)
+                except Exception as e:
+                    print('Failed to create output directory at %s: %s' % (output_dir, e))
+                    raise
+            if not os.path.isdir(temp_dir):
+                try:
+                    os.mkdir(temp_dir)
+                except Exception as e:
+                    print('Failed to create temporary directory at %s: %s' % (temp_dir, e))
+                    raise
+        
+        for bat in batch:
+            song = book.process_song(*bat)
+            
+            if not no_write:
+                book.write_files(song)
+    except:
+        
+        if debug: raise
+        sys.exit(1)
 
 if __name__ == '__main__':
     main()
