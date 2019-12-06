@@ -3,11 +3,13 @@
 <html lang="yi" dir='rtl'>
   <head>
   <meta charset="utf-8"> 
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>לידערבוך</title>
   <link rel="canonical" href="https://liderbukh.jews.international/">
   <style>
   body {
-    width: 90%;
+    width: 85%;
+    margin: auto;
     }
   </style>
   </head>
