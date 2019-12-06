@@ -62,6 +62,8 @@ class Liderbukh():
         index = []
         data_dir = os.path.join(self.settings['root_dir'], self.settings['data_dir'])
         
+        
+        
         print('Building index...\n')
         try:
             print('Scanning data directory...\n')
@@ -85,15 +87,44 @@ class Liderbukh():
                     category_index = []
                     for metafile in os.scandir(entry.path):
                         if metafile.is_file() and metafile.name.endswith('.yaml') and metafile.name != 'cat.yaml':
-                            category_index.append(
-                                os.path.splitext(
+                            path = os.path.splitext(
                                     os.path.relpath(
                                         metafile.path, start=os.path.join(
-                                            os.curdir, data_dir
-                                        )
-                                    )
-                                )[0]
-                            )
+                                            os.curdir, data_dir)))[0]
+                        
+                            temp_path = os.path.join(self.settings['root_dir'], 
+                                            self.settings['temp_dir'], path )
+                            out_path = os.path.join(self.settings['root_dir'],
+                                                    self.settings['output_dir'], path)
+            
+                            song = {
+                                'path': path,
+                                'ly_path': ''.join([ temp_path, '.ly'] ),
+                                'tex_path': ''.join([ temp_path, '.lytex']),
+                                'pdf_path': ''.join([ out_path, '.pdf'] )
+                            }
+                            for field in self.settings['song_meta']:
+                                song.update({field: None})
+                            
+                            print('Loading song meta for %s...' % path)
+                            try:
+                                meta = yaml.load(self.load_file('%s.yaml' %
+                                                                os.path.join(self.settings['data_dir'], path ) ) )
+                            except yaml.scanner.ScannerError as e:
+                                print("Invalid song file: %s\nYAML error: %s" % (song, e) )
+                                raise
+                            
+                            try:
+                                for key in meta:
+                                    song[key] = meta[key]
+                            except KeyError as e:
+                                print("Invalid song file: %s\nField %s not known." 
+                                    % (song, e) )
+                                raise
+                            
+                            song['category_name'] = category_meta['category_name']
+                            category_index.append(song)
+                    
                     index.append(
                         {
                             'songs': category_index,
@@ -103,55 +134,23 @@ class Liderbukh():
         
         except Exception as e:
             print ( "Failed to build index." )
+            raise
         
         print('Index built successfully')
         return index
       
-    def process_song(self,  path, chapter ):
-            print( 'Processing %s...' % path )
-            temp_path = os.path.join(self.settings['root_dir'],
-                                    self.settings['temp_dir'], path )
-            out_path = os.path.join(self.settings['root_dir'],
-                                    self.settings['output_dir'], path)
-            song = {
-                'meta':{
-                    'filename': os.path.split(path)[1],
-                    'path': path,
-                    'ly_path': ''.join([ temp_path, '.ly'] ),
-                    'tex_path': ''.join([ temp_path, '.lytex']),
-                    'pdf_path': ''.join([ out_path, '.pdf'] )
-                }
-            }
-            for field in self.settings['song_meta']:
-                song['meta'].update({field: None})
-            
-            print('Loading song meta...')
-            try:
-                meta = yaml.load(self.load_file('%s.yaml' %
-                                                os.path.join(self.settings['data_dir'], path ) ) )
-            except yaml.scanner.ScannerError as e:
-                print("Invalid song file: %s\nYAML error: %s" % (song, e) )
-                raise
-            
-            try:
-                for key in meta:
-                    song['meta'][key] = meta[key]
-            except KeyError as e:
-                print("Invalid song file: %s\nField %s not known." 
-                      % (song, e) )
-                raise
-            
-            song['meta']['chapter_name'] = chapter
+    def process_song(self, song ):
+            print( 'Processing %s...' % song['path'] )
             
             print('Loading music data...')
             try:
                 song['music'] = self.load_file('%s.ly' %
-                                                os.path.join(self.settings['data_dir'], path ) ) .replace(
+                                                os.path.join(self.settings['data_dir'], song['path'] ) ) .replace(
                             '\include "../../templates/preamble.ly"',
                             self.load_file(
                                     'preamble.ly', self.settings['templates_dir']))
             except Exception:
-                print( 'Error loading music data for %s' % ( path ) )
+                print( 'Error loading music data for %s' % ( song['path'] ) )
                 raise
             
             #Overwrite with template output
@@ -159,22 +158,22 @@ class Liderbukh():
                 song['music'] = self.build_template(
                         song, 'lilypond.template' )
             except Exception:
-                print( 'Error building Lilypond template for %s' % ( path ) )
+                print( 'Error building Lilypond template for %s' % ( song['path'] ) )
                 raise
             
             print('Loading lyrics...')
             try:
                 song['lyrics'] = self.load_file('%s.md' %
-                                                os.path.join(self.settings['data_dir'], path ) )
+                                                os.path.join(self.settings['data_dir'], song['path'] ) )
             except Exception:
-                print( 'Error loading lyrics for %s' % ( path ) ) 
+                print( 'Error loading lyrics for %s' % ( song['path'] ) ) 
                 raise
             
             print('Rendering TeX...')
             try:
                 song['tex'] = self.render_tex( song['lyrics'] )
             except Exception:
-                print( 'Error rendering TeX for %s' % ( path ) )
+                print( 'Error rendering TeX for %s' % ( song['path'] ) )
                 raise
             
             #Load TeX template output 
@@ -182,7 +181,7 @@ class Liderbukh():
                 song['tex'] = self.build_template( 
                     song, 'tex.template' )
             except Exception:
-                print( 'Error building TeX template for %s' % ( path ) )
+                print( 'Error building TeX template for %s' % ( song['path'] ) )
                 raise
             
             return song
@@ -199,17 +198,17 @@ class Liderbukh():
             return pyratemp.Template(**template_args)()
         except Exception:
             print( 'Error processing template %s for %s' %
-                  ( template, data['meta']['filename'] ) )
+                  ( template, data['path'] ) )
             raise
     
     # Write files
     def write_files(self, song):
-        print('Preparing to write output for %s...\n' % song['meta']['path'])
+        print('Preparing to write output for %s...\n' % song['path'])
         
-        tex_path = song['meta']['tex_path']
-        ly_path = song['meta']['ly_path']
-        pdf_path = song['meta']['pdf_path']
-        xetex_path = os.path.splitext(os.path.split(song['meta']['tex_path'])[1])[0] + '.tex'
+        tex_path = song['tex_path']
+        ly_path = song['ly_path']
+        pdf_path = song['pdf_path']
+        xetex_path = os.path.splitext(os.path.split(song['tex_path'])[1])[0] + '.tex'
         
         output_dir = os.path.dirname(pdf_path)
         temp_dir = os.path.dirname(tex_path)
@@ -296,7 +295,7 @@ class Liderbukh():
               pdf_path)
         
     def make_html_index(self, index_data):
-        data = {'book_data': book_data, 'print': print }
+        data = {'index_data': index_data, 'print': print }
         index = self.build_template(data,
                                     'html_index.template')
         return index
@@ -334,8 +333,7 @@ def main(settings_file, debug, no_write, path):
         for category in index:
             for song in category['songs']:
                 if path is None or path == song['path']:
-                    batch.append( ( song, category['meta']['category_name'] ) )
-        
+                    batch.append( song )
         if not no_write:
             temp_dir = book.settings['temp_dir']
             output_dir = book.settings['output_dir']
@@ -351,18 +349,28 @@ def main(settings_file, debug, no_write, path):
                 except Exception as e:
                     print('Failed to create temporary directory at %s: %s' % (temp_dir, e))
                     raise
-        
         for bat in batch:
-            song = book.process_song(*bat)
+            song = book.process_song(bat)
             
             if not no_write:
                 book.write_files(song)
         
-        index_html = book.build_index(index)
+        index_html = book.make_html_index(index)
+        
+        if not no_write:
+            print('Writing index.html...')
+            try:
+                with open('output/index.html', '+w') as f:
+                    f.write(index_html)
+            except Exception as e:
+                print('failed to write index file. %s' % e )
+                raise
+            print('index.html written successfully!')
     except:
         
         if debug: raise
         sys.exit(1)
-
+    print('All done!')
+    
 if __name__ == '__main__':
     main()

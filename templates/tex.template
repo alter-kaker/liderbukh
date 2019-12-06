@@ -66,8 +66,8 @@
     \fi
     }
   
-  \rhead{@!meta['chapter_name']!@}
-  \lhead{@!meta['songname']!@}
+  \rhead{@!category_name!@}
+  \lhead{@!songname!@}
   \chead{\large לידערבוך}
   \cfoot{\thepage}
   
@@ -75,9 +75,9 @@
   
   \begin{document}
   
-  \lilypondfile[noindent]{@!meta['ly_path']!@}
+  \lilypondfile[noindent]{@!ly_path!@}
   \begin{multicols}{2}
-  \settowidth{\versewidth}{@!meta['linewidth']!@}
+  \settowidth{\versewidth}{@!linewidth!@}
   \begin{verse}[\versewidth]
   
   @!tex!@

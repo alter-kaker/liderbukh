@@ -10,11 +10,11 @@
       <nav>
         <h2>אינהאַלט</h2>
         <ul>
-          <!--(for chapter in book_data)-->
-          <li><h3><a href="#@!chapter['name']!@">@!chapter['name']!@</a></h3></li>
+          <!--(for category in index_data)-->
+          <li><h3><a href="#@!category['meta']['category_name']!@">@!category['meta']['category_name']!@</a></h3></li>
             <ul>
-              <!--(for song in chapter['songs'])-->
-                <li><a href="#@!song['meta']['filename']!@">@!song['meta']['songname']!@</a></li>
+              <!--(for song in category['songs'])-->
+                <li><a href="#@!song['path']!@">@!song['songname']!@</a></li>
               <!--(end)-->
             
             </ul>
@@ -24,13 +24,14 @@
       </nav>
     </header>
     <main>
-      <!--(for chapter in book_data)-->
-      <section id="@!chapter['name']!@">
-        <h1>@!chapter['name']!@</h1>
-        <!--(for song in chapter['songs'])-->
+      <!--(for category in index_data)-->
+      <section id="@!category['meta']['category_name']!@">
+        <h1>@!category['meta']['category_name']!@</h1>
+        <!--(for song in category['songs'])-->
         <article>
-          <a id="@!song['meta']['filename']!@"><h1>@!song['meta']['songname']!@</h1></a>
-        </article><!-- @!chapter['name']!@ -->
+          <a id="@!song['path']!@"><h1>@!song['songname']!@</h1></a>
+          <a href="@!song['path']!@.pdf">לאָד אַראָפּ pdf</a>
+        </article><!-- @!category['meta']['category_name']!@ -->
         <!--(end)-->
       </section>
       <!--(end)-->
