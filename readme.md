@@ -32,18 +32,20 @@ Options:
   -s, --settings-file PATH  Settings file. Default: settings.yaml
   -d, --debug               Turn debug mode on
   -n, --no-write            Generate song data but don't write any files
-  -f, --filename TEXT       Only process this song file. Please provide
-                            filename without extension.
+  -p, --path TEXT           Only process this song file. Please provide path
+                            without extension.
+  -i, --index-only          Only write index file. Mutually exclusive with
+                            --no-write
   --help                    Show this message and exit.
+
 
 ```
 ## TODO (in no particular order):
 
 * Add option to create a single, book-style pdf 
-* Add html export
+* Add html export (partly done)
 * Add metadata fields for source, arranger, etc
 * Add transposition support?
 * Add support for multiple templates based on, for example, language and target format
 * Add option to process a list of songs, or only new songs 
-* Generate index file for songs
 * Make some meta fields required
