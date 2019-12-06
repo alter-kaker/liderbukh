@@ -1,7 +1,7 @@
 
 \version "2.18.2"
 \language "english"
-\include "templates/preamble.ly"
+\include "../../templates/preamble.ly"
 
 mel-a = \relative fs''{ 
   d2 d4 |
