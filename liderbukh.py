@@ -326,13 +326,10 @@ def main(settings_file, debug, no_write, path):
         batch = []
         
         for category in index:
-            print(category)
             for song in category['songs']:
                 print(song)
                 if path is None or path == song['path']:
-                    print(song)
                     batch.append( ( song, category['meta']['category_name'] ) )
-        print(batch)
         
         if not no_write:
             temp_dir = book.settings['temp_dir']
