@@ -302,7 +302,7 @@ class Liderbukh():
     def write_html(self, data, path):
         print('Writing %s...' % path )
         try:
-            with open('', '+w') as f:
+            with open(path, '+w') as f:
                 f.write(data)
         except Exception as e:
             print('failed to write %s. %s' % path, e )
@@ -331,9 +331,18 @@ class Liderbukh():
               '-p',
               default=None,
               help='Only process this song file. Please provide path without extension.')
+@click.option('--index-only',
+              '-i',
+              default=False,
+              is_flag=True,
+              help='Only write index file. Mutually exclusive with --no-write')
 
-def main(settings_file, debug, no_write, path):
+def main(settings_file, debug, no_write, path, index_only):
     book = Liderbukh(settings_file, debug)
+    
+    if no_write and index_only:
+        print( 'Please don\'t use --index-only and --no-write together, it confuses me' )
+        sys.exit(1)
     
     try:
         index = book.build_index()
@@ -344,7 +353,7 @@ def main(settings_file, debug, no_write, path):
                 if path is None or path == song['path']:
                     batch.append( song )
                     
-        if not no_write:
+        if not ( no_write ):
             temp_dir = book.settings['temp_dir']
             output_dir = book.settings['output_dir']
             if not os.path.isdir(output_dir):
@@ -353,7 +362,7 @@ def main(settings_file, debug, no_write, path):
                 except Exception as e:
                     print('Failed to create output directory at %s: %s' % (output_dir, e))
                     raise
-            if not os.path.isdir(temp_dir):
+            if not index_only and not os.path.isdir(temp_dir):
                 try:
                     os.mkdir(temp_dir)
                 except Exception as e:
@@ -362,13 +371,13 @@ def main(settings_file, debug, no_write, path):
         for bat in batch:
             song = book.process_song(bat)
             
-            if not no_write:
+            if not ( no_write or index_only ):
                 book.write_files(song)
         
         index_html = book.make_html_index(index)
         
         if not no_write:
-            book.write_html(index_html, os.path.join(book.setting['output_dir'], 'index.html'))
+            book.write_html(index_html, os.path.join(book.settings['output_dir'], 'index.html'))
     except:
         
         if debug: raise
