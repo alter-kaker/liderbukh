@@ -50,7 +50,7 @@ class Liderbukh():
     def load_file(self, file_name, dir=''): # Method to load files
         try:
             with open( os.path.join(self.settings['root_dir'], 
-                    self.settings['data_dir'], dir, file_name), 
+                    dir, file_name), 
                     encoding='utf-8') as f:
                 return f.read()
         except Exception as e:
