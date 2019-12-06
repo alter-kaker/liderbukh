@@ -12,7 +12,7 @@
           <li><h3>@!category['meta']['category_name']!@</h3></li>
             <ul>
               <!--(for song in category['songs'])-->
-                <li><a href="#@!song['path']!@">@!song['songname']!@</a></li>
+                <li><a href="@!song['path']!@.pdf">@!song['songname']!@</a></li>
               <!--(end)-->
             
             </ul>
