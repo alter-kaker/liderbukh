@@ -295,7 +295,7 @@ class Liderbukh():
         print('\n%s written successfully!\n' %
               pdf_path)
         
-    def make_html_index(self, book_data):
+    def make_html_index(self, index_data):
         data = {'book_data': book_data, 'print': print }
         index = self.build_template(data,
                                     'html_index.template')
@@ -332,13 +332,9 @@ def main(settings_file, debug, no_write, path):
         batch = []
         
         for category in index:
-            print(category)
             for song in category['songs']:
-                print(song)
                 if path is None or path == song['path']:
-                    print(song)
                     batch.append( ( song, category['meta']['category_name'] ) )
-        print(batch)
         
         if not no_write:
             temp_dir = book.settings['temp_dir']
@@ -361,6 +357,8 @@ def main(settings_file, debug, no_write, path):
             
             if not no_write:
                 book.write_files(song)
+        
+        index_html = book.build_index(index)
     except:
         
         if debug: raise
