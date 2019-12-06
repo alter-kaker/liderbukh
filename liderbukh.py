@@ -97,25 +97,29 @@ class Liderbukh():
         
         print(index)
         return index
-      # book_data = [ { (chapter) name: 's' songs: [] } ]
       
-    def process_song(self, filename):
-            print('Processing %s...' % filename)
-            base_path = os.path.join(self.settings['root_dir'],  # For output file paths
-                    self.settings['temp_dir'], filename )
+    def process_song(self, path, chapter):
+            print( 'Processing %s...' % path )
+            temp_path = os.path.join(self.settings['root_dir'],
+                                    self.settings['temp_dir'], path )
+            out_path = os.path.join(self.settings['root_dir'],
+                                    self.settings['output_dir'], path)
             song = {
                 'meta':{
-                    'filename': filename,
-                    'ly_path': ''.join([ base_path, '.ly'] ),
-                    'tex_path': ''.join([ base_path, '.lytex'])
-                    } }
-            
+                    'filename': os.path.split(path)[1],
+                    'path': path,
+                    'ly_path': ''.join([ temp_path, '.ly'] ),
+                    'tex_path': ''.join([ temp_path, '.lytex']),
+                    'pdf_path': ''.join([ out_path, '.pdf'] )
+                }
+            }
             for field in self.settings['song_meta']:
                 song['meta'].update({field: None})
             
             print('Loading song meta...')
             try:
-                meta = yaml.load(self.load_file('%s.yaml' % filename ))
+                meta = yaml.load(self.load_file('%s.yaml' %
+                                                os.path.join(self.settings['data_dir'], path ) ) )
             except yaml.scanner.ScannerError as e:
                 print("Invalid song file: %s\nYAML error: %s" % (song, e) )
                 raise
@@ -128,62 +132,48 @@ class Liderbukh():
                       % (song, e) )
                 raise
             
-            # Add chapter name to meta
-            try:
-                    song['meta']['chapter_name'] = self.settings['book']['chapters'][
-                      int(song['meta']['chapter'])]
-            except IndexError as e:
-                    print('Error processing chapter number %s for %s: %s' % (
-                        song['meta']['chapter'], song['meta']['filename'], e))
-                    raise
-            except (ValueError, TypeError):
-                print(
-                    'Error processing chapter number for %s: \
-                    \nValue should be a number, but is %s!' 
-                    %  ( song['meta']['filename'], song['meta']['chapter'] ) )
-                raise
-            
+            song['meta']['chapter_name'] = chapter
             
             print('Loading music data...')
             try:
-                song['music'] = self.load_file(
-                    ''.join([song['meta']['filename'],'.ly'])).replace(
+                song['music'] = self.load_file('%s.ly' %
+                                                os.path.join(self.settings['data_dir'], path ) ) .replace(
                             '\include "../../templates/preamble.ly"',
                             self.load_file(
                                     'preamble.ly', self.settings['templates_dir']))
             except Exception:
-                print( 'Error loading music data for %s' % ( song['meta']['filename'] ) )
+                print( 'Error loading music data for %s' % ( path ) )
                 raise
             
-            # Overwrite with template output
+            #Overwrite with template output
             try:
                 song['music'] = self.build_template(
                         song, 'lilypond.template' )
             except Exception:
-                print( 'Error building Lilypond template for %s' % ( song['meta']['filename'] ) )
+                print( 'Error building Lilypond template for %s' % ( path ) )
                 raise
             
             print('Loading lyrics...')
             try:
-                song['lyrics'] = self.load_file(''.join([song['meta']['filename'],
-                        self.settings['lyrics_ext']]))
+                song['lyrics'] = self.load_file('%s.md' %
+                                                os.path.join(self.settings['data_dir'], path ) )
             except Exception:
-                print( 'Error loading lyrics for %s' % ( song['meta']['filename'] ) ) 
+                print( 'Error loading lyrics for %s' % ( path ) ) 
                 raise
             
             print('Rendering TeX...')
             try:
                 song['tex'] = self.render_tex( song['lyrics'] )
             except Exception:
-                print( 'Error rendering TeX for %s' % ( song['meta']['filename'] ) )
+                print( 'Error rendering TeX for %s' % ( path ) )
                 raise
             
-            # Load TeX template output 
+            #Load TeX template output 
             try:
                 song['tex'] = self.build_template( 
                     song, 'tex.template' )
             except Exception:
-                print( 'Error building TeX template for %s' % ( song['meta']['filename'] ) )
+                print( 'Error building TeX template for %s' % ( path ) )
                 raise
             
             return song
@@ -227,9 +217,7 @@ class Liderbukh():
         
         tex_path = song['meta']['tex_path']
         ly_path = song['meta']['ly_path']
-        pdf_path = ''.join([
-            os.path.join(output_dir, song['meta']['filename']),
-            '.pdf'])
+        pdf_path = song['meta']['pdf_path']
             
         print('Writing:\t\t%s' % tex_path)
         try:
