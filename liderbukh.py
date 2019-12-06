@@ -58,36 +58,45 @@ class Liderbukh():
                     (file_name, e))
             raise
     
-    def build_book_data(self): # Build all the book data
-        book_data = []
+    def build_index(self): # Build the index
+        index = []
         print('Building book data...\n')
         try:
-            print('Reading data directory...\n')
-            songlist = [
-                os.path.splitext(metafile)[0] for metafile in os.listdir( os.path.join(
-                    self.settings['root_dir'], 
-                    self.settings['data_dir'])) if metafile.endswith(".yaml")]
+            print('Scanning data directory...\n')
+            for entry in os.scandir('data'):
+                if entry.is_dir():
+                    try:
+                        cat = open(
+                            os.path.join(entry.path, 'cat.yaml'))
+                    except FileNotFoundError as e:
+                        print ("Warning: category %s doesn\'t have a metadata file. Any files in this category will not be read." % entry.path)
+                        continue
+                    
+                    try:
+                        category_meta = yaml.load(cat)
+                    except yaml.scanner.ScannerError as e:
+                        print ( "Warning: category %s has an invalid metadata file. Any files in this category will not be read." 
+                            % entry.path )
+                        continue
+                    category_meta['category_path'] = entry.name
+                    
+                    category_index = []
+                    for metafile in os.listdir(entry.path):
+                        if not os.path.isdir(metafile) and metafile.endswith('.yaml') and metafile != 'cat.yaml':
+                            category_index.append(os.path.splitext(metafile)[0])
+                    index.append(
+                        {
+                            'songs': category_index,
+                            'meta': category_meta
+                        }
+                    )
+        
         except Exception as e:
             print("Could not read song meta files: %s" % (e))
             raise
         
-        try:
-            print('Reading chapter list...\n')
-            for chapter_name in self.settings['book']['chapters']:
-                book_data.append( {'name': chapter_name, 'songs': [] } )
-        except Exception as e:
-            print('Failed: %s' % e )
-            raise
-        
-        print('Processing songs...\n')
-        for filename in songlist:
-            song = self.process_song(filename)
-            book_data[int(song['meta']['chapter'])]['songs'].append(song)
-            
-            print('Data processing complete for %s.\n' % song['meta']['filename'])
-        
-        print('Book data complete.\n')
-        return book_data
+        print(index)
+        return index
       # book_data = [ { (chapter) name: 's' songs: [] } ]
       
     def process_song(self, filename):
@@ -139,7 +148,7 @@ class Liderbukh():
             try:
                 song['music'] = self.load_file(
                     ''.join([song['meta']['filename'],'.ly'])).replace(
-                            '\include "templates/preamble.ly"',
+                            '\include "../../templates/preamble.ly"',
                             self.load_file(
                                     'preamble.ly', self.settings['templates_dir']))
             except Exception:
