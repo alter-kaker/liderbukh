@@ -1,6 +1,8 @@
 # Liderbukh
 ### A program to create beautiful lead sheets using Python, Lilypond, and LaTeX, with templates and a collection of Yiddish folksongs
 
+Visit the collection: https://liderbukh.jews.international/
+
 ## Dependencies:
 ### Python 3
 #### Modules:
