@@ -88,6 +88,7 @@ class Liderbukh():
         
         print('Book data complete.\n')
         return book_data
+      # book_data = [ { (chapter) name: 's' songs: [] } ]
       
     def process_song(self, filename):
             print('Processing %s...' % filename)
@@ -287,7 +288,12 @@ class Liderbukh():
             runerror(e)
         print('\n%s/%s.pdf written successfully!\n' %
               (self.settings['output_dir'], filename))
-    
+        
+    def make_html_index(self, book_data):
+        data = {'book_data': book_data, 'print': print }
+        index = self.build_template(data,
+                                    'html_index.template')
+        return index
 
 @click.command()
 
