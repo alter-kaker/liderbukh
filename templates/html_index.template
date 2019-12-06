@@ -4,14 +4,12 @@
   <title>לידערבוך</title>
   <link rel="canonical" href="https://liderbukh.jews.international/">
   <body>
-  
-    <header>
+    <main>
       <h1>לידערבוך</h1>
-      <nav>
         <h2>אינהאַלט</h2>
         <ul>
           <!--(for category in index_data)-->
-          <li><h3><a href="#@!category['meta']['category_name']!@">@!category['meta']['category_name']!@</a></h3></li>
+          <li><h3>@!category['meta']['category_name']!@</h3></li>
             <ul>
               <!--(for song in category['songs'])-->
                 <li><a href="#@!song['path']!@">@!song['songname']!@</a></li>
@@ -21,20 +19,6 @@
           </li>
           <!--(end)-->
         </ul>
-      </nav>
-    </header>
-    <main>
-      <!--(for category in index_data)-->
-      <section id="@!category['meta']['category_name']!@">
-        <h1>@!category['meta']['category_name']!@</h1>
-        <!--(for song in category['songs'])-->
-        <article>
-          <a id="@!song['path']!@"><h1>@!song['songname']!@</h1></a>
-          <a href="@!song['path']!@.pdf">לאָד אַראָפּ pdf</a>
-        </article><!-- @!category['meta']['category_name']!@ -->
-        <!--(end)-->
-      </section>
-      <!--(end)-->
     </main>
   </body>
 </html>
