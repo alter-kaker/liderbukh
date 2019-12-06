@@ -295,11 +295,6 @@ class Liderbukh():
         print('\n%s written successfully!\n' %
               pdf_path)
         
-    def make_html_index(self, book_data):
-        data = {'book_data': book_data, 'print': print }
-        index = self.build_template(data,
-                                    'html_index.template')
-        return index
 
 @click.command()
 
