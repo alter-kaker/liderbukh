@@ -64,9 +64,9 @@ class Liderbukh():
         
         
         
-        print('Building index...\n')
+        print('Building index...')
         try:
-            print('Scanning data directory...\n')
+            print('Scanning data directory...')
             for entry in os.scandir(data_dir):
                 if entry.is_dir():
                     try:
@@ -136,7 +136,7 @@ class Liderbukh():
             print ( "Failed to build index." )
             raise
         
-        print('Index built successfully')
+        print('Index built successfully!\n')
         return index
       
     def process_song(self, song ):
@@ -203,7 +203,7 @@ class Liderbukh():
     
     # Write files
     def write_files(self, song):
-        print('Preparing to write output for %s...\n' % song['path'])
+        print('Preparing to write output for %s...' % song['path'])
         
         tex_path = song['tex_path']
         ly_path = song['ly_path']
@@ -229,23 +229,23 @@ class Liderbukh():
                 raise
         
             
-        print('Writing:\t\t%s' % tex_path)
+        print('Writing %s...' % tex_path)
         try:
             with open(tex_path, 'w+', encoding='utf-8') as f:
                 f.write(song['tex'])
-                print('Success!\n')
+                print('Success!')
         except Exception as e:
             print( 'Error: %s\n' % (e) )
             
-        print('Writing:\t\t%s' % ly_path)
+        print('Writing %s...' % ly_path)
         try:
             with open(ly_path, 'w+', encoding='utf-8') as f:
                 f.write(song['music'])
-                print('Success!\n')
+                print('Success!')
         except Exception as e:
             print( 'Error: %s\n' % (e) )
         
-        print('Writing:\t\t%s:\n' % (pdf_path) )
+        print('Preparing to write %s:' % (pdf_path) )
         print('Running lilypond-book...')
 
         try:
@@ -291,7 +291,7 @@ class Liderbukh():
                 stderr=subprocess.PIPE)
         except subprocess.CalledProcessError as e:
             runerror(e)
-        print('\n%s written successfully!\n' %
+        print('%s written successfully!\n' %
               pdf_path)
         
     def make_html_index(self, index_data):
