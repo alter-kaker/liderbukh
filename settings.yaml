@@ -11,3 +11,10 @@ song_meta:
   - linewidth
   - textby
   - musicby
+
+index_html:
+  header_text: לידערבוך
+  footer_links:
+    Liderbukh on GitHub: https://github.com/derpayatz/liderbukh/
+    Yiddish Reader on Github: https://github.com/derpayatz/yiddish-reader/
+    Support this work on LiberaPay: https://liberapay.com/derpayatz/

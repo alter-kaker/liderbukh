@@ -295,7 +295,7 @@ class Liderbukh():
               pdf_path)
         
     def make_html_index(self, index_data):
-        data = {'index_data': index_data, 'print': print }
+        data = {'index_data': index_data, 'meta': self.settings['index_html'], 'print': print }
         index = self.build_template(data,
                                     'html_index.template')
         return index

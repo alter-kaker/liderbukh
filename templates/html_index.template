@@ -4,18 +4,27 @@
   <head>
   <meta charset="utf-8"> 
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>לידערבוך</title>
+  <title>@!meta['header_text']!@</title>
   <link rel="canonical" href="https://liderbukh.jews.international/">
   <style>
   body {
     width: 85%;
     margin: auto;
     }
+  footer li {
+	list-style: none;
+	display: block;
+	margin: 1em;
+	text-align: center;
+    }
+  footer {
+	border-top: solid 1px black;
+  }
   </style>
   </head>
   <body>
     <header>
-      <h1>לידערבוך</h1>
+      <h1>@!meta['header_text']!@</h1>
     </header>
     <main>
         <ul>
@@ -31,6 +40,12 @@
           <!--(end)-->
         </ul>
     </main>
-    <footer><a href="https://github.com/derpayatz/liderbukh/">GitHub</a></footer>
+    <footer>
+      <ul>
+      <!--(for key in meta['footer_links'].keys() )-->
+        <li><a href="@!meta['footer_links'][key]!@">@!key!@</a></li>
+      <!--(end)-->
+      </ul>
+    </footer>
   </body>
 </html>
