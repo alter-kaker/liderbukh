@@ -296,8 +296,12 @@ class Liderbukh():
         
     def make_html_index(self, index_data):
         data = {'index_data': index_data, 'meta': self.settings['index_html'] }
-        index = self.build_template(data,
+        try:
+            print('Buildng index.html...')
+            index = self.build_template(data,
                                     'html_index.template')
+        except Exception as e:
+            print('Building index.html failed: %s' % e)
         return index
     def write_html(self, data, path):
         print('Writing %s...' % path )
