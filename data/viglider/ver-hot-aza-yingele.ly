@@ -4,7 +4,7 @@
 
 mel = \relative d'{
   d8 d d d |
-  fs ef d4 |
+  fs ef d8. d16 |
   ef8 d ef g |
   fs4. r8 |
   g fs g a |
@@ -24,52 +24,50 @@ mel = \relative d'{
   g4. r8 |
   d8 bf' a g |
   fs8. ef16 d8 d16 d |
-  bf'8 a bf a |
-  bf4 r |
+  a'8 a bf a |
+  g4 r |
   bf8 d d d |
   c8. bf16 a4 |
   c8 ef d c |
   bf8. a16 g4 |
-  \repeat volta 2 {
-    d8 d' c bf  |
-    a8. g16 fs8 a |
-    c ef d c |
-    g2 |
-  }
+  d8 d' c bf  |
+  a8. g16 fs8 a |
+  c ef d c |
+  g2 |
 }
 acc = \chordmode { 
+  g2:m |
+  g2:m |
+  g2:m |
   d2:7 |
-  d:7 |
-  ef: |
-  d:7 |
-  a:m7.5- |
   g:m |
-  c:m7 |
+  g:m |
+  g:m |
   d:7 |
   d:7 |
   g:m |
-  ef:7 |
-  d:7 |
-  d:7 |
-  a:m7.5- |
   ef: |
   d:7 |
   d:7 |
+  c:m6 |
+  ef: |
+  d:7 |
+  g:m |
   d:7 |
   d:7 |
   g:m |
   g:m |
   d:7 |
-  c:m7 |
-  c:m7 |
-  bf: |
-  a:m7.5- |
-  c:m |
+  c:m6 |
+  g4.:m d8:7 |
+  bf2: |
+  c:m6 |
+  c:m6 |
   g:m |
   g:m |
   d:7 |
-  a:m7.5- |
-  g:m |
+  c4:m6 d:7 |
+  g4.:m \parenthesize d8:7
 }
 
 \score {
