@@ -70,9 +70,9 @@ acc = \chordmode {
   g:m |
   g2:m d4.: f8:7 |
   bf1:m |
-  bf2:m f: |
+  bf2:m f:7 |
   bf1:m |
-  ef2:m c4.:7 d8: |
+  ef2:m f4.:7 d8: |
   g1:m |
   g2:m d:7 |
   c1:m |
