@@ -51,3 +51,4 @@ Options:
 * Add support for multiple templates based on, for example, language and target format
 * Add option to process a list of songs, or only new songs 
 * Make some meta fields required
+* Add auto generated "version" and "last updated" field to song meta, and display it in the index and possibly in the pdf.
