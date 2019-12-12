@@ -35,7 +35,11 @@
     }
     
     \new Lyrics \lyricsto "melody" {
-      
+      Nisht zukh mir vu di mir -- tn gri -- nen,
+      ge -- funst mikh dortn nit mit mayn  shats;
+      vu le -- bns vel -- ken bay ma -- shi -- nen—
+      dor -- tn iz mayn ru -- e -- plats,
+      dor -- tn iz mayn ru -- e -- plats.
     }
   >>
 }
