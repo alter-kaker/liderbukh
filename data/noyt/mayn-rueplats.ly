@@ -6,6 +6,18 @@
   <<
     \new ChordNames = "mainChords" {
       \chordmode { 
+        s4. |
+        g2.:m |
+        bf |
+        c2:m6 d4:7 |
+        g2.:m |
+        g2:m bf4:7 |
+        ef4: f2: |
+        f2: bf4: |
+        g2.:m |
+        g2:m c4:m |
+        g2:m d4:7 |
+        g2.:m | g:m
       }
     }
     \new Staff = "main" {
