@@ -356,6 +356,12 @@ def main(settings_file, debug, no_write, path, index_only):
             for song in category['songs']:
                 if path is None or path == song['path']:
                     batch.append( song )
+        if not batch:
+            if path:
+                print( "Did not find valid song files for %s. Exiting." % path )
+            else:
+                print("No valid song files found in data directory. Exiting.")
+            sys.exit(1)
                     
         if not ( no_write ):
             temp_dir = book.settings['temp_dir']
