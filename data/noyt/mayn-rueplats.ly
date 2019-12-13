@@ -50,7 +50,7 @@
       ge -- funst mikh dor -- tn nist mayn  shats;
       vu le -- bns vel -- ken bay ma -- shi -- nen—
       dor -- tn iz mayn ru -- e -- plats,
-      dor -- tn iz mayn ru -- e -- plats.
+      dor -- tn iz __ mayn ru __ e -- plats. __
     }
   >>
 }
