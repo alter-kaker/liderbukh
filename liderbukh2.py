@@ -42,14 +42,27 @@ def index(data_dir='data'):
     try:
         for cat_path, cat_meta in list_dirs_meta(data_dir):
             for entry_path, entry_meta in list_dirs_meta(cat_path):
-                yield {
-                    'entry_path': entry_path,
-                    'category_path': cat_path,
-                    **cat_meta,
-                    **entry_meta }
+                for var_path, var_meta in list_dirs_meta(entry_path):
+                    yield {
+                        'var_path': var_path,
+                        'entry_path': entry_path,
+                        'category_path': cat_path,
+                        **cat_meta,
+                        **entry_meta,
+                        **var_meta }
+                else:
+                    yield {
+                        'entry_path': entry_path,
+                        'category_path': cat_path,
+                        **cat_meta,
+                        **entry_meta }
     except ( FileNotFoundError, NotADirectoryError ) as e:
         print('Cannot proceed: %s' % e)
         sys.exit(1)
 
 for i in index('data'):
-    print('%s - %s' % ( i['category_name'], i['songname'] ))
+    try:
+        print( f"{ i['var_name'] if ( 'var_name' in i.keys() ) else i['songname'] } — " 
+           f"{ i['linewidth'] }" )
+    except KeyError as e:
+        print( f'KeyError: { e } in { i["songname"] }' )
