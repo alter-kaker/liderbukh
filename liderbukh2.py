@@ -2,6 +2,7 @@
 
 import os
 import yaml
+import sys
 
 def list_dirs_meta( parent ):
     for dir_path in (
@@ -19,15 +20,17 @@ def list_dirs_meta( parent ):
         yield dir_path, dir_meta
 
 def index(data_dir='data'):
-    for cat_path, cat_meta in list_dirs_meta(data_dir):
-        
-        for entry_path, entry_meta in list_dirs_meta(cat_path):
-            yield {
-                'entry_path': entry_path,
-                'category_path': cat_path,
-                **cat_meta,
-                **entry_meta }
-
+    try:
+        for cat_path, cat_meta in list_dirs_meta(data_dir):
+            for entry_path, entry_meta in list_dirs_meta(cat_path):
+                yield {
+                    'entry_path': entry_path,
+                    'category_path': cat_path,
+                    **cat_meta,
+                    **entry_meta }
+    except ( FileNotFoundError, NotADirectoryError ) as e:
+        print('Cannot proceed: %s' % e)
+        sys.exit(1)
 
 for i in index('data'):
     print('%s - %s' % ( i['category_name'], i['songname'] ))
