@@ -145,10 +145,7 @@ class Liderbukh():
             print('Loading music data...')
             try:
                 song['music'] = self.load_file('%s.ly' %
-                                                os.path.join(self.settings['data_dir'], song['path'] ) ) .replace(
-                            '\include "../../templates/preamble.ly"',
-                            self.load_file(
-                                    'preamble.ly', self.settings['templates_dir']))
+                                                os.path.join(self.settings['data_dir'], song['path'] ) )
             except Exception:
                 print( 'Error loading music data for %s' % ( song['path'] ) )
                 raise
