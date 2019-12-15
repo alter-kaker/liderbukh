@@ -26,7 +26,7 @@ from collections import defaultdict
 
 import timeit
 
-def index_dirs( path ):
+def index_dir( path ):
     try:
         for dir_path in (
                 directory.path
@@ -62,13 +62,13 @@ def query_tree(tree, query=[]):
 def index_tree(data_dir):
     index = []
     try:
-        for cat_slug, cat_path in index_dirs( data_dir ):
+        for cat_slug, cat_path in index_dir( data_dir ):
             cat_index = []
-            for entry_slug, entry_path in index_dirs( cat_path ):
+            for entry_slug, entry_path in index_dir( cat_path ):
                 entry_index = [ {
                     'slug': entry_slug,
                     'path': entry_path } ]
-                for variant_slug, variant_path in index_dirs( entry_path ):
+                for variant_slug, variant_path in index_dir( entry_path ):
                     entry_index.append( {
                         'slug': variant_slug,
                         'path': variant_path } )
@@ -84,13 +84,13 @@ def index_tree(data_dir):
     except: raise
 
 test1 = """
-from __main__ import index_dirs, read_dir_meta, index_tree
+from __main__ import index_dir, read_dir_meta, index_tree
 tree = index_tree('data')
 """
 
 test2 = """
 
-from __main__ import index_dirs, read_dir_meta, query_tree, index_tree
+from __main__ import index_dir, read_dir_meta, query_tree, index_tree
 
 tree = index_tree('data')
 
