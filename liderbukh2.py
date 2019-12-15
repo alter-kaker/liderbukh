@@ -53,7 +53,7 @@ def query_tree(tree, query=[]):
         try:
             for category in tree:
                 for entry in category['entries']:
-                    if slug == entry['slug']:
+                    if slug == entry[0]['slug']:
                         yield entry, category['slug']
                         
         except Exception as e:
@@ -67,46 +67,46 @@ def index_tree(data_dir):
         for cat_slug, cat_path in index_dirs( data_dir ):
             cat_index = []
             for entry_slug, entry_path in index_dirs( cat_path ):
-                var_index = []
-                for var_slug, var_path in index_dirs( entry_path ):
-                    var_index.append( {
-                        'slug': var_slug,
-                        'path': var_path } )
-                entry = {
+                entry_index = [ {
                     'slug': entry_slug,
-                    'path': entry_path,
-                    'variations': var_index }
-                cat_index.append( entry )
+                    'path': entry_path } ]
+                for variant_slug, variant_path in index_dirs( entry_path ):
+                    entry_index.append( {
+                        'slug': variant_slug,
+                        'path': variant_path } )
+                cat_index.append( entry_index )
             index.append( {
                 'slug': cat_slug,
-                'path': cat_path,
                 'entries': cat_index } )
         return index
                 
     except ( FileNotFoundError, NotADirectoryError ) as e:
         print('Cannot proceed: %s' % e)
         sys.exit(1)
+    except: raise
 
 test1 = """
 from __main__ import index_dirs, read_dir_meta, is_var, index_tree
 tree = index_tree('data')
+#print (tree)
 """
 
 test2 = """
 
 from __main__ import index_dirs, read_dir_meta, is_var, query_tree, index_tree
 
-tree = index_tree('data'), ['rozhinkes-mit-mandlen', 'afn-pripetchik']
+tree = index_tree('data')
 
-result = [ n for n in query_tree( tree ) ]
+result = [ n[0][0]['slug'] for n in query_tree( tree, ['rozhinkes-mit-mandlen', 'afn-pripetchik'] ) ]
 
+print([entry for entry in result] )
 """
 
 #build tree using tree_index
-time1 = timeit.timeit(test1, number=1000)
+time1 = timeit.timeit(test1, number=1)
 
 #query index
-time2 = timeit.timeit(test2, number=1000)
+time2 = timeit.timeit(test2, number=1)
 
 print(time1) #0.5776s
 print(time2) #0.56937
