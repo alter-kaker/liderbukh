@@ -48,113 +48,65 @@ def is_var(i):
             return True
         else: return False
 
-def index(data_dir='data'):
+def query_tree(tree, query=[]):
+    for slug in query:
+        try:
+            for category in tree:
+                for entry in category['entries']:
+                    if slug == entry['slug']:
+                        yield entry, category['slug']
+                        
+        except Exception as e:
+            print('Cannot proceed: %s' % e)
+            raise
+            sys.exit(1)
+
+def index_tree(data_dir):
+    index = []
     try:
         for cat_slug, cat_path in index_dirs( data_dir ):
+            cat_index = []
             for entry_slug, entry_path in index_dirs( cat_path ):
+                var_index = []
                 for var_slug, var_path in index_dirs( entry_path ):
-                    yield {
+                    var_index.append( {
                         'slug': var_slug,
-                        'entry_slug': entry_slug,
-                        'category_slug': cat_slug,
-                        'path': var_path }
-                else:
-                    yield defaultdict( list,
-                        {
-                        'slug': entry_slug,
-                        'category_slug': cat_slug,
-                        'path': entry_path } )
+                        'path': var_path } )
+                entry = {
+                    'slug': entry_slug,
+                    'path': entry_path,
+                    'variations': var_index }
+                cat_index.append( entry )
+            index.append( {
+                'slug': cat_slug,
+                'path': cat_path,
+                'entries': cat_index } )
+        return index
+                
     except ( FileNotFoundError, NotADirectoryError ) as e:
         print('Cannot proceed: %s' % e)
         sys.exit(1)
 
-def build_tree( data_dir='data' ):
-    items = []
-    for item in index( data_dir ):
-        items.append(item)
-    tree = defaultdict(list)
-    for item in items:
-        if is_var(item):
-            for entry in items:
-                if entry['slug'] == item['entry_slug']:
-                    entry['variations'].append(item)
-                    tree[item['category_slug']].append(entry)
-        else: tree[item['category_slug']].append(item)
-    return tree
-
 test1 = """
-from __main__ import index_dirs, read_dir_meta, is_var, index
-list = []
-
-for i in index('data'):
-    list.append(i)
-for i in list:
-    try:
-        if is_var(i):
-            for n in list:
-                if n['slug'] == i['entry_slug']:
-                    #print( f"Variation: {n['slug']}" )
-                    pass
-    except KeyError as e:
-        print( f'KeyError: { e } in { i["slug"] }' )
-    
-   
-    #print( i['slug'] )
+from __main__ import index_dirs, read_dir_meta, is_var, index_tree
+tree = index_tree('data')
 """
 
 test2 = """
-from __main__ import index_dirs, read_dir_meta, is_var, index
-list = []
 
-for i in index('data'):
-    list.append(i)
-for i in list:
-    i.update(**read_dir_meta(i['path']))
-    try:
-        if is_var(i):
-            #print( i['entry_slug'] )
-            for n in list:
-                #print( n )
-                if n['slug'] == i['entry_slug']:
-                    print( f"וואַריאַציע פֿון: {read_dir_meta(n['path'])['songname']}" )
-                #else: print( 'No match' )
-        print( f"{ i['var_name'] if ( 'var_name' in i.keys() ) else i['songname'] } — " 
-           f"{ i['linewidth'] }" )
-    except KeyError as e:
-        print( f'KeyError: { e } in { i["songname"] }' )
-    
-   
-    print( i['slug'] )
+from __main__ import index_dirs, read_dir_meta, is_var, query_tree, index_tree
+
+tree = index_tree('data'), ['rozhinkes-mit-mandlen', 'afn-pripetchik']
+
+result = [ n for n in query_tree( tree ) ]
+
 """
 
-test3 = """
-from __main__ import index_dirs, read_dir_meta, is_var, index
-songs = ['rozhinkes-mit-mandlen', 'afn-pripetchik']
+#build tree using tree_index
+time1 = timeit.timeit(test1, number=1000)
 
-list = [ n for n in index( 'data' ) 
-    if n['slug'] in songs ]
+#query index
+time2 = timeit.timeit(test2, number=1000)
 
-meta = [ (read_dir_meta(item['path'])['songname']) for item in list ]
-
-print(meta)
-"""
-
-test4 = """
-from __main__ import index_dirs, read_dir_meta, is_var, index, build_tree
-tree = build_tree()
-"""
-
-#index only
-time1 = timeit.timeit(test1, number=100)/100
-
-#index with meta
-time2 = timeit.timeit(test2, number=100)/100
-
-#find songs from list and fetch meta
-time3 = timeit.timeit(test3, number=100)/100 
-time4 = timeit.timeit(test4, number=100)/100
-
-print(time1) #0.0008s
-print(time2) #0.0262s
-print(time3) #0.0252s
-print(time4)
+print(time1) #0.5776s
+print(time2) #0.56937
