@@ -22,6 +22,8 @@
 import os
 import yaml
 import sys
+from collections import defaultdict
+
 import timeit
 
 def index_dirs( path ):
@@ -57,13 +59,28 @@ def index(data_dir='data'):
                         'category_slug': cat_slug,
                         'path': var_path }
                 else:
-                    yield {
+                    yield defaultdict( list,
+                        {
                         'slug': entry_slug,
                         'category_slug': cat_slug,
-                        'path': entry_path }
+                        'path': entry_path } )
     except ( FileNotFoundError, NotADirectoryError ) as e:
         print('Cannot proceed: %s' % e)
         sys.exit(1)
+
+def build_tree( data_dir='data' ):
+    items = []
+    for item in index( data_dir ):
+        items.append(item)
+    tree = defaultdict(list)
+    for item in items:
+        if is_var(item):
+            for entry in items:
+                if entry['slug'] == item['entry_slug']:
+                    entry['variations'].append(item)
+                    tree[item['category_slug']].append(entry)
+        else: tree[item['category_slug']].append(item)
+    return tree
 
 test1 = """
 from __main__ import index_dirs, read_dir_meta, is_var, index
@@ -76,12 +93,13 @@ for i in list:
         if is_var(i):
             for n in list:
                 if n['slug'] == i['entry_slug']:
-                    print( f"Variation: {n['slug']}" )
+                    #print( f"Variation: {n['slug']}" )
+                    pass
     except KeyError as e:
         print( f'KeyError: { e } in { i["slug"] }' )
     
    
-    print( i['slug'] )
+    #print( i['slug'] )
 """
 
 test2 = """
@@ -121,6 +139,11 @@ meta = [ (read_dir_meta(item['path'])['songname']) for item in list ]
 print(meta)
 """
 
+test4 = """
+from __main__ import index_dirs, read_dir_meta, is_var, index, build_tree
+tree = build_tree()
+"""
+
 #index only
 time1 = timeit.timeit(test1, number=100)/100
 
@@ -129,7 +152,9 @@ time2 = timeit.timeit(test2, number=100)/100
 
 #find songs from list and fetch meta
 time3 = timeit.timeit(test3, number=100)/100 
+time4 = timeit.timeit(test4, number=100)/100
 
 print(time1) #0.0008s
 print(time2) #0.0262s
 print(time3) #0.0252s
+print(time4)
