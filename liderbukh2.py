@@ -27,13 +27,16 @@ from collections import defaultdict
 import timeit
 
 def index_dirs( path ):
-    for dir_path in (
-            directory.path
-            for directory in os.scandir( path ) 
-            if directory.is_dir()
-            and os.path.isfile(
-                os.path.join( directory.path, 'meta.yaml' ) ) ):
-        yield os.path.split(dir_path)[1], dir_path
+    try:
+        for dir_path in (
+                directory.path
+                for directory in os.scandir( path ) 
+                if directory.is_dir()
+                and os.path.isfile(
+                    os.path.join( directory.path, 'meta.yaml' ) ) ):
+            yield os.path.split(dir_path)[1], dir_path
+    except Exception as e:
+        print(f'Exception: {e}')
 
 def read_dir_meta( path ):
         with open( os.path.join( path, 'meta.yaml' ) ) as meta_file:
@@ -94,11 +97,11 @@ tree = index_tree('data')
 result = [ n[0][0]['slug'] for n in query_tree( tree, ['rozhinkes-mit-mandlen', 'afn-pripetchik'] ) ]
 """
 
-#build tree using tree_index
+#build tree
 time1 = timeit.timeit(test1, number=1000)
 
-#query index
+#build & query tree
 time2 = timeit.timeit(test2, number=1000)
 
-print(time1) #0.5776s
-print(time2) #0.56937
+print(time1) #0.57s
+print(time2) #0.57s
