@@ -43,11 +43,6 @@ def read_dir_meta( path ):
             except Exception as e:
                 print('YAML error: %s' % e )
 
-def is_var(i): 
-        if ( 'entry_slug' in i.keys() ): 
-            return True
-        else: return False
-
 def query_tree(tree, query=[]):
     for slug in query:
         try:
@@ -86,27 +81,24 @@ def index_tree(data_dir):
     except: raise
 
 test1 = """
-from __main__ import index_dirs, read_dir_meta, is_var, index_tree
+from __main__ import index_dirs, read_dir_meta, index_tree
 tree = index_tree('data')
-#print (tree)
 """
 
 test2 = """
 
-from __main__ import index_dirs, read_dir_meta, is_var, query_tree, index_tree
+from __main__ import index_dirs, read_dir_meta, query_tree, index_tree
 
 tree = index_tree('data')
 
 result = [ n[0][0]['slug'] for n in query_tree( tree, ['rozhinkes-mit-mandlen', 'afn-pripetchik'] ) ]
-
-print([entry for entry in result] )
 """
 
 #build tree using tree_index
-time1 = timeit.timeit(test1, number=1)
+time1 = timeit.timeit(test1, number=1000)
 
 #query index
-time2 = timeit.timeit(test2, number=1)
+time2 = timeit.timeit(test2, number=1000)
 
 print(time1) #0.5776s
 print(time2) #0.56937
