@@ -26,82 +26,104 @@ from collections import defaultdict
 
 import timeit
 
-def index_dir( path ):
-    try:
-        for dir_path in (
-                directory.path
-                for directory in os.scandir( path ) 
-                if directory.is_dir()
-                and os.path.isfile(
-                    os.path.join( directory.path, 'meta.yaml' ) ) ):
-            yield os.path.split(dir_path)[1], dir_path
-    except Exception as e:
-        print(f'Exception: {e}')
+class Node:
+    def __init__(self, slug, path, parent=None):
+        self.slug = slug
+        self.path = path
+        self.parent = parent
+    
+    def __repr__(self):
+        return self.slug
+    
+    def __call__(self, query=None):
+        if not query:
+            return self
+        else:
+            if self.slug in query:
+                return [self]
+            else:
+                return None
 
-def read_dir_meta( path ):
-        with open( os.path.join( path, 'meta.yaml' ) ) as meta_file:
+class Tree(Node):
+    def __init__(self, slug, path, parent=None):
+        super().__init__(slug, path, parent)
+        self.index = [i for i in self.generate_index()]
+    
+    def __repr__(self):
+        contents = []
+        for entry in self.index:
+            contents.append(entry)
+        if contents:
+            repre = '%s: %s' % (self.slug, contents)
+        else:
+            repre = self.slug
+        return repre
+    
+    def __call__(self, query=False):
+        if query:
+            result = []
             try:
-                meta = yaml.load( meta_file )
-                return meta
-            except Exception as e:
-                print('YAML error: %s' % e )
-
-def query_tree(tree, query=[]):
-    for slug in query:
+                query.extend('')
+            except AttributeError:
+                query = [query]
+            for entry in self.index:
+                if entry.slug in query:
+                    result.append( entry )
+                else:
+                    try:
+                        result.extend( entry(query) )
+                    except:
+                        pass
+            return result
+        else:
+            return self.index
+    
+    def generate_index(self):
         try:
-            for category in tree:
-                for entry in category['entries']:
-                    if slug == entry[0]['slug']:
-                        yield entry, category['slug']
-                        
+            for dir_path in (
+                    directory.path
+                    for directory in os.scandir( self.path ) 
+                    if directory.is_dir()
+                    and os.path.isfile(
+                        os.path.join( directory.path, 'meta.yaml' ) ) ):
+                slug, path = os.path.split(dir_path)[1], dir_path
+                yield self.child(slug, path, self)
         except Exception as e:
-            print('Cannot proceed: %s' % e)
-            raise
-            sys.exit(1)
+            print(f'Exception: {e}')        
 
-def index_tree(data_dir):
-    index = []
-    try:
-        for cat_slug, cat_path in index_dir( data_dir ):
-            cat_index = []
-            for entry_slug, entry_path in index_dir( cat_path ):
-                entry_index = [ {
-                    'slug': entry_slug,
-                    'path': entry_path } ]
-                for variant_slug, variant_path in index_dir( entry_path ):
-                    entry_index.append( {
-                        'slug': variant_slug,
-                        'path': variant_path } )
-                cat_index.append( entry_index )
-            index.append( {
-                'slug': cat_slug,
-                'entries': cat_index } )
-        return index
-                
-    except ( FileNotFoundError, NotADirectoryError ) as e:
-        print('Cannot proceed: %s' % e)
-        sys.exit(1)
-    except: raise
+class Entry(Tree):
+    child = Node
+    def __init__(self, slug, path, parent=None):
+        super().__init__(slug, path, parent)
+        self.index.insert(0, self.child(slug, path, self))
+
+class Category(Tree):
+    child = Entry
+
+class Book(Tree):
+    child = Category
 
 test1 = """
-from __main__ import index_dir, read_dir_meta, index_tree
-tree = index_tree('data')
+from __main__ import index_dir, Node, Tree, Category, Entry, Book
+tree = Book('data', 'data')
+
+#print(tree)
 """
 
 test2 = """
+from __main__ import index_dir, Node, Tree, Category, Entry,  Book
+tree = Book('data', 'data')
+result = [n for n in tree(['rozhinkes-mit-mandlen', 'afn-pripetchik'])]
 
-from __main__ import index_dir, read_dir_meta, query_tree, index_tree
-
-tree = index_tree('data')
-
-result = [ n[0][0]['slug'] for n in query_tree( tree, ['rozhinkes-mit-mandlen', 'afn-pripetchik'] ) ]
+#print(result)
 """
 
-#build tree
+
+#build tree using Entry
 time1 = timeit.timeit(test1, number=1000)
 
-#build & query tree
+#build and query tree using Entry
 time2 = timeit.timeit(test2, number=1000)
 
-print(time1) #0.57s
-print(time2) #0.57s
+print(time1)
+print(time2)
