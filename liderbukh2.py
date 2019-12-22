@@ -73,20 +73,20 @@ class Tree(Node):
             repre = self.meta['slug']
         return repre
     
-    def __call__(self, query=False):
-        if query:
+    def query(self, q=False):
+        if q:
             result = []
             try:
-                query.extend('')
+                q.extend('')
             except AttributeError:
-                query = [query]
+                q = [q]
             for entry in self.index:
-                if entry.meta['slug'] in query:
+                if entry.meta['slug'] in q:
                     result.append( entry )
                 else:
                     try:
-                        result.extend( entry(query) )
-                    except:
+                        result.extend( entry.query(q) )
+                    except AttributeError:
                         pass
             return result
     
@@ -131,7 +131,7 @@ test2 = """
 from __main__ import Node, Tree, Category, Entry,  Book
 print('test2')
 tree = Book('data', 'data')
-result = tree(['rozhinkes-mit-mandlen', 'afn-pripetchik'])
+result = tree.query(['rozhinkes-mit-mandlen', 'afn-pripetchik'])
 
 #print(result)
 """
