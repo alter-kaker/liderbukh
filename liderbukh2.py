@@ -43,6 +43,20 @@ class Node:
                 return [self]
             else:
                 return None
+    
+    def read_meta(self):
+        try:
+            with open(
+                os.path.join(self.path, 'meta.yaml' ) ) as f:
+                meta = yaml.load( f )
+                
+        except Exception as e:
+             print(
+                 f'Cannot open meta file for { self.slug }: { e }'
+                 )
+        
+        for key, val in meta.items():
+            setattr( self, key, val )
 
 class Tree(Node):
     def __init__(self, slug, path, parent=None):
@@ -104,14 +118,14 @@ class Book(Tree):
     child = Category
 
 test1 = """
-from __main__ import index_dir, Node, Tree, Category, Entry, Book
+from __main__ import Node, Tree, Category, Entry, Book
 tree = Book('data', 'data')
 
 #print(tree)
 """
 
 test2 = """
-from __main__ import index_dir, Node, Tree, Category, Entry,  Book
+from __main__ import Node, Tree, Category, Entry,  Book
 tree = Book('data', 'data')
 result = [n for n in tree(['rozhinkes-mit-mandlen', 'afn-pripetchik'])]
 
@@ -119,11 +133,11 @@ result = [n for n in tree(['rozhinkes-mit-mandlen', 'afn-pripetchik'])]
 """
 
 
-#build tree using Entry
-time1 = timeit.timeit(test1, number=1000)
+##build tree using Entry
+#time1 = timeit.timeit(test1, number=1000)
 
-#build and query tree using Entry
-time2 = timeit.timeit(test2, number=1000)
+##build and query tree using Entry
+#time2 = timeit.timeit(test2, number=1000)
 
-print(time1)
-print(time2)
+#print(time1)
+#print(time2)
