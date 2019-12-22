@@ -23,6 +23,7 @@ import os
 import yaml
 import sys
 from collections import defaultdict
+import operator
 
 import timeit
 
@@ -33,7 +34,15 @@ class Node:
             'slug': slug,
             'path': path,
             'parent': parent }
-        self.read_meta()
+        try:
+            with open(
+                os.path.join(
+                    self.meta['path'], 'meta.yaml' ) ) as metafile:
+                self.meta.update( yaml.load( metafile ) )
+        except Exception as e:
+             print(
+                 f"{ self.meta['slug'] }: Cannot open meta file:" )
+             print( e )
     
     def __repr__(self):
         return self.meta['slug']
@@ -46,22 +55,11 @@ class Node:
                 return [self]
             else:
                 return None
-    
-    def read_meta(self):
-        #print( f"{ self.meta['slug'] }: Reading meta file" )
-        try:
-            with open(
-                os.path.join(self.meta['path'], 'meta.yaml' ) ) as f:
-                self.meta.update( yaml.load( f ) )
-        except Exception as e:
-             print(
-                 f"{ self.meta['slug'] }: Cannot open meta file: { e }"
-                 )
 
-class Tree(Node):
+class Branch(Node):
     def __init__(self, slug, path, parent=None):
         super().__init__(slug, path, parent)
-        self.index = [i for i in self.generate_index()]
+        self.index = self.generate_index()
     
     def __repr__(self):
         contents = []
@@ -98,6 +96,7 @@ class Tree(Node):
     
     def generate_index(self):
         #print( f'{self.meta['slug']}: Scanning folder...' )
+        index = []
         try:
             for dir_path in (
                     directory.path
@@ -106,29 +105,37 @@ class Tree(Node):
                     and os.path.isfile(
                         os.path.join( directory.path, 'meta.yaml' ) ) ):
                 slug, path = os.path.split(dir_path)[1], dir_path
-                yield self.child(slug, path, self)
+                index.append( self.child(slug, path, self) )
         except Exception as e:
             print(f"{ self.meta['slug'] }: Cannot generate index: {e}")
             raise
+        if len(index) > 1:
+            index.sort( key=lambda x: getattr(x, "meta")['slug'] )
+        return index
+        
+class Sheet(Node):
+    def __init__(self, slug, path, parent='Entry'):
+        slug = f"{slug}-{parent.meta['slug']}"
+        super().__init__(slug, path, parent)
 
-class Entry(Tree):
-    child = Node
+class Entry(Branch):
+    child = Sheet
 
-class Category(Tree):
+class Category(Branch):
     child = Entry
 
-class Book(Tree):
+class Book(Branch):
     child = Category
 
 test1 = """
-from __main__ import Node, Tree, Category, Entry, Book
+from __main__ import Node, Branch, Category, Entry, Sheet, Book
 print('test1')
 tree = Book('data', 'data')
-
+print(tree)
 """
 
 test2 = """
-from __main__ import Node, Tree, Category, Entry,  Book
+from __main__ import Node, Branch, Category, Entry, Sheet, Book
 print('test2')
 tree = Book('data', 'data')
 result = tree.query(['rozhinkes-mit-mandlen', 'afn-pripetchik'])
