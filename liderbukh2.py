@@ -152,7 +152,7 @@ class Sheet(Node):
         ly = f"{self.meta['slug']}.ly"
         lytex = f"{self.meta['slug']}.lytex"
         try:
-            self.music = Template( 
+            self.music = Format( 
                 'music', 
                 self.data['music'], 
                 os.path.join(self.meta['relpath'], ly),
@@ -193,7 +193,7 @@ class Book(Branch):
         super().__init__( slug, path, settings, parent )
         self.settings['data_dir'] = path
 
-class Template():
+class Format():
     def __init__(self, slug, data, relpath, parent, more={} ):
         self.slug = slug
         self.data = { slug: data,
@@ -269,7 +269,7 @@ class Template():
             runerror(e)
         print('Success!')
 
-class Tex(Template):
+class Tex(Format):
     _onestep = False
     def __init__(self, slug, data, relpath, parent, more={} ):
         super().__init__( slug, data, relpath, parent, more )
