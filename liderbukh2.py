@@ -25,21 +25,30 @@ import sys
 import pyratemp
 import lib.marktex
 import mistune
-from collections import defaultdict
+import subprocess
 
 import timeit
 
+def runerror(exception):
+    if exception.stderr:
+        print ( exception.stderr.decode() )
+    else:
+        print ( exception.stdout.decode() )
+    sys.exit()
+
 class Node:
-    def __init__(self, slug, path, parent=None):
+    def __init__(self, slug, path, settings, parent):
         #print( f'{ slug }: Initializing...' )
+        self.settings = settings
         self.meta = {
             'slug': slug,
-            'path': path,
+            'datapath': path,
+            'relpath': os.path.relpath( path, self.settings['data_dir'] ),
             'parent': parent }
         try:
             with open(
                 os.path.join(
-                    self.meta['path'], 'meta.yaml' ) ) as metafile:
+                    self.meta['datapath'], 'meta.yaml' ) ) as metafile:
                 self.meta.update( yaml.load( metafile ) )
         except Exception as e:
              print(
@@ -47,6 +56,7 @@ class Node:
              print( e )
         
         self.scan()
+        self.load()
     
     def __repr__(self):
         return self.meta['slug']
@@ -60,21 +70,17 @@ class Node:
             else:
                 return None
     
-    def load_content(self):
-        self.content = {}
+    def load(self):
+        self.data = {}
         for path in self.files:
             slug = os.path.splitext( os.path.basename( path ) )[0]
-            with open ( os.path.join( 'templates', f"{ slug }.template" ) ) as template:
-                with open( path ) as content:
-                    self.content.update( 
-                        { slug: 
-                            ( content.read(),
-                            template.read() )
-                                } )
+            with open( path ) as datum:
+                self.data.update( 
+                    { slug: datum.read() } )
     
     def scan(self):
         self.files = []
-        for entry in os.scandir( self.meta['path'] ):
+        for entry in os.scandir( self.meta['datapath'] ):
             if ( not entry.is_dir() 
                     and os.path.splitext(entry.path)[1] in ['.ly', '.md'] ):
                 self.files.append( entry.path )
@@ -94,11 +100,11 @@ class Branch(Node):
     def scan(self):
         self.children = []
         self.files = []
-        for entry in os.scandir( self.meta['path'] ):
+        for entry in os.scandir( self.meta['datapath'] ):
             if entry.is_dir() and os.path.isfile(
                 os.path.join( entry.path, 'meta.yaml' ) ):
                 slug, path = os.path.split(entry.path)[1], entry.path
-                self.children.append( self.child(slug, path, self) )
+                self.children.append( self._child(slug, path, self.settings, self) )
             elif not entry.name == 'meta.yaml':
                 self.files.append( entry.path )
             else: pass
@@ -130,71 +136,90 @@ class Branch(Node):
         return self.children[key]
         
 class Sheet(Node):
-    def __init__(self, slug, path, parent='Entry'):
+    def __init__(self, slug, path, settings, parent):
         slug = f"{slug}-{parent.meta['slug']}"
-        super().__init__(slug, path, parent)
+        super().__init__(slug, path, settings, parent)
+        
         self.meta = {
             **self.meta['parent'].meta,
             **self.meta,
             'textby': None,
             'musicby': None }
-    
-    def formats(self):
-        try:
-            self.ly = Ly (
-                self.content['music'][0],
-                self.meta,
-                self.content['music'][1] )
-            self.ly.render()
-        except KeyError:
-            print ( 'Warning: no  music for sheet', self.meta['slug'])
         
+        self.templates()
+
+    def templates (self):
+        ly = f"{self.meta['slug']}.ly"
+        lytex = f"{self.meta['slug']}.lytex"
+        try:
+            self.music = Template( 
+                'music', 
+                self.data['music'], 
+                os.path.join(self.meta['relpath'], ly),
+                self)
+        except:
+            print(f"Failed to initialize music template")
+            raise
         
         try:
-            self.tex = Tex (
-                self.content['lyrics'][0],
-                self.meta,
-                self.content['lyrics'][1] )
-            self.tex.render()
-        except KeyError:
-            print ( 'Warning: no lyrics for sheet', self.meta['slug'])
+            self.leadsheet = Tex(
+                'leadsheet',
+                self.data['lyrics'],
+                os.path.join(self.meta['relpath'], lytex),
+                self,
+                {'ly_path': ly} )
+        except:
+            print(f"Failed to initialize leadsheet template")
+            raise
+        
+    def write(self):
+        self.music.render()
+        #self.music.write()
+        #self.music.copy()
+        
+        self.leadsheet.render()
+        #self.leadsheet.write()
+        #self.music.copy()
 
 class Entry(Branch):
-    child = Sheet
+    _child = Sheet
 
 class Category(Branch):
-    child = Entry
+    _child = Entry
 
 class Book(Branch):
-    child = Category
-    
-    def formats(self):
-        #print(self.content)
-        self.html = Html(
-            { 'children':
-                self.children,
-             'text':
-                 self.content['index'][0] },
-            self.meta,
-            self.content['index'][1] )
-        self.html.render()
+    _child = Category
+    def __init__( self, slug, path, settings, parent=None ):
+        super().__init__( slug, path, settings, parent )
+        self.settings['data_dir'] = path
 
-class Format():
-    datakey = 'data'
+class Template():
+    def __init__(self, slug, data, relpath, parent, more={} ):
+        self.slug = slug
+        self.data = { slug: data,
+                            **more}
+        self.relpath = relpath
+        self.parent = parent
         
-    def __init__(self, data, meta, template ):
-        self.data = data
-        self.meta = meta
-        self.template = template
+        self.temp_path = os.path.join( self.parent.settings['temp_dir'], self.relpath )
+        self.temp_dir = os.path.dirname( self.temp_path )
+        self.output_dir = os.path.join(
+            self.parent.settings['output_dir'],
+            os.path.dirname(self.relpath) )
+        self.root_dir = os.getcwd()
     
     def render( self ):
         template_args = {}
-        template_args['string'] = self.template
-        template_args['data'] = { self.datakey: self.data }
-        template_args['data'].update( self.meta )
+        with open( os.path.join( self.parent.settings['template_dir'],
+                        f"{ self.slug }.template") ) as template:
+            template_args['string'] = template.read()
+        
+        template_args['data'] = {
+            **self.data,
+            **self.parent.meta
+            }
         template_args['escape'] = None
         
-    
         try:
             self.output = pyratemp.Template( **template_args )()
         
@@ -202,42 +227,115 @@ class Format():
             print( f"{ self.meta['slug'] }: ",
                 'Error processing template',
                 '\n',
-                f'{ e}' )
+                f'{ e }' )
             raise
-
-class Ly(Format):
-    datakey = 'music'
-
-class Tex(Format):
-    datakey = 'tex'
     
-    def __init__(self, data, meta, template ):
-        super().__init__( data, meta, template )
+    def write( self ):
+        
+        if not os.path.isdir(self.temp_dir):
+            try:
+                os.makedirs(self.temp_dir)
+            except Exception as e:
+                print('Failed to create output directory at %s: %s' % (self.output_dir, e))
+                raise
+        
+        if not os.path.isdir(self.output_dir):
+            try:
+                os.makedirs(self.output_dir)
+            except Exception as e:
+                print('Failed to create output directory at %s: %s' % (self.output_dir, e))
+                raise
+        
+        print(f"Writing { self.temp_path }" )
+        try:
+            with open( self.temp_path, 'w+', encoding='utf-8') as f:
+                f.write(self.output)
+                print('Success!')
+        
+        except Exception as e:
+            print( 'Error: %s\n' % (e) )
+            
+    def copy(self):
+        pass
+
+class Tex(Template):
+    _onestep = False
+    def __init__(self, slug, data, relpath, parent, more={} ):
+        super().__init__( slug, data, relpath, parent, more )
+        self.xetex_relpath = f"{ os.path.splitext(relpath)[0] }.tex"
         self.parse_md = mistune.Markdown(
                 renderer=lib.marktex.LyricsRenderer(escape=False))
-        self.data = self.parse_md( data )
-        self.meta.update(
-            {
-                'ly_path': 'lilypondpath'
-                    } )
+        print(data)
+        self.data[slug] = self.parse_md( data ),
+        print(self.data[slug])
+    
+    def write(self):
+        super().write()
+        self.xetex_temp_path = os.path.join(
+            self.parent.settings['temp_dir'], self.xetex_relpath )
+        
+        print('Running lilypond-book...')
+        try:
+            os.chdir( self.temp_dir )
+        except Exception as e:
+            print( 'Cannot open temporary directory: %s' %
+                e )
+            raise
+        
+        try:
+            subprocess.run([
+                'lilypond-book',
+                '--latex-program=xelatex',
+                '--loglevel=ERROR',
+                os.path.basename(self.temp_path)],
+                check=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE)
+        except subprocess.CalledProcessError as e:
+            runerror(e)
+        
+        try:
+            subprocess.run([
+                'xelatex',
+                '-interaction=nonstopmode',
+                '-halt-on-error',
+                os.path.basename(self.xetex_temp_path)],
+                check=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE)
+        except subprocess.CalledProcessError as e:
+            runerror(e)
+        
+        os.chdir( self.root_dir )
+        
 
-class Html(Format):
-    datakey = 'index'
-
-test1 = """
-from __main__ import Node, Branch, Category, Entry, Sheet, Book, Format, Ly, Tex
-print('test1')
-tree = Book('data', 'data')
+#test1 = """
+#from __main__ import Node, Branch, Category, Entry, Sheet, Book, Format, Ly, Tex
+#print('test1')
+tree = Book(
+    'data',
+    'data',
+    {
+        'template_dir': 'templates',
+        'output_dir': 'doc',
+        'data_dir': 'data',
+        'temp_dir': 'tmp'
+    }
+)
 
 for category in tree:
     for entry in category:
         for sheet in entry:
-            sheet.load_content()
-            sheet.formats()
+            sheet.write()
+            #for datum in sheet.data:
+                #print(datum, ':', sheet.data[datum])
+            #try:
+                #sheet.ly.write()
+                #sheet.tex.write()
+            #except:
+                #print( sheet.meta['slug'], 'writing failed' )
 
-tree.load_content()
-tree.formats()
-"""
+#"""
 
 test2 = """
 from __main__ import Node, Branch, Category, Entry, Sheet, Book, Format
@@ -250,10 +348,10 @@ result = tree.query(['rozhinkes-mit-mandlen', 'afn-pripetchik'])
 
 
 #build tree using Entry
-time1 = timeit.timeit(test1, number=100)
+#time1 = timeit.timeit(test1, number=10)
 
 ##build and query tree using Entry
 #time2 = timeit.timeit(test2, number=100)
 
-print(time1)
+#print(time1)
 #print(time2)

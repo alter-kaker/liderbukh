@@ -28,6 +28,7 @@
       <h1>@!name!@</h1>
     </header>
     <main>
+        @!index!@
         <ul>
           <!--(for category in index['children'])-->
           <li><h2>@!category.meta['name']!@</h2></li>

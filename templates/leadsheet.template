@@ -80,7 +80,7 @@
   \settowidth{\versewidth}{@!linewidth!@}
   \begin{verse}[\versewidth]
   
-  @!tex!@
+  @!leadsheet!@
   
   \end{verse}
   \end{multicols}

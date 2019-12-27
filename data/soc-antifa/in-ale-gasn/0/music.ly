@@ -1,6 +1,6 @@
 \version "2.18.2"
 \language "english"
-\include "../../templates/preamble.ly"
+\include "../../../../templates/preamble.ly"
 
 mel-a = \relative d'' {
   \partial 8 { d8 }
