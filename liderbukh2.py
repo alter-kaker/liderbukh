@@ -76,7 +76,7 @@ class Node:
         self.files = []
         for entry in os.scandir( self.meta['path'] ):
             if ( not entry.is_dir() 
-                    and not entry.name == 'meta.yaml' ):
+                    and os.path.splitext(entry.path)[1] in ['.ly', '.md'] ):
                 self.files.append( entry.path )
 
 class Branch(Node):
@@ -149,6 +149,7 @@ class Sheet(Node):
         except KeyError:
             print ( 'Warning: no  music for sheet', self.meta['slug'])
         
+        
         try:
             self.tex = Tex (
                 self.content['lyrics'][0],
@@ -177,7 +178,6 @@ class Book(Branch):
             self.meta,
             self.content['index'][1] )
         self.html.render()
-        print( self.html.output )
 
 class Format():
     datakey = 'data'
@@ -223,10 +223,6 @@ class Tex(Format):
 
 class Html(Format):
     datakey = 'index'
-    
-    def render(self):
-        super().render()
-        print(self.template)
 
 test1 = """
 from __main__ import Node, Branch, Category, Entry, Sheet, Book, Format, Ly, Tex
