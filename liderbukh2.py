@@ -74,7 +74,7 @@ class Node:
         self.data = {}
         for path in self.files:
             slug = os.path.splitext( os.path.basename( path ) )[0]
-            with open( path ) as datum:
+            with open( path, encoding='utf-8' ) as datum:
                 self.data.update( 
                     { slug: datum.read() } )
     
@@ -174,12 +174,12 @@ class Sheet(Node):
         
     def write(self):
         self.music.render()
-        #self.music.write()
-        #self.music.copy()
+        self.music.write()
+        self.music.copy()
         
         self.leadsheet.render()
-        #self.leadsheet.write()
-        #self.music.copy()
+        self.leadsheet.write()
+        self.leadsheet.copy()
 
 class Entry(Branch):
     _child = Sheet
@@ -256,25 +256,33 @@ class Template():
             print( 'Error: %s\n' % (e) )
             
     def copy(self):
-        pass
+        print('Copying %s to output folder...' % self.temp_path )
+        try:
+            subprocess.run([
+                'cp',
+                self.temp_path,
+                self.output_dir],
+                check=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE)
+        except subprocess.CalledProcessError as e:
+            runerror(e)
+        print('Success!')
 
 class Tex(Template):
     _onestep = False
     def __init__(self, slug, data, relpath, parent, more={} ):
         super().__init__( slug, data, relpath, parent, more )
-        self.xetex_relpath = f"{ os.path.splitext(relpath)[0] }.tex"
+        
         self.parse_md = mistune.Markdown(
                 renderer=lib.marktex.LyricsRenderer(escape=False))
-        print(data)
-        self.data[slug] = self.parse_md( data ),
-        print(self.data[slug])
+        self.data[slug] = self.parse_md( data )
     
     def write(self):
         super().write()
-        self.xetex_temp_path = os.path.join(
-            self.parent.settings['temp_dir'], self.xetex_relpath )
+        self.lytex_path = self.temp_path
+        self.temp_path = f"{ os.path.splitext(self.temp_path)[0] }.pdf"
         
-        print('Running lilypond-book...')
         try:
             os.chdir( self.temp_dir )
         except Exception as e:
@@ -282,24 +290,29 @@ class Tex(Template):
                 e )
             raise
         
+        print('Running lilypond-book...')
         try:
             subprocess.run([
                 'lilypond-book',
                 '--latex-program=xelatex',
                 '--loglevel=ERROR',
-                os.path.basename(self.temp_path)],
+                os.path.basename(self.lytex_path)],
                 check=True,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE)
         except subprocess.CalledProcessError as e:
             runerror(e)
         
+        print( 'Running XeLaTeX...' )
         try:
             subprocess.run([
                 'xelatex',
                 '-interaction=nonstopmode',
                 '-halt-on-error',
-                os.path.basename(self.xetex_temp_path)],
+                os.path.basename(
+                    os.path.join(
+                        self.parent.settings['temp_dir'], 
+                        f"{ os.path.splitext(self.relpath)[0] }.tex") ) ],
                 check=True,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE)
@@ -317,7 +330,7 @@ tree = Book(
     'data',
     {
         'template_dir': 'templates',
-        'output_dir': 'doc',
+        'output_dir': 'docs',
         'data_dir': 'data',
         'temp_dir': 'tmp'
     }
