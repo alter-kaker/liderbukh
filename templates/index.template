@@ -1,0 +1,61 @@
+<!--(set_escape)-->None<!--(end)-->
+<!DOCTYPE=html>
+<html lang="yi" dir='rtl'>
+  <head>
+  <meta charset="utf-8"> 
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>@!name!@</title>
+  <link rel="canonical" href="canonical_url">
+  <style>
+  body {
+    width: 85%;
+    margin: auto;
+    }
+  footer li {
+	list-style: none;
+	display: inline;
+	margin: 1em;
+    }
+  footer {
+	border-top: solid 1px black;
+	text-align: center;
+	direction: ltr;
+  }
+  </style>
+  </head>
+  <body>
+    <header>
+      <h1>@!name!@</h1>
+    </header>
+    <main>
+        <ul>
+          <!--(for category in index['children'])-->
+          <li><h2>@!category.meta['name']!@</h2></li>
+            <ul>
+              <!--(for entry in category.children)-->
+                <li>
+                    <a href="@!entry.meta['path']!@.pdf">@!entry.meta['name']!@</a>
+                <!--(if len(entry.children) > 1)-->
+                    <ul>
+                    <!--(for variation in entry.children[1:])-->
+                        <li><a href="@!variation.meta['path']!@.pdf">@!variation.meta['name']!@</a></li
+                    <!--(end)-->
+                    </ul>
+                <!--(end)-->
+                </li>
+              <!--(end)-->
+            
+            </ul>
+          </li>
+          <!--(end)-->
+        </ul>
+    </main>
+    <footer>
+      <ul>
+      <!--(for key in footer_links.keys() )-->
+        <li><a href="@!footer_links[key]!@">@!key!@</a></li>
+      <!--(end)-->
+      </ul>
+    </footer>
+  </body>
+</html>

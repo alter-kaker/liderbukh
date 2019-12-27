@@ -66,8 +66,8 @@
     \fi
     }
   
-  \rhead{@!category_name!@}
-  \lhead{@!songname!@}
+  \rhead{@!parent.meta['name']!@}
+  \lhead{@!name!@}
   \chead{\large לידערבוך}
   \cfoot{\thepage}
   

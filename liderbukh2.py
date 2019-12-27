@@ -22,8 +22,10 @@
 import os
 import yaml
 import sys
+import pyratemp
+import lib.marktex
+import mistune
 from collections import defaultdict
-import operator
 
 import timeit
 
@@ -43,6 +45,8 @@ class Node:
              print(
                  f"{ self.meta['slug'] }: Cannot open meta file:" )
              print( e )
+        
+        self.scan()
     
     def __repr__(self):
         return self.meta['slug']
@@ -55,21 +59,52 @@ class Node:
                 return [self]
             else:
                 return None
+    
+    def load_content(self):
+        self.content = {}
+        for path in self.files:
+            slug = os.path.splitext( os.path.basename( path ) )[0]
+            with open ( os.path.join( 'templates', f"{ slug }.template" ) ) as template:
+                with open( path ) as content:
+                    self.content.update( 
+                        { slug: 
+                            ( content.read(),
+                            template.read() )
+                                } )
+    
+    def scan(self):
+        self.files = []
+        for entry in os.scandir( self.meta['path'] ):
+            if ( not entry.is_dir() 
+                    and not entry.name == 'meta.yaml' ):
+                self.files.append( entry.path )
 
 class Branch(Node):
-    def __init__(self, slug, path, parent=None):
-        super().__init__(slug, path, parent)
-        self.index = self.generate_index()
     
     def __repr__(self):
         contents = []
-        for entry in self.index:
+        for entry in self.children:
             contents.append(entry)
         if contents:
             repre = '%s: %s' % (self.meta['slug'], contents)
         else:
             repre = self.meta['slug']
         return repre
+    
+    def scan(self):
+        self.children = []
+        self.files = []
+        for entry in os.scandir( self.meta['path'] ):
+            if entry.is_dir() and os.path.isfile(
+                os.path.join( entry.path, 'meta.yaml' ) ):
+                slug, path = os.path.split(entry.path)[1], entry.path
+                self.children.append( self.child(slug, path, self) )
+            elif not entry.name == 'meta.yaml':
+                self.files.append( entry.path )
+            else: pass
+        
+        if len(self.children) > 1:
+            self.children.sort( key=lambda x: getattr(x, "meta")['slug'] )
     
     def query(self, q=False):
         if q:
@@ -78,7 +113,7 @@ class Branch(Node):
                 q.extend('')
             except AttributeError:
                 q = [q]
-            for entry in self.index:
+            for entry in self.children:
                 if entry.meta['slug'] in q:
                     result.append( entry )
                 else:
@@ -89,34 +124,39 @@ class Branch(Node):
             return result
     
     def __iter__(self):
-        return self.index.__iter__()
+        return self.children.__iter__()
     
     def __getitem__(self, key):
-        return self.index[key]
-    
-    def generate_index(self):
-        #print( f'{self.meta['slug']}: Scanning folder...' )
-        index = []
-        try:
-            for dir_path in (
-                    directory.path
-                    for directory in os.scandir( self.meta['path'] ) 
-                    if directory.is_dir()
-                    and os.path.isfile(
-                        os.path.join( directory.path, 'meta.yaml' ) ) ):
-                slug, path = os.path.split(dir_path)[1], dir_path
-                index.append( self.child(slug, path, self) )
-        except Exception as e:
-            print(f"{ self.meta['slug'] }: Cannot generate index: {e}")
-            raise
-        if len(index) > 1:
-            index.sort( key=lambda x: getattr(x, "meta")['slug'] )
-        return index
+        return self.children[key]
         
 class Sheet(Node):
     def __init__(self, slug, path, parent='Entry'):
         slug = f"{slug}-{parent.meta['slug']}"
         super().__init__(slug, path, parent)
+        self.meta = {
+            **self.meta['parent'].meta,
+            **self.meta,
+            'textby': None,
+            'musicby': None }
+    
+    def formats(self):
+        try:
+            self.ly = Ly (
+                self.content['music'][0],
+                self.meta,
+                self.content['music'][1] )
+            self.ly.render()
+        except KeyError:
+            print ( 'Warning: no  music for sheet', self.meta['slug'])
+        
+        try:
+            self.tex = Tex (
+                self.content['lyrics'][0],
+                self.meta,
+                self.content['lyrics'][1] )
+            self.tex.render()
+        except KeyError:
+            print ( 'Warning: no lyrics for sheet', self.meta['slug'])
 
 class Entry(Branch):
     child = Sheet
@@ -126,16 +166,85 @@ class Category(Branch):
 
 class Book(Branch):
     child = Category
+    
+    def formats(self):
+        #print(self.content)
+        self.html = Html(
+            { 'children':
+                self.children,
+             'text':
+                 self.content['index'][0] },
+            self.meta,
+            self.content['index'][1] )
+        self.html.render()
+        print( self.html.output )
+
+class Format():
+    datakey = 'data'
+        
+    def __init__(self, data, meta, template ):
+        self.data = data
+        self.meta = meta
+        self.template = template
+    
+    def render( self ):
+        template_args = {}
+        template_args['string'] = self.template
+        template_args['data'] = { self.datakey: self.data }
+        template_args['data'].update( self.meta )
+        template_args['escape'] = None
+        
+    
+        try:
+            self.output = pyratemp.Template( **template_args )()
+        
+        except Exception as e:
+            print( f"{ self.meta['slug'] }: ",
+                'Error processing template',
+                '\n',
+                f'{ e}' )
+            raise
+
+class Ly(Format):
+    datakey = 'music'
+
+class Tex(Format):
+    datakey = 'tex'
+    
+    def __init__(self, data, meta, template ):
+        super().__init__( data, meta, template )
+        self.parse_md = mistune.Markdown(
+                renderer=lib.marktex.LyricsRenderer(escape=False))
+        self.data = self.parse_md( data )
+        self.meta.update(
+            {
+                'ly_path': 'lilypondpath'
+                    } )
+
+class Html(Format):
+    datakey = 'index'
+    
+    def render(self):
+        super().render()
+        print(self.template)
 
 test1 = """
-from __main__ import Node, Branch, Category, Entry, Sheet, Book
+from __main__ import Node, Branch, Category, Entry, Sheet, Book, Format, Ly, Tex
 print('test1')
 tree = Book('data', 'data')
-print(tree)
+
+for category in tree:
+    for entry in category:
+        for sheet in entry:
+            sheet.load_content()
+            sheet.formats()
+
+tree.load_content()
+tree.formats()
 """
 
 test2 = """
-from __main__ import Node, Branch, Category, Entry, Sheet, Book
+from __main__ import Node, Branch, Category, Entry, Sheet, Book, Format
 print('test2')
 tree = Book('data', 'data')
 result = tree.query(['rozhinkes-mit-mandlen', 'afn-pripetchik'])
@@ -145,10 +254,10 @@ result = tree.query(['rozhinkes-mit-mandlen', 'afn-pripetchik'])
 
 
 #build tree using Entry
-time1 = timeit.timeit(test1, number=10)
+time1 = timeit.timeit(test1, number=100)
 
-#build and query tree using Entry
-time2 = timeit.timeit(test2, number=10)
+##build and query tree using Entry
+#time2 = timeit.timeit(test2, number=100)
 
 print(time1)
-print(time2)
+#print(time2)

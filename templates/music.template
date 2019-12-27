@@ -6,7 +6,7 @@
   <!--(if musicby)-->
   composer = "מוזיק: @!musicby!@"
   <!--(end)-->
-  title = "@!songname!@"
-  subtitle = "@!songname_eng!@"
+  title = "@!name!@"
+  subtitle = "@!name_eng!@"
   }
 @!music!@
