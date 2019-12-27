@@ -30,16 +30,16 @@
     <main>
         @!index!@
         <ul>
-          <!--(for category in index['children'])-->
+          <!--(for category in tree)-->
           <li><h2>@!category.meta['name']!@</h2></li>
             <ul>
               <!--(for entry in category.children)-->
                 <li>
-                    <a href="@!entry.meta['path']!@.pdf">@!entry.meta['name']!@</a>
+                    <a href="@!entry.children[0].leadsheet.pdf_relpath!@">@!entry.meta['name']!@</a>
                 <!--(if len(entry.children) > 1)-->
                     <ul>
                     <!--(for variation in entry.children[1:])-->
-                        <li><a href="@!variation.meta['path']!@.pdf">@!variation.meta['name']!@</a></li
+                        <li><a href="@!variation.leadsheet.pdf_relpath!@">@!variation.meta['name']!@</a></li>
                     <!--(end)-->
                     </ul>
                 <!--(end)-->

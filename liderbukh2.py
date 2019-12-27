@@ -146,9 +146,9 @@ class Sheet(Node):
             'textby': None,
             'musicby': None }
         
-        self.templates()
+        self.template()
 
-    def templates (self):
+    def template (self):
         ly = f"{self.meta['slug']}.ly"
         lytex = f"{self.meta['slug']}.lytex"
         try:
@@ -192,6 +192,23 @@ class Book(Branch):
     def __init__( self, slug, path, settings, parent=None ):
         super().__init__( slug, path, settings, parent )
         self.settings['data_dir'] = path
+        
+        self.template()
+        self.index.render()
+        self.index.write()
+        self.index.copy()
+    
+    def template(self):
+        try:
+            self.index = Format( 
+                'index', 
+                self.data['index'], 
+                 'index.html',
+                self,
+                { 'tree': self.children } )
+        except:
+            print(f"Failed to initialize index template")
+            raise
 
 class Format():
     def __init__(self, slug, data, relpath, parent, more={} ):
@@ -200,7 +217,6 @@ class Format():
                             **more}
         self.relpath = relpath
         self.parent = parent
-        
         self.temp_path = os.path.join( self.parent.settings['temp_dir'], self.relpath )
         self.temp_dir = os.path.dirname( self.temp_path )
         self.output_dir = os.path.join(
@@ -277,6 +293,13 @@ class Tex(Format):
         self.parse_md = mistune.Markdown(
                 renderer=lib.marktex.LyricsRenderer(escape=False))
         self.data[slug] = self.parse_md( data )
+        
+        pdf_out = os.path.join( 
+                    self.output_dir,
+                    f"{ os.path.basename(os.path.splitext(self.relpath)[0]) }.pdf" )
+        
+        if os.path.exists(pdf_out  ):
+                self.pdf_relpath = f"{ os.path.splitext(self.relpath)[0] }.pdf" #In case we're only recompiling index or query
     
     def write(self):
         super().write()
@@ -339,14 +362,8 @@ tree = Book(
 for category in tree:
     for entry in category:
         for sheet in entry:
-            sheet.write()
-            #for datum in sheet.data:
-                #print(datum, ':', sheet.data[datum])
-            #try:
-                #sheet.ly.write()
-                #sheet.tex.write()
-            #except:
-                #print( sheet.meta['slug'], 'writing failed' )
+            #sheet.write()
+            pass
 
 #"""
 
