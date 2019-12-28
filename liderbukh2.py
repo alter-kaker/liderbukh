@@ -38,7 +38,7 @@ tree = nodes.Book(
 
 tree.write()
 
-for category in tree:
-    for entry in category:
-        for sheet in entry:
-            sheet.write()
+#for category in tree:
+    #for entry in category:
+        #for sheet in entry:
+            #sheet.write()

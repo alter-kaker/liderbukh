@@ -36,10 +36,12 @@
               <!--(for entry in category.children)-->
                 <li>
                     <a href="@!entry.children[0].formats['leadsheet'].pdf_relpath!@">@!entry.meta['name']!@</a>
+                    <a href="@!entry.children[0].formats['music'].relpath!@">[ly]</a>
                 <!--(if len(entry.children) > 1)-->
                     <ul>
                     <!--(for variation in entry.children[1:])-->
                         <li><a href="@!variation.formats['leadsheet'].pdf_relpath!@">@!variation.meta['name']!@</a></li>
+                    <a href="@!variation.formats['music'].relpath!@">[ly]</a>
                     <!--(end)-->
                     </ul>
                 <!--(end)-->
