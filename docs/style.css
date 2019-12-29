@@ -8,26 +8,13 @@ footer {
     text-align: center;
     direction: ltr;
 }
-.downloads {
-    direction: ltr;
-    float: left;
-    padding-right: 5px;
-}
-.entry-name {
-    float: right;
-    padding-left: 5px;
-}
-.dots {
-    border-bottom: dotted 2px;
-    display: block;
-    overflow: auto;
-    position: relative;
-    top: -6px;
-}
-.entry:after {
-    content: "";
-    display: table;
-    clear: both;
+
+@media screen and (min-width: 36em) {
+    footer li {
+        display: inline;
+        margin: 1em;
+        white-space: nowrap;
+        }
 }
 
 ul {
@@ -43,16 +30,53 @@ li ul li {
     list-style: outside
 }
 
+li {
+    padding-bottom: .75em;
+}
+
+.downloads {
+    direction: ltr;
+    display: block;
+}
+.entry-name {
+    display: block;
+}
+.dots {
+    border-bottom: dotted 2px;
+    overflow: auto;
+    position: relative;
+    top: -6px;
+    display: none;
+}
+
+    @media screen and (min-width: 27em) {
+        .dots {
+            display: block;
+        }
+        .downloads {
+            padding-right: 5px;
+            float: left;
+        }
+        .entry-name {
+            padding-left: 5px;
+            float: right;
+        }
+        li {
+            padding-bottom: 0;
+        }
+}
+
+.entry:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+
+
 .medallion {
     text-align: center;
     margin: 0 auto 1em auto;
     display: block
 }
 
-@media screen and (min-width: 36em) {
-    footer li {
-        display: inline;
-        margin: 1em;
-        white-space: nowrap;
-        }
-}
