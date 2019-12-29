@@ -4,7 +4,7 @@
 
 mel = \relative d'{
   d8 d d d |
-  fs ef d8. d16 |
+  fs ef d4 |
   ef8 d ef g |
   fs4. r8 |
   g fs g a |
