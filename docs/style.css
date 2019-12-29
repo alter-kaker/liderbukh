@@ -37,6 +37,11 @@ li {
 .downloads {
     direction: ltr;
     display: block;
+    padding-right: 1em;
+    font-size: .75em;
+}
+.downloads:after { 
+    content:  "\00AB" 
 }
 .entry-name {
     display: block;
@@ -56,6 +61,10 @@ li {
         .downloads {
             padding-right: 5px;
             float: left;
+            font-size: 1em;
+        }
+        .downloads:after { 
+            content:  "" 
         }
         .entry-name {
             padding-left: 5px;
