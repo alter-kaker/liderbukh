@@ -28,17 +28,16 @@ Visit the collection: https://liderbukh.jews.international/
 ```
 $ chmod +x liderbukh.py
 $ ./liderbukh.py --help
-Usage: liderbukh.py [OPTIONS]
+usage: liderbukh.py [-h] [-d] [-n] [query [query ...]]
 
-Options:
-  -s, --settings-file PATH  Settings file. Default: settings.yaml
-  -d, --debug               Turn debug mode on
-  -n, --no-write            Generate song data but don't write any files
-  -p, --path TEXT           Only process this song file. Please provide path
-                            without extension.
-  -i, --index-only          Only write index file. Mutually exclusive with
-                            --no-write
-  --help                    Show this message and exit.
+positional arguments:
+  query           list of entries to compile
+
+optional arguments:
+  -h, --help      show this help message and exit
+  -d, --display   display data tree or query
+  -n, --no-write  generate tree but don't write any files
+
 
 
 ```
