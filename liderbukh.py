@@ -50,6 +50,11 @@ parser.add_argument(
     help='list of entries to compile',
     nargs='*' )
 
+parser.add_argument(
+    '-i', '--index-only',
+    help='write index.html only',
+    action='store_false' )
+
 if __name__ == "__main__":
     args = parser.parse_args()
 
@@ -65,6 +70,6 @@ if __name__ == "__main__":
         print(result)
 
     if not args.no_write:
-        result.write()
+        result.write( args.index_only )
         if args.query:
             tree.write( recurse=False )

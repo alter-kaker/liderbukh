@@ -28,15 +28,17 @@ Visit the collection: https://liderbukh.jews.international/
 ```
 $ chmod +x liderbukh.py
 $ ./liderbukh.py --help
-usage: liderbukh.py [-h] [-d] [-n] [query [query ...]]
+usage: liderbukh.py [-h] [-d] [-n] [-i] [query [query ...]]
 
 positional arguments:
-  query           list of entries to compile
+  query             list of entries to compile
 
 optional arguments:
-  -h, --help      show this help message and exit
-  -d, --display   display data tree or query
-  -n, --no-write  generate tree but don't write any files
+  -h, --help        show this help message and exit
+  -d, --display     display data tree or query
+  -n, --no-write    generate tree but don't write any files
+  -i, --index-only  write index.html only
+
 
 
 
