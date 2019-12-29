@@ -21,6 +21,8 @@
 
 import yaml
 import sys
+import argparse
+
 from lib import nodes
 
 try:
@@ -29,16 +31,40 @@ try:
 except OSError:
     print ( 'Could not read settings file. Aborting.' )
     sys.exit(1)
-        
-tree = nodes.Book(
-    settings['slug'],
-    settings['path'],
-    settings['settings']
-)
 
-tree.write()
+parser = argparse.ArgumentParser(
+    description='Create beautiful lead sheets using Python, Lilypond, and LaTeX, with templates and a collection of Yiddish folksongs.' )
 
-for category in tree:
-    for entry in category:
-        for sheet in entry:
-            sheet.write()
+parser.add_argument(
+    '-d', '--display', 
+    help = 'display data tree or query',
+    action='store_true' )
+
+parser.add_argument(
+    '-n', '--no-write',
+    help = 'generate tree but don\'t write any files',
+    action='store_true' )
+
+parser.add_argument(
+    'query', 
+    help='list of entries to compile',
+    nargs='*' )
+
+if __name__ == "__main__":
+    args = parser.parse_args()
+
+    tree = nodes.Book(
+        settings['slug'],
+        settings['path'],
+        settings['settings']
+    )
+
+    result = tree.query(args.query)
+
+    if args.display:
+        print(result)
+
+    if not args.no_write:
+        result.write()
+        if args.query:
+            tree.write( recurse=False )
