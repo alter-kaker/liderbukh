@@ -96,16 +96,17 @@ class Node:
                 print(f"Failed to initialize index template")
                 raise
         
-    def write(self):
+    def write(self, recurse=True):
         for format in self.formats.values():
             format.render()
             format.write()
             format.copy()
-        try:
-            for child in self.children:
-                child.write( recurse=True )
-        except:
-            pass
+        if recurse:
+            try:
+                for child in self.children:
+                    child.write( recurse=True )
+            except:
+                pass
 
 class Branch(Node):
     
@@ -130,7 +131,7 @@ class Branch(Node):
                     self.children.insert( 0, self.children.pop(i) )
                     break
     
-    def query(self, *q):
+    def query(self, q):
         if q:
             result = []
             for entry in self.children:
@@ -142,6 +143,9 @@ class Branch(Node):
                     except AttributeError:
                         pass
             return result
+        
+        else: 
+            return self
     
     def __iter__(self):
         return self.children.__iter__()
