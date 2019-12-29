@@ -101,12 +101,7 @@ class Node:
             format.render()
             format.write()
             format.copy()
-        if recurse:
-            try:
-                for child in self.children:
-                    child.write( recurse=True )
-            except:
-                pass
+        
 
 class Branch(Node):
     
@@ -133,13 +128,13 @@ class Branch(Node):
     
     def query(self, q):
         if q:
-            result = []
+            result = Result()
             for entry in self.children:
                 if entry.slug in q:
-                    result.append( entry )
+                    result.children.append( entry )
                 else:
                     try:
-                        result.extend( entry.query(q) )
+                        result.children.extend( entry.query(q) )
                     except AttributeError:
                         pass
             return result
@@ -152,6 +147,15 @@ class Branch(Node):
     
     def __getitem__(self, key):
         return self.children[key]
+    
+    def write(self, recurse=True):
+        super().write(recurse)
+        if recurse:
+                try:
+                    for child in self.children:
+                        child.write( recurse=True )
+                except:
+                    pass
         
 class Sheet(Node):
     _level = 3
@@ -201,3 +205,11 @@ class Book(Branch):
     def __init__( self, slug, path, settings, parent=None ):
         super().__init__( slug, path, settings, parent )
         self.settings['data_dir'] = path
+        
+class Result(Branch):
+    def __init__(self):
+        self.children = []
+        self.slug = 'result'
+    def write(self):
+        for child in self.children:
+            child.write( recurse=True )
