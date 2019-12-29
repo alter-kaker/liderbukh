@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-# Version 1.0
+# Version 2.0
 #
 # Copyright 2019 Marc Trius
 #
@@ -19,377 +19,52 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import click
-import os
-import pyratemp
 import yaml
-import mistune
-import subprocess
 import sys
+import argparse
 
-import lib.marktex
+from lib import nodes
 
-def runerror(exception):
-  if exception.stderr:
-    print ( exception.stderr.decode() )
-  else:
-    print ( exception.stdout.decode() )
-  sys.exit()
+try:
+    with open( 'settings.yaml') as f:
+        settings = yaml.load(f.read())
+except OSError:
+    print ( 'Could not read settings file. Aborting.' )
+    sys.exit(1)
 
-class Liderbukh():
-    def __init__(self, settings, debug):
-        self.debug = debug
-        self.render_tex = mistune.Markdown(renderer=lib.marktex.LyricsRenderer(escape=False)) # Load Markdown parser with TeX renderer
-        with open(settings) as f: # Open Settings file
-            try:
-                self.settings = yaml.load(f.read())
-            except yaml.scanner.ScannerError as e:
-                print ( "Invalid settings file: %s\nYAML error: %s" 
-                       % (settings, e) )
-                sys.exit(1)
-    def load_file(self, file_name, dir=''): # Method to load files
-        try:
-            with open( os.path.join(self.settings['root_dir'], 
-                    dir, file_name), 
-                    encoding='utf-8') as f:
-                return f.read()
-        except Exception as e:
-            print ("Can't open file %s: %s." % 
-                    (file_name, e))
-            raise
-    
-    def build_index(self): # Build the index
-        index = []
-        data_dir = os.path.join(self.settings['root_dir'], self.settings['data_dir'])
-        
-        
-        
-        print('Building index...')
-        try:
-            print('Scanning data directory...')
-            for entry in os.scandir(data_dir):
-                if entry.is_dir():
-                    try:
-                        cat = open(
-                            os.path.join(entry.path, 'cat.yaml'))
-                    except FileNotFoundError as e:
-                        print ("Warning: category %s doesn\'t have a metadata file. Any files in this category will not be read." % entry.path)
-                        continue
-                    
-                    try:
-                        category_meta = yaml.load(cat)
-                    except yaml.scanner.ScannerError as e:
-                        print ( "Warning: category %s has an invalid metadata file. Any files in this category will not be read." 
-                            % entry.path )
-                        continue
-                    category_meta['category_path'] = entry.name
-                    
-                    category_index = []
-                    for metafile in os.scandir(entry.path):
-                        if metafile.is_file() and metafile.name.endswith('.yaml') and metafile.name != 'cat.yaml':
-                            path = os.path.splitext(
-                                    os.path.relpath(
-                                        metafile.path, start=os.path.join(
-                                            os.curdir, data_dir)))[0]
-                        
-                            temp_path = os.path.join(self.settings['root_dir'], 
-                                            self.settings['temp_dir'], path )
-                            out_path = os.path.join(self.settings['root_dir'],
-                                                    self.settings['output_dir'], path)
-            
-                            song = {
-                                'path': path,
-                                'ly_path': ''.join([ temp_path, '.ly'] ),
-                                'tex_path': ''.join([ temp_path, '.lytex']),
-                                'pdf_path': ''.join([ out_path, '.pdf'] )
-                            }
-                            for field in self.settings['song_meta']:
-                                song.update({field: None})
-                            
-                            print('Loading song meta for %s...' % path)
-                            try:
-                                meta = yaml.load(self.load_file('%s.yaml' %
-                                                                os.path.join(self.settings['data_dir'], path ) ) )
-                            except yaml.scanner.ScannerError as e:
-                                print("Invalid song file: %s\nYAML error: %s" % (song, e) )
-                                raise
-                            
-                            try:
-                                for key in meta:
-                                    song[key] = meta[key]
-                            except KeyError as e:
-                                print("Invalid song file: %s\nField %s not known." 
-                                    % (song, e) )
-                                raise
-                            
-                            song['category_name'] = category_meta['category_name']
-                            category_index.append(song)
-                    
-                    index.append(
-                        {
-                            'songs': category_index,
-                            'meta': category_meta
-                        }
-                    )
-        
-        except Exception as e:
-            print ( "Failed to build index." )
-            raise
-        
-        print('Index built successfully!\n')
-        return index
-      
-    def process_song(self, song ):
-            print( 'Processing %s...' % song['path'] )
-            
-            print('Loading music data...')
-            try:
-                song['music'] = self.load_file('%s.ly' %
-                                                os.path.join(self.settings['data_dir'], song['path'] ) )
-            except Exception:
-                print( 'Error loading music data for %s' % ( song['path'] ) )
-                raise
-            
-            #Overwrite with template output
-            try:
-                song['music'] = self.build_template(
-                        song, 'lilypond.template' )
-            except Exception:
-                print( 'Error building Lilypond template for %s' % ( song['path'] ) )
-                raise
-            
-            print('Loading lyrics...')
-            try:
-                song['lyrics'] = self.load_file('%s.md' %
-                                                os.path.join(self.settings['data_dir'], song['path'] ) )
-            except Exception:
-                print( 'Error loading lyrics for %s' % ( song['path'] ) ) 
-                raise
-            
-            print('Rendering TeX...')
-            try:
-                song['tex'] = self.render_tex( song['lyrics'] )
-            except Exception:
-                print( 'Error rendering TeX for %s' % ( song['path'] ) )
-                raise
-            
-            #Load TeX template output 
-            try:
-                song['tex'] = self.build_template( 
-                    song, 'tex.template' )
-            except Exception:
-                print( 'Error building TeX template for %s' % ( song['path'] ) )
-                raise
-            
-            return song
-    
-    def build_template(self, data, template):
-        
-        print('Applying %s...' % template)
-        template_args = {}
-        template_args['string'] = self.load_file(
-                template, self.settings['templates_dir'])
-        template_args['data'] = data
-        template_args['escape'] = None
-        try:
-            return pyratemp.Template(**template_args)()
-        except Exception:
-            print( 'Error processing template %s for %s' %
-                  ( template, data['path'] ) )
-            raise
-    
-    # Write files
-    def write_files(self, song):
-        print('Preparing to write output for %s...' % song['path'])
-        
-        tex_path = song['tex_path']
-        ly_path = song['ly_path']
-        pdf_path = song['pdf_path']
-        xetex_path = os.path.splitext(os.path.split(song['tex_path'])[1])[0] + '.tex'
-        
-        output_dir = os.path.dirname(pdf_path)
-        temp_dir = os.path.dirname(tex_path)
-        root_dir = os.getcwd()
-        
-        if not os.path.isdir(output_dir):
-            try:
-                os.mkdir(output_dir)
-            except Exception as e:
-                print('Failed to create output directory at %s: %s' % (output_dir, e))
-                raise
+parser = argparse.ArgumentParser(
+    description='Create beautiful lead sheets using Python, Lilypond, and LaTeX, with templates and a collection of Yiddish folksongs.' )
 
-        if not os.path.isdir(temp_dir):
-            try:
-                os.mkdir(temp_dir)
-            except Exception as e:
-                print('Failed to create output directory at %s: %s' % (output_dir, e))
-                raise
-        
-            
-        print('Writing %s...' % tex_path)
-        try:
-            with open(tex_path, 'w+', encoding='utf-8') as f:
-                f.write(song['tex'])
-                print('Success!')
-        except Exception as e:
-            print( 'Error: %s\n' % (e) )
-            
-        print('Writing %s...' % ly_path)
-        try:
-            with open(ly_path, 'w+', encoding='utf-8') as f:
-                f.write(song['music'])
-                print('Success!')
-        except Exception as e:
-            print( 'Error: %s\n' % (e) )
-        
-        print('Preparing to write %s:' % (pdf_path) )
-        print('Running lilypond-book...')
+parser.add_argument(
+    '-d', '--display', 
+    help = 'display data tree or query',
+    action='store_true' )
 
-        try:
-            subprocess.run([
-                'lilypond-book',
-                '--latex-program=xelatex',
-                '--output=%s' % ( temp_dir ),
-                '--loglevel=ERROR',
-                tex_path],
-                check=True,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE)
-        except subprocess.CalledProcessError as e:
-          runerror(e)
-        
-        print( 'Running XeLaTeX...' )
-        try:
-            os.chdir( temp_dir )
-        except Exception as e:
-            print( 'Cannot open temporary directory: %s' %
-                  e )
-        try:
-            subprocess.run([
-                'xelatex',
-                '-interaction=nonstopmode',
-                '-halt-on-error',
-                xetex_path],
-                check=True,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE)
-            os.chdir(root_dir)
-        except subprocess.CalledProcessError as e:
-          runerror(e)
-        
-        print('Copying %s to output folder...' % pdf_path )
-        try:
-            subprocess.run([
-                'mv',
-                '%s/%s' % ( temp_dir, os.path.split(pdf_path)[1] ),
-                '%s' % ( pdf_path )],
-                check=True,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE)
-        except subprocess.CalledProcessError as e:
-            runerror(e)
-        print('%s written successfully!\n' %
-              pdf_path)
-        
-    def make_html_index(self, index_data):
-        data = {'index_data': index_data, 'meta': self.settings['index_html'] }
-        try:
-            print('Buildng index.html...')
-            index = self.build_template(data,
-                                    'html_index.template')
-        except Exception as e:
-            print('Building index.html failed: %s' % e)
-        return index
-    def write_html(self, data, path):
-        print('Writing %s...' % path )
-        try:
-            with open(path, '+w') as f:
-                f.write(data)
-        except Exception as e:
-            print('failed to write %s. %s' % path, e )
-            raise
-        print('%s written successfully!' % path)
+parser.add_argument(
+    '-n', '--no-write',
+    help = 'generate tree but don\'t write any files',
+    action='store_true' )
 
+parser.add_argument(
+    'query', 
+    help='list of entries to compile',
+    nargs='*' )
 
-@click.command()
+if __name__ == "__main__":
+    args = parser.parse_args()
 
-@click.option('--settings-file',
-              '-s', default='settings.yaml',
-              help='Settings file. Default: settings.yaml',
-              type=click.Path(exists=True))
+    tree = nodes.Book(
+        settings['slug'],
+        settings['path'],
+        settings['settings']
+    )
 
-@click.option(
-            '--debug', '-d', default=False, is_flag=True,
-            help='Turn debug mode on')
+    result = tree.query(args.query)
 
-@click.option('--no-write',
-              '-n',
-              default=False,
-              is_flag=True,
-              help='Generate song data but don\'t write any files')
+    if args.display:
+        print(result)
 
-@click.option('--path',
-              '-p',
-              default=None,
-              help='Only process this song file. Please provide path without extension.')
-@click.option('--index-only',
-              '-i',
-              default=False,
-              is_flag=True,
-              help='Only write index file. Mutually exclusive with --no-write')
-
-def main(settings_file, debug, no_write, path, index_only):
-    book = Liderbukh(settings_file, debug)
-    
-    if no_write and index_only:
-        print( 'Please don\'t use --index-only and --no-write together, it confuses me' )
-        sys.exit(1)
-    
-    try:
-        index = book.build_index()
-        batch = []
-        
-        for category in index:
-            for song in category['songs']:
-                if path is None or path == song['path']:
-                    batch.append( song )
-        if not batch:
-            if path:
-                print( "Did not find valid song files for %s. Exiting." % path )
-            else:
-                print("No valid song files found in data directory. Exiting.")
-            sys.exit(1)
-                    
-        if not ( no_write ):
-            temp_dir = book.settings['temp_dir']
-            output_dir = book.settings['output_dir']
-            if not os.path.isdir(output_dir):
-                try:
-                    os.mkdir(output_dir)
-                except Exception as e:
-                    print('Failed to create output directory at %s: %s' % (output_dir, e))
-                    raise
-            if not index_only and not os.path.isdir(temp_dir):
-                try:
-                    os.mkdir(temp_dir)
-                except Exception as e:
-                    print('Failed to create temporary directory at %s: %s' % (temp_dir, e))
-                    raise
-        for bat in batch:
-            song = book.process_song(bat)
-            
-            if not ( no_write or index_only ):
-                book.write_files(song)
-        
-        index_html = book.make_html_index(index)
-        
-        if not no_write:
-            book.write_html(index_html, os.path.join(book.settings['output_dir'], 'index.html'))
-    except:
-        
-        if debug: raise
-        sys.exit(1)
-    print('All done!')
-    
-if __name__ == '__main__':
-    main()
+    if not args.no_write:
+        result.write()
+        if args.query:
+            tree.write( recurse=False )

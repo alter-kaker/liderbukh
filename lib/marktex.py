@@ -92,3 +92,6 @@ output may be broken.' % \
             text = link
 
         return '\\link{' + (text or link) + '}'
+
+marktex = mistune.Markdown(
+                renderer=LyricsRenderer(escape=False))

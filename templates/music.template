@@ -1,0 +1,12 @@
+<!--(set_escape)-->None<!--(end)-->
+\header {
+  <!--(if textby)-->
+  poet = "טעקסט: @!textby!@"
+  <!--(end)-->
+  <!--(if musicby)-->
+  composer = "מוזיק: @!musicby!@"
+  <!--(end)-->
+  title = "@!name!@"
+  subtitle = "@!name_eng!@"
+  }
+@!music!@

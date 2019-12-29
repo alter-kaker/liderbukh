@@ -1,21 +1,7 @@
-templates_dir: 'templates'
-root_dir: ''
-data_dir: 'data'
-output_dir: 'docs'
-temp_dir: 'tmp'
-    
-song_meta:
-  - songname
-  - songname_eng
-  - transcriber
-  - linewidth
-  - textby
-  - musicby
-
-index_html:
-  header_text: לידערבוך
-  footer_links:
-    Liderbukh on GitHub: https://github.com/derpayatz/liderbukh/
-    Yiddish Reader on Github: https://github.com/derpayatz/yiddish-reader/
-    Support this work on LiberaPay: https://liberapay.com/derpayatz/donate
-    PayPal Tip Jar: https://paypal.me/derpayatz
+slug: liderbukh
+path: data
+settings: 
+    template_dir: templates
+    data_dir: data
+    output_dir: docs
+    temp_dir: tmp
