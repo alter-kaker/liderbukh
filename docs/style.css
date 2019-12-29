@@ -2,11 +2,7 @@ body {
     width: 85%;
     margin: auto;
     }
-footer li {
-    list-style: none;
-    display: inline;
-    margin: 1em;
-    }
+
 footer {
     border-top: solid 1px black;
     text-align: center;
@@ -32,4 +28,25 @@ footer {
     content: "";
     display: table;
     clear: both;
+}
+
+ul {
+    list-style: none;
+    padding: 0
+}
+
+li ul {
+    padding-right: 1.5em;
+}
+
+li ul li {
+    list-style: outside
+}
+
+@media screen and (min-width: 36em) {
+    footer li {
+        display: inline;
+        margin: 1em;
+        white-space: nowrap;
+        }
 }
