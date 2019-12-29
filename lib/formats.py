@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 # Version 2.0
 #
 # Copyright 2019 Marc Trius
@@ -160,3 +162,10 @@ class HTML(Format):
     def __init__(self, slug, data, relpath, parent ):
         super().__init__( slug, data, relpath, parent )
         self.data.update( { 'tree': parent.children } )
+
+class Lilypond(Format):
+    def render(self):
+        with open( 'templates/preamble.ly' ) as preamble:
+            self.data[self.slug] = self.data[self.slug].replace( '\include "../../../../templates/preamble.ly"',
+                                      preamble.read() )
+        super().render()

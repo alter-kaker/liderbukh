@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 # Version 2.0
 #
 # Copyright 2019 Marc Trius
@@ -116,7 +118,13 @@ class Branch(Node):
             else: pass
         
         if len(self.children) > 1:
+            self.meta['canon']=False
             self.children.sort( key=lambda x: x.slug )
+            for i, val in enumerate(self.children):
+                if self.children[i].slug == self.slug:
+                    self.meta['canon'] = True
+                    self.children.insert( 0, self.children.pop(i) )
+                    break
     
     def query(self, *q):
         if q:
@@ -141,7 +149,7 @@ class Sheet(Node):
     _level = 3
     _templates = [
         ( 'music', { 
-            'class': formats.Format,
+            'class': formats.Lilypond,
             'dataname': 'music',
             'ext': 'ly' } ),
         ( 'leadsheet', {
@@ -150,9 +158,7 @@ class Sheet(Node):
             'ext': 'lytex' } )
             ]
 
-    def __init__(self, slug, path, settings, parent):
-        slug = f"{parent.slug}-{slug}"
-        
+    def __init__(self, slug, path, settings, parent):        
         super().__init__(slug, path, settings, parent)
         
         self.meta = {

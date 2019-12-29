@@ -1,4 +1,15 @@
 <!--(set_escape)-->None<!--(end)-->
+<!--(macro var_entry)-->
+                        <li>
+                            <span class='entry-name'>@!variation.meta['name']!@</span>
+                            <span class='downloads'>
+                                <a href="@!variation.formats['leadsheet'].pdf_relpath!@">[PDF]</a>
+                                <a href="@!variation.formats['music'].relpath!@">[ly]</a>
+                            </span>
+                            <span class='dots'>&nbsp</span>
+                        </li>
+<!--(end)-->
+
 <!DOCTYPE=html>
 <html lang="yi" dir='rtl'>
   <head>
@@ -7,20 +18,36 @@
   <title>@!name!@</title>
   <link rel="canonical" href="canonical_url">
   <style>
-  body {
-    width: 85%;
-    margin: auto;
+    body {
+        width: 85%;
+        margin: auto;
+        }
+    footer li {
+        list-style: none;
+        display: inline;
+        margin: 1em;
+        }
+    footer {
+        border-top: solid 1px black;
+        text-align: center;
+        direction: ltr;
     }
-  footer li {
-	list-style: none;
-	display: inline;
-	margin: 1em;
+    .downloads {
+        direction: ltr;
+        float: left;
+        padding-right: 5px;
     }
-  footer {
-	border-top: solid 1px black;
-	text-align: center;
-	direction: ltr;
-  }
+    .entry-name {
+        float: right;
+        padding-left: 5px;
+    }
+    .dots {
+        border-bottom: dotted 2px;
+        display: block;
+        overflow: auto;
+        position: relative;
+        top: -6px;
+    }
   </style>
   </head>
   <body>
@@ -35,13 +62,26 @@
             <ul>
               <!--(for entry in category.children)-->
                 <li>
-                    <a href="@!entry.children[0].formats['leadsheet'].pdf_relpath!@">@!entry.meta['name']!@</a>
-                    <a href="@!entry.children[0].formats['music'].relpath!@">[ly]</a>
+                <!--(if len(entry.children) == 1 or entry.meta['canon'])-->
+                    <span class='entry-name'>@!entry.meta['name']!@</span>
+                    <span class='downloads'>
+                        <a href="@!entry.children[0].formats['leadsheet'].pdf_relpath!@">[PDF]</a>
+                        <a href="@!entry.children[0].formats['music'].relpath!@">[ly]</a>
+                    </span>
+                    <span class='dots'>&nbsp</span>
+                <!--(else)-->
+                    @!entry.meta['name']!@
+                <!--(end)-->
                 <!--(if len(entry.children) > 1)-->
                     <ul>
-                    <!--(for variation in entry.children[1:])-->
-                        <li><a href="@!variation.formats['leadsheet'].pdf_relpath!@">@!variation.meta['name']!@</a></li>
-                    <a href="@!variation.formats['music'].relpath!@">[ly]</a>
+                    <!--(if entry.meta['canon'])-->
+                        <!--(for variation in entry.children[1:])-->
+                        @!var_entry!@
+                        <!--(end)-->
+                    <!--(else)-->
+                        <!--(for variation in entry.children)-->
+                        @!var_entry!@
+                        <!--(end)-->
                     <!--(end)-->
                     </ul>
                 <!--(end)-->
@@ -62,3 +102,4 @@
     </footer>
   </body>
 </html>
+
