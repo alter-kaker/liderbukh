@@ -1,13 +1,11 @@
 <!--(set_escape)-->None<!--(end)-->
 <!--(macro var_entry)-->
-                        <li class="entry">
                             <span class='entry-name'>@!item.meta['name']!@</span>
                             <span class='downloads'>
                                 <a href="@!item.formats['leadsheet'].pdf_relpath!@">[pdf]</a>
                                 <a href="@!item.formats['music'].relpath!@">[ly]</a>
                             </span>
                             <span class='dots'>&nbsp</span>
-                        </li>
 <!--(end)-->
 
 <!DOCTYPE=html>
@@ -30,30 +28,33 @@
             <li><h2>@!category.meta['name']!@</h2>
                 <ul>
                 <!--(for entry in category.children)-->
-                    <!--(if len(entry.children) == 1 or entry.meta['canon'])-->
-                    @!var_entry(item = entry.children[0])!@
-                    <!--(else)-->
                     <li class="entry">
+                    <!--(if len(entry.children) == 1 or entry.meta['canon'])-->
+@!var_entry(item = entry.children[0])!@
+                    <!--(else)-->
                         @!entry.meta['name']!@
-                    </li>
                     <!--(end)-->
                     <!--(if len(entry.children) > 1)-->
                         <ul>
                         <!--(if entry.meta['canon'])-->
                             <!--(for variation in entry.children[1:])-->
-                            @!var_entry(item = variation)!@
+                            <li class="entry">
+@!var_entry(item = variation)!@
+                            </li><!-- variation -->
                             <!--(end)-->
                         <!--(else)-->
                             <!--(for variation in entry.children)-->
-                            @!var_entry(item = variation)!@
+                           <li class="entry">
+@!var_entry(item = variation)!@
+                            </li><!-- variation -->
                             <!--(end)-->
                         <!--(end)-->
-                        </ul>
+                        </ul><!-- variation list -->
                     <!--(end)-->
                 <!--(end)-->
-                
-                </ul>
-            </li>
+                    </li><!-- entry -->
+                </ul><!-- entry list-->
+            </li><!-- category -->
             <!--(end)-->
             </ul>
         </main>

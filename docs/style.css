@@ -26,7 +26,7 @@ li ul {
     padding-right: 1.5em;
 }
 
-li ul li {
+ul li ul li ul {
     list-style: outside
 }
 
@@ -72,6 +72,9 @@ li {
         }
         li {
             padding-bottom: 0;
+        }
+        li ul {
+            padding-right: 0;
         }
 }
 
