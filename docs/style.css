@@ -1,0 +1,35 @@
+body {
+    width: 85%;
+    margin: auto;
+    }
+footer li {
+    list-style: none;
+    display: inline;
+    margin: 1em;
+    }
+footer {
+    border-top: solid 1px black;
+    text-align: center;
+    direction: ltr;
+}
+.downloads {
+    direction: ltr;
+    float: left;
+    padding-right: 5px;
+}
+.entry-name {
+    float: right;
+    padding-left: 5px;
+}
+.dots {
+    border-bottom: dotted 2px;
+    display: block;
+    overflow: auto;
+    position: relative;
+    top: -6px;
+}
+.entry:after {
+    content: "";
+    display: table;
+    clear: both;
+}
