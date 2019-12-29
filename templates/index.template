@@ -1,6 +1,6 @@
 <!--(set_escape)-->None<!--(end)-->
 <!--(macro var_entry)-->
-                        <li class="item">
+                        <li class="entry">
                             <span class='entry-name'>@!variation.meta['name']!@</span>
                             <span class='downloads'>
                                 <a href="@!variation.formats['leadsheet'].pdf_relpath!@">[PDF]</a>
@@ -30,7 +30,7 @@
             <li><h2>@!category.meta['name']!@</h2></li>
                 <ul>
                 <!--(for entry in category.children)-->
-                    <li class="item">
+                    <li class="entry">
                     <!--(if len(entry.children) == 1 or entry.meta['canon'])-->
                         <span class='entry-name'>@!entry.meta['name']!@</span>
                         <span class='downloads'>
