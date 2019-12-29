@@ -43,6 +43,12 @@ li ul li {
     list-style: outside
 }
 
+.medallion {
+    text-align: center;
+    margin: 0 auto 1em auto;
+    display: block
+}
+
 @media screen and (min-width: 36em) {
     footer li {
         display: inline;

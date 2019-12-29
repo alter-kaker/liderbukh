@@ -62,6 +62,7 @@
             <!--(end)-->
             </ul>
         </main>
+        <img class='medallion' src='globe-menora.png' />
         <footer>
         <ul>
         <!--(for key in footer_links.keys() )-->
