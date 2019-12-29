@@ -77,13 +77,12 @@ class Node:
                 self.files.append( entry.path )
     
     def prepare_formats(self):
+        self.formats = {}
         for template, v in ( ( i[0], i[1] ) for i in self._templates ):
             try:
                 filename = v['filename']
             except:
                 filename = f"{ self.slug }.{ v['ext'] }"
-            if not hasattr(self, 'formats'):
-                self.formats = {}
             try:
                 self.formats.update( {
                     template:
@@ -102,6 +101,11 @@ class Node:
             format.render()
             format.write()
             format.copy()
+        try:
+            for child in self.children:
+                child.write( recurse=True )
+        except:
+            pass
 
 class Branch(Node):
     
