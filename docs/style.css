@@ -28,7 +28,8 @@ li ul {
 }
 
 ul li ul li ul {
-    list-style: outside
+    list-style: outside;
+    padding-right: 2em;
 }
 
 li {
