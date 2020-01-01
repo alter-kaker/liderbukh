@@ -49,9 +49,6 @@ optional arguments:
 * Add html export (partly done)
 * Add metadata fields for source, arranger, etc
 * Add transposition support?
-* Add support for multiple templates based on, for example, language and target format
-* Add option to process a list of songs, or only new songs 
 * Make some meta fields required
 * Add auto generated "version" and "last updated" field to song meta, and display it in the index and possibly in the pdf.
 * Add html templates for individual songs, with notes
-* Add a space for notes on the index page.
