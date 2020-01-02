@@ -1,7 +1,6 @@
 \version "2.18.2"
 \language "english"
 \include "../../../../templates/preamble.ly"
-
 mel = \relative a {
     \partial 8 {d8} |
     g a bf c d4. d,8 |
@@ -51,17 +50,6 @@ acc = \chordmode {
 
         }
       }
-    \new Lyrics \lyricsto "melody" {
-      Un az der re -- be zingt,
-un az der re -- be zingt, 
-zin -- gen a -- le kho -- si -- dim,
-ay ya ba ba ba bay,
-ay ya ba ba ba bay,
-zin -- gen a -- le kho -- si -- dim.
-Ya ba ba ba bay,
-ay ya ba ba ba bay,
-zin -- gen a -- le kho -- si -- dim.
-
-      }
+    \include "../includes/lyrics.ly"
     >>
   }

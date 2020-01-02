@@ -23,15 +23,15 @@
 import os
 import yaml
 
-from lib import marktex
 from lib import formats
 
 class Node:
     _level = 0
     
-    def __init__(self, slug, path, settings, parent):
+    def __init__(self, slug, path, settings, parent, root):
         
         self.slug = slug        
+        self.root = root
         self.settings = settings
         self.meta = {
             'datapath': path,
@@ -88,12 +88,12 @@ class Node:
                     template:
                         v['class'](
                             template, # slug
-                            v['data'], #data
-                            os.path.join( self.meta['relpath'], filename ),
-                            self )
+                            self.data, #data
+                            os.path.join( self.meta['relpath'], filename ), #relpath
+                            self ) # parent
                     } )
             except:
-                print(f"Failed to initialize index template")
+                print(f"{self.slug}: Failed to initialize template {template}")
                 raise
         
     def write(self, recurse=True):
@@ -107,15 +107,11 @@ class Branch(Node):
     
     def scan(self):
         self.children = []
-        self.files = []
         for entry in os.scandir( self.meta['datapath'] ):
             if entry.is_dir() and os.path.isfile(
                 os.path.join( entry.path, 'meta.yaml' ) ):
                 slug, path = os.path.split(entry.path)[1], entry.path
-                self.children.append( self._child(slug, path, self.settings, self) )
-            elif not entry.name == 'meta.yaml':
-                self.files.append( entry.path )
-            else: pass
+                self.children.append( self._child(slug, path, self.settings, self, self.root) )
         
         if len(self.children) > 1:
             self.meta['canon']=False
@@ -125,6 +121,7 @@ class Branch(Node):
                     self.meta['canon'] = True
                     self.children.insert( 0, self.children.pop(i) )
                     break
+        super().scan()
     
     def query(self, q):
         if q:
@@ -164,21 +161,19 @@ class Branch(Node):
 class Sheet(Node):
     _level = 3
 
-    def __init__(self, slug, path, settings, parent):
-        super().__init__(slug, path, settings, parent)
+    def __init__(self, slug, path, settings, parent, root):
+        super().__init__(slug, path, settings, parent, root)
                
         self.templates = [
             ( 'music', { 
                 'class': formats.Lilypond,
-                'data': { 'music': self.data['music'] },
                 'ext': 'ly' } ),
             ( 'leadsheet', {
                 'class': formats.TeX,
-                'data': {
-                    'music': self.data['music'],
-                    'lyrics': marktex.marktex(self.data['lyrics'])
-                    },
-                'ext': 'lytex' } )
+                'ext': 'lytex' } ),
+            ( 'page', {
+                'class': formats.HTML,
+                'ext': 'html' } )
                 ]
         self.prepare_formats()
         
@@ -205,15 +200,12 @@ class Category(Branch):
 class Book(Branch):
     _child = Category
     
-    def __init__( self, slug, path, settings, parent=None ):
-        super().__init__( slug, path, settings, parent )
+    def __init__( self, slug, path, settings ):
+        super().__init__( slug, path, settings, None, self )
         self.settings['data_dir'] = path
         self.templates = [
         ( 'index', { 
             'class': formats.HTML,
-            'data': { 
-                'intro': self.data['intro'], 
-                'tree': self.children },
             'filename': 'index.html' } )
             ]
         self.prepare_formats()

@@ -21,8 +21,10 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import subprocess
+import re
 import os
 import pyratemp
+from lib import marktex
 from lib import functions
 
 class Format():
@@ -44,6 +46,8 @@ class Format():
         with open( os.path.join( self.parent.settings['template_dir'],
                         f"{ self.slug }.template") ) as template:
             template_args['string'] = template.read()
+        
+        print(self.slug, self.parent.meta)
         
         template_args['data'] = {
             **self.data,
@@ -103,10 +107,6 @@ class TeX(Format):
     _onestep = False
     def __init__(self, slug, data, relpath, parent ):
         super().__init__( slug, data, relpath, parent )
-        #self.data.update( { 'ly_path': f"{ parent.slug }.ly" } )
-        
-        #self.parse_md = marktex.marktex
-        #self.data[slug] = self.parse_md( data )
         pdf_out = os.path.join( 
                     self.output_dir,
                     f"{ os.path.basename(os.path.splitext(self.relpath)[0]) }.pdf" )
@@ -159,11 +159,26 @@ class TeX(Format):
 class HTML(Format):
     def __init__(self, slug, data, relpath, parent ):
         super().__init__( slug, data, relpath, parent )
-        self.data.update( { 'tree': parent.children } )
+        self.data.update( { 'tree': parent.root } )
 
 class Lilypond(Format):
+    #def render(self):
+        #with open( 'templates/preamble.ly' ) as preamble:
+            #self.data[self.slug] = self.data[self.slug].replace( '\include "../../../../templates/preamble.ly"',
+                                      #preamble.read() )
+        
     def render(self):
-        with open( 'templates/preamble.ly' ) as preamble:
-            self.data[self.slug] = self.data[self.slug].replace( '\include "../../../../templates/preamble.ly"',
-                                      preamble.read() )
+        try:
+            os.chdir( os.path.join( self.parent.settings['data_dir'], os.path.dirname(self.relpath ) ) )
+            matches = re.findall(r"(?:\\include )[\"](.+)[\"]", self.data['music'], flags=0)
+            for match in matches:
+                with open(match) as include:
+                    self.data['music'] = self.data['music'].replace(f'\include "{match}"', include.read())
+            os.chdir( self.root_dir )
+        except Exception as e:
+            print( e )
+            raise
+        
         super().render()
+        
+        
