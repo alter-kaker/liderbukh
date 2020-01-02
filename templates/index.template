@@ -14,7 +14,7 @@
         <meta charset="utf-8"> 
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>@!name!@</title>
-        <link rel="canonical" href="canonical_url">
+        <link rel="canonical" href="@!canonical_url!@">
         <link rel="stylesheet" type="text/css" href="style.css" media="screen"/>
     </head>
     <body>
