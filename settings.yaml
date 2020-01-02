@@ -5,3 +5,4 @@ settings:
     data_dir: data
     output_dir: docs
     temp_dir: tmp
+    http_root: https://liderbukh.jews.international/

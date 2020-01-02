@@ -172,7 +172,7 @@ class Sheet(Node):
                 'class': formats.TeX,
                 'ext': 'lytex' } ),
             ( 'page', {
-                'class': formats.HTML,
+                'class': formats.HTML_page,
                 'ext': 'html' } )
                 ]
         self.prepare_formats()
@@ -205,7 +205,7 @@ class Book(Branch):
         self.settings['data_dir'] = path
         self.templates = [
         ( 'index', { 
-            'class': formats.HTML,
+            'class': formats.HTML_index,
             'filename': 'index.html' } )
             ]
         self.prepare_formats()

@@ -1,1 +1,38 @@
- 
+ <!--(set_escape)-->None<!--(end)-->
+ <!DOCTYPE=html>
+<html lang="yi" dir='rtl'>
+    <head>
+        <meta charset="utf-8"> 
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>@!name!@</title>
+        <link rel="canonical" href="@!canonical_url!@">
+        <link rel="stylesheet" type="text/css" href="style.css" media="screen"/>
+    </head>
+    <body>
+        <header>
+            <h1>@!name!@</h1>
+            <nav>
+                <ul>
+                    <!--(for category in tree.children)-->
+                    <li><h2>@!category.meta['name']!@</h2></li>
+                    <!--(end)-->
+                </ul>
+            </nav>
+        </header>
+        
+        <main>
+            @!notes!@
+            <lilypond>
+            @!music!@
+            </lilypond>
+        </main>
+        <img class='medallion' src='globe-menora.png' />
+        <footer>
+        <ul>
+        <!--(for key in tree.meta['footer_links'].keys() )-->
+            <li><a href="@!tree.meta['footer_links'][key]!@">@!key!@</a></li>
+        <!--(end)-->
+        </ul>
+        </footer>
+    </body>
+</html>

@@ -41,13 +41,10 @@ class Format():
         self.root_dir = os.getcwd()
     
     def render( self ):
-        print('inside rendering', self.slug)
         template_args = {}
         with open( os.path.join( self.parent.settings['template_dir'],
                         f"{ self.slug }.template") ) as template:
             template_args['string'] = template.read()
-        
-        print(self.slug, self.parent.meta)
         
         template_args['data'] = {
             **self.data,
@@ -152,7 +149,7 @@ class TeX(Format):
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE)
         except subprocess.CalledProcessError as e:
-            runerror(e)
+            functions.runerror(e)
         
         os.chdir( self.root_dir )
 
@@ -160,6 +157,14 @@ class HTML(Format):
     def __init__(self, slug, data, relpath, parent ):
         super().__init__( slug, data, relpath, parent )
         self.data.update( { 'tree': parent.root } )
+        self.data['canonical_url'] = os.path.join( 
+            parent.settings['http_root'], relpath )
+
+class HTML_index(HTML):
+    pass
+
+class HTML_page(HTML):
+    pass
 
 class Lilypond(Format):
     #def render(self):

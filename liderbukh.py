@@ -70,6 +70,6 @@ if __name__ == "__main__":
         print(result)
 
     if not args.no_write:
-        result.write( recurse = args.index_only )
+        result.write( )
         if args.query:
             tree.write( recurse = False )
