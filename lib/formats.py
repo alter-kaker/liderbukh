@@ -107,6 +107,7 @@ class TeX(Format):
         pdf_out = os.path.join( 
                     self.output_dir,
                     f"{ os.path.basename(os.path.splitext(self.relpath)[0]) }.pdf" )
+        self.data['lyrics'] = marktex.marktex(self.data['lyrics'])
         
         self.pdf_relpath = f"{ os.path.splitext(self.relpath)[0] }.pdf" 
     
