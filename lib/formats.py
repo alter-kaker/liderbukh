@@ -23,7 +23,6 @@
 import subprocess
 import os
 import pyratemp
-from lib import marktex
 from lib import functions
 
 class Format():
@@ -40,6 +39,7 @@ class Format():
         self.root_dir = os.getcwd()
     
     def render( self ):
+        print('inside rendering', self.slug)
         template_args = {}
         with open( os.path.join( self.parent.settings['template_dir'],
                         f"{ self.slug }.template") ) as template:
@@ -62,7 +62,6 @@ class Format():
             raise
     
     def write( self ):
-        
         if not os.path.isdir(self.temp_dir):
             try:
                 os.makedirs(self.temp_dir)
@@ -104,11 +103,10 @@ class TeX(Format):
     _onestep = False
     def __init__(self, slug, data, relpath, parent ):
         super().__init__( slug, data, relpath, parent )
-        self.data.update( { 'ly_path': f"{ parent.slug }.ly" } )
+        #self.data.update( { 'ly_path': f"{ parent.slug }.ly" } )
         
-        self.parse_md = marktex.marktex
-        self.data[slug] = self.parse_md( data )
-        
+        #self.parse_md = marktex.marktex
+        #self.data[slug] = self.parse_md( data )
         pdf_out = os.path.join( 
                     self.output_dir,
                     f"{ os.path.basename(os.path.splitext(self.relpath)[0]) }.pdf" )

@@ -75,7 +75,7 @@
   
   \begin{document}
   
-  \lilypondfile[noindent]{@!ly_path!@}
+  \lilypond[noindent]{@!music!@}
   \begin{multicols}{2}
   \settowidth{\versewidth}{@!linewidth!@}
   \begin{verse}[\versewidth]

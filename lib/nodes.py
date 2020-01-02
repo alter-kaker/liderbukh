@@ -22,11 +22,12 @@
 
 import os
 import yaml
+
+from lib import marktex
 from lib import formats
 
 class Node:
     _level = 0
-    _templates = {}
     
     def __init__(self, slug, path, settings, parent):
         
@@ -47,7 +48,6 @@ class Node:
             print( e )
         self.scan()
         self.load()
-        self.prepare_formats()
     
     def rep(self):
         return "  "*self._level+self.slug
@@ -78,7 +78,7 @@ class Node:
     
     def prepare_formats(self):
         self.formats = {}
-        for template, v in ( ( i[0], i[1] ) for i in self._templates ):
+        for template, v in ( ( i[0], i[1] ) for i in self.templates ):
             try:
                 filename = v['filename']
             except:
@@ -88,7 +88,7 @@ class Node:
                     template:
                         v['class'](
                             template, # slug
-                            self.data[ v['dataname'] ], #data
+                            v['data'], #data
                             os.path.join( self.meta['relpath'], filename ),
                             self )
                     } )
@@ -97,7 +97,9 @@ class Node:
                 raise
         
     def write(self, recurse=True):
+        print(self.slug, ':')
         for format in self.formats.values():
+            print('rendering', format.slug)
             format.render()
             format.write()
             format.copy()
@@ -149,29 +151,38 @@ class Branch(Node):
         return self.children[key]
     
     def write(self, recurse=True):
-        super().write(recurse)
+        super().write(recurse = recurse)
         if recurse:
-                try:
+                #try:
                     for child in self.children:
-                        child.write( recurse=True )
-                except:
-                    pass
+                        print(child.slug)
+                        try:
+                            child.write( recurse=True )
+                        except Exception as e:
+                            print(f'Error writing {child.slug}, {e}')
+                #except:
+                    #pass
         
 class Sheet(Node):
     _level = 3
-    _templates = [
-        ( 'music', { 
-            'class': formats.Lilypond,
-            'dataname': 'music',
-            'ext': 'ly' } ),
-        ( 'leadsheet', {
-            'class': formats.TeX,
-            'dataname': 'lyrics',
-            'ext': 'lytex' } )
-            ]
 
-    def __init__(self, slug, path, settings, parent):        
+    def __init__(self, slug, path, settings, parent):
         super().__init__(slug, path, settings, parent)
+               
+        self.templates = [
+            ( 'music', { 
+                'class': formats.Lilypond,
+                'data': { self.data['music'] },
+                'ext': 'ly' } ),
+            ( 'leadsheet', {
+                'class': formats.TeX,
+                'data': {
+                    'music': self.data['music'],
+                    'lyrics': marktex.marktex(self.data['lyrics'])
+                    },
+                'ext': 'lytex' } )
+                ]
+        self.prepare_formats()
         
         self.meta = {
             **self.meta['parent'].meta,
@@ -195,16 +206,18 @@ class Category(Branch):
 
 class Book(Branch):
     _child = Category
-    _templates = [
-        ( 'index', { 
-            'class': formats.HTML,
-            'dataname': 'index', 
-            'filename': 'index.html' } )
-            ]
     
     def __init__( self, slug, path, settings, parent=None ):
         super().__init__( slug, path, settings, parent )
         self.settings['data_dir'] = path
+        self.templates = [
+        ( 'index', { 
+            'class': formats.HTML,
+            'data': { 'index': self.data['index'], 
+                     'tree': self.children },
+            'filename': 'index.html' } )
+            ]
+        self.prepare_formats()
         
 class Result(Branch):
     def __init__(self):
