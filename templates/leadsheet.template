@@ -75,12 +75,15 @@
   
   \begin{document}
   
-  \lilypond[noindent]{@!music!@}
+  \begin{lilypond}
+  @!music!@
+  \end{lilypond}
+  
   \begin{multicols}{2}
   \settowidth{\versewidth}{@!linewidth!@}
   \begin{verse}[\versewidth]
   
-  @!leadsheet!@
+  @!lyrics!@
   
   \end{verse}
   \end{multicols}

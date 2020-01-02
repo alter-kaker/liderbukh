@@ -22,7 +22,7 @@
         <h1>@!name!@</h1>
         </header>
         <main>
-            @!index!@
+            @!intro!@
             <ul>
             <!--(for category in tree)-->
             <li><h2>@!category.meta['name']!@</h2>

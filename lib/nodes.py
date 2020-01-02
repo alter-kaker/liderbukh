@@ -48,6 +48,7 @@ class Node:
             print( e )
         self.scan()
         self.load()
+        self.formats = {}
     
     def rep(self):
         return "  "*self._level+self.slug
@@ -77,7 +78,6 @@ class Node:
                 self.files.append( entry.path )
     
     def prepare_formats(self):
-        self.formats = {}
         for template, v in ( ( i[0], i[1] ) for i in self.templates ):
             try:
                 filename = v['filename']
@@ -97,9 +97,7 @@ class Node:
                 raise
         
     def write(self, recurse=True):
-        print(self.slug, ':')
         for format in self.formats.values():
-            print('rendering', format.slug)
             format.render()
             format.write()
             format.copy()
@@ -155,11 +153,11 @@ class Branch(Node):
         if recurse:
                 #try:
                     for child in self.children:
-                        print(child.slug)
                         try:
                             child.write( recurse=True )
                         except Exception as e:
-                            print(f'Error writing {child.slug}, {e}')
+                            print(f'Error writing: {child.slug}, {e}')
+                            raise
                 #except:
                     #pass
         
@@ -172,7 +170,7 @@ class Sheet(Node):
         self.templates = [
             ( 'music', { 
                 'class': formats.Lilypond,
-                'data': { self.data['music'] },
+                'data': { 'music': self.data['music'] },
                 'ext': 'ly' } ),
             ( 'leadsheet', {
                 'class': formats.TeX,
@@ -213,8 +211,9 @@ class Book(Branch):
         self.templates = [
         ( 'index', { 
             'class': formats.HTML,
-            'data': { 'index': self.data['index'], 
-                     'tree': self.children },
+            'data': { 
+                'intro': self.data['intro'], 
+                'tree': self.children },
             'filename': 'index.html' } )
             ]
         self.prepare_formats()

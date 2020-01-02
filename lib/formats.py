@@ -28,7 +28,7 @@ from lib import functions
 class Format():
     def __init__(self, slug, data, relpath, parent ):
         self.slug = slug
-        self.data = { slug: data }
+        self.data = data
         self.relpath = relpath
         self.parent = parent
         self.temp_path = os.path.join( self.parent.settings['temp_dir'], self.relpath )
