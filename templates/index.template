@@ -2,8 +2,8 @@
 <!--(macro var_entry)-->
                             <span class='entry-name'>@!item.meta['name']!@</span>
                             <span class='downloads'>
-                                <a href="@!item.formats['leadsheet'].pdf_relpath!@">[pdf]</a>
-                                <a href="@!item.formats['music'].relpath!@">[ly]</a>
+                                <a href="@!item.formats['leadsheet'].link!@">[pdf]</a>
+                                <a href="@!item.formats['music'].link!@">[ly]</a>
                             </span>
                             <span class='dots'>&nbsp</span>
 <!--(end)-->

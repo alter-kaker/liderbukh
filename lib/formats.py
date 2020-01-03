@@ -28,17 +28,17 @@ from lib import marktex
 from lib import functions
 
 class Format():
-    def __init__(self, slug, data, relpath, parent ):
+    def __init__(self, slug, data, relpath, filename, parent ):
         self.slug = slug
         self.data = data
         self.relpath = relpath
+        self.filename = filename
         self.parent = parent
-        self.temp_path = os.path.join( self.parent.settings['temp_dir'], self.relpath )
-        self.temp_dir = os.path.dirname( self.temp_path )
-        self.output_dir = os.path.join(
-            self.parent.settings['output_dir'],
-            os.path.dirname(self.relpath) )
+        self.temp_dir = os.path.join( self.parent.settings['temp_dir'], relpath )
+        self.output_dir = os.path.join( self.parent.settings['output_dir'], relpath )
         self.root_dir = os.getcwd()
+        self.output_names = [ filename ]
+        self.link = os.path.join( parent.settings['http_root'], self.relpath, filename )
     
     def render( self ):
         template_args = {}
@@ -48,7 +48,8 @@ class Format():
         
         template_args['data'] = {
             **self.data,
-            **self.parent.meta
+            **self.parent.meta,
+            'formats': self.parent.formats
             }
         template_args['escape'] = None
         
@@ -62,13 +63,26 @@ class Format():
                 f'{ e }' )
             raise
     
-    def write( self ):
+    def write( self ):        
         if not os.path.isdir(self.temp_dir):
             try:
                 os.makedirs(self.temp_dir)
             except Exception as e:
                 print('Failed to create output directory at %s: %s' % (self.output_dir, e))
-                raise
+                raise        
+        
+        path = os.path.join( self.temp_dir, self.filename )
+        
+        print(f"Writing { path }" )
+        try:
+            with open( path, 'w+', encoding='utf-8') as f:
+                f.write(self.output)
+                print('Success!')
+        
+        except Exception as e:
+            print( 'Error: %s\n' % (e) )
+            
+    def copy(self):
         
         if not os.path.isdir(self.output_dir):
             try:
@@ -77,44 +91,32 @@ class Format():
                 print('Failed to create output directory at %s: %s' % (self.output_dir, e))
                 raise
         
-        print(f"Writing { self.temp_path }" )
-        try:
-            with open( self.temp_path, 'w+', encoding='utf-8') as f:
-                f.write(self.output)
-                print('Success!')
-        
-        except Exception as e:
-            print( 'Error: %s\n' % (e) )
-            
-    def copy(self):
-        print('Copying %s to output folder...' % self.temp_path )
-        try:
-            subprocess.run([
-                'cp',
-                self.temp_path,
-                self.output_dir],
-                check=True,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE)
-        except subprocess.CalledProcessError as e:
-            functions.runerror(e)
-        print('Success!')
+        for filename in self.output_names:
+            print(f"Copying { filename } to output folder..." )
+            try:
+                subprocess.run([
+                    'cp',
+                    os.path.join( self.temp_dir, filename ),
+                    self.output_dir],
+                    check=True,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE)
+            except subprocess.CalledProcessError as e:
+                functions.runerror(e)
+            print('Success!')
 
 class TeX(Format):
-    _onestep = False
-    def __init__(self, slug, data, relpath, parent ):
-        super().__init__( slug, data, relpath, parent )
-        pdf_out = os.path.join( 
-                    self.output_dir,
-                    f"{ os.path.basename(os.path.splitext(self.relpath)[0]) }.pdf" )
-        self.data['lyrics'] = marktex.marktex(self.data['lyrics'])
+    def __init__(self, slug, data, relpath, filename, parent ):
+        super().__init__( slug, data, relpath, filename, parent )
         
-        self.pdf_relpath = f"{ os.path.splitext(self.relpath)[0] }.pdf" 
+        pdfname = f"{ os.path.splitext(filename)[0] }.pdf"
+        self.texname = f"{ os.path.splitext(filename)[0] }.tex"
+        self.output_names = [ pdfname ]
+        self.data['lyrics'] = marktex.marktex(self.data['lyrics'])
+        self.link = os.path.join(  parent.settings['http_root'], self.relpath, pdfname )
     
     def write(self):
         super().write()
-        self.lytex_path = self.temp_path
-        self.temp_path = f"{ os.path.splitext(self.temp_path)[0] }.pdf"
         
         try:
             os.chdir( self.temp_dir )
@@ -129,7 +131,7 @@ class TeX(Format):
                 'lilypond-book',
                 '--latex-program=xelatex',
                 '--loglevel=ERROR',
-                os.path.basename(self.lytex_path)],
+                self.filename],
                 check=True,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE)
@@ -142,10 +144,7 @@ class TeX(Format):
                 'xelatex',
                 '-interaction=nonstopmode',
                 '-halt-on-error',
-                os.path.basename(
-                    os.path.join(
-                        self.parent.settings['temp_dir'], 
-                        f"{ os.path.splitext(self.relpath)[0] }.tex") ) ],
+                self.texname ],
                 check=True,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE)
@@ -155,27 +154,53 @@ class TeX(Format):
         os.chdir( self.root_dir )
 
 class HTML(Format):
-    def __init__(self, slug, data, relpath, parent ):
-        super().__init__( slug, data, relpath, parent )
+    def __init__(self, slug, data, relpath, filename, parent ):
+        super().__init__( slug, data, relpath, filename, parent )
         self.data.update( { 'tree': parent.root } )
         self.data['canonical_url'] = os.path.join( 
-            parent.settings['http_root'], relpath )
+            parent.settings['http_root'], relpath, filename )
 
 class HTML_index(HTML):
     pass
 
 class HTML_page(HTML):
-    pass
+    def __init__(self, slug, data, relpath, filename, parent ):
+        super().__init__( slug, data, relpath, filename, parent )
+        pngname = f"{ os.path.splitext(filename)[0] }.png"
+        self.data.update( {
+            'png': os.path.join( parent.settings['http_root'], self.relpath, pngname ) } )
+        self.link = [ os.path.join( parent.settings['http_root'], self.relpath, filename ) ]
+        self.output_names = [ filename, pngname ]
+        
+    def write(self):
+        super().write()
+        
+        try:
+            os.chdir( self.temp_dir )
+        except Exception as e:
+            print( 'Cannot open temporary directory: %s' %
+                e )
+            raise
+        
+        print('Running lilypond...')
+        try:
+            subprocess.run([
+                'lilypond',
+                '--loglevel=ERROR',
+                '--png',
+                f"--output={os.path.splitext(self.filename)[0]}",
+                self.parent.formats['music'].filename],
+                check=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE)
+        except subprocess.CalledProcessError as e:
+            functions.runerror(e)
+        os.chdir( self.root_dir )
 
 class Lilypond(Format):
-    #def render(self):
-        #with open( 'templates/preamble.ly' ) as preamble:
-            #self.data[self.slug] = self.data[self.slug].replace( '\include "../../../../templates/preamble.ly"',
-                                      #preamble.read() )
-        
     def render(self):
         try:
-            os.chdir( os.path.join( self.parent.settings['data_dir'], os.path.dirname(self.relpath ) ) )
+            os.chdir( os.path.join( self.parent.settings['data_dir'], self.relpath ) )
             matches = re.findall(r"(?:\\include )[\"](.+)[\"]", self.data['music'], flags=0)
             for match in matches:
                 with open(match) as include:

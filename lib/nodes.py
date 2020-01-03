@@ -80,16 +80,17 @@ class Node:
     def prepare_formats(self):
         for template, v in ( ( i[0], i[1] ) for i in self.templates ):
             try:
-                filename = v['filename']
-            except:
                 filename = f"{ self.slug }.{ v['ext'] }"
+            except:
+                filename = v['filename']
             try:
                 self.formats.update( {
                     template:
                         v['class'](
                             template, # slug
                             self.data, #data
-                            os.path.join( self.meta['relpath'], filename ), #relpath
+                            self.meta['relpath'], #relpath
+                            filename, #filename
                             self ) # parent
                     } )
             except:

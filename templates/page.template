@@ -14,7 +14,7 @@
             <nav>
                 <ul>
                     <!--(for category in tree.children)-->
-                    <li><h2>@!category.meta['name']!@</h2></li>
+                    <li>@!category.meta['name']!@</li>
                     <!--(end)-->
                 </ul>
             </nav>
@@ -22,11 +22,9 @@
         
         <main>
             @!notes!@
-            <lilypond>
-            @!music!@
-            </lilypond>
+            <img src="@!png!@" />
+            <a href="@!formats['leadsheet'].link!@">pdf</a> <a href="@!formats['music'].link!@">ly</a>
         </main>
-        <img class='medallion' src='globe-menora.png' />
         <footer>
         <ul>
         <!--(for key in tree.meta['footer_links'].keys() )-->
