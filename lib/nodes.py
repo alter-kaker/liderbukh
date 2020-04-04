@@ -48,7 +48,7 @@ class Node:
             print( e )
         self.scan()
         self.load()
-        self.formats = {}
+        self.prepare_formats()
     
     def rep(self):
         return "  "*self._level+self.slug
@@ -78,6 +78,7 @@ class Node:
                 self.files.append( entry.path )
     
     def prepare_formats(self):
+        self.formats = {}
         for template, v in ( ( i[0], i[1] ) for i in self.templates ):
             try:
                 filename = f"{ self.slug }.{ v['ext'] }"
@@ -162,9 +163,7 @@ class Branch(Node):
 class Sheet(Node):
     _level = 3
 
-    def __init__(self, slug, path, settings, parent, root):
-        super().__init__(slug, path, settings, parent, root)
-               
+    def __init__(self, slug, path, settings, parent, root):               
         self.templates = [
             ( 'music', { 
                 'class': formats.Lilypond,
@@ -172,12 +171,13 @@ class Sheet(Node):
             ( 'leadsheet', {
                 'class': formats.TeX,
                 'ext': 'lytex' } ),
-            ( 'page', {
-                'class': formats.HTML_page,
-                'ext': 'html' } )
+            ( 'image', {
+                'class': formats.PNG,
+                'ext': 'png' } )
                 ]
-        self.prepare_formats()
         
+        super().__init__(slug, path, settings, parent, root)
+
         self.meta = {
             **self.meta['parent'].meta,
             **self.meta,
@@ -188,6 +188,14 @@ class Entry(Branch):
     _child = Sheet
     _level = 2
     
+    def __init__(self, slug, path, settings, parent, root):               
+        self.templates = [
+            ( 'page', {
+                'class': formats.HTML_page,
+                'ext': 'html' } )
+                ]
+        
+        super().__init__(slug, path, settings, parent, root)
     def __repr__(self):
         if len( self.children ) == 1:
             return f"{ self.rep() }\n"
@@ -197,19 +205,20 @@ class Entry(Branch):
 class Category(Branch):
     _child = Entry
     _level = 1
+    def prepare_formats(self):
+        pass
 
 class Book(Branch):
     _child = Category
     
     def __init__( self, slug, path, settings ):
-        super().__init__( slug, path, settings, None, self )
-        self.settings['data_dir'] = path
         self.templates = [
         ( 'index', { 
             'class': formats.HTML_index,
             'filename': 'index.html' } )
             ]
-        self.prepare_formats()
+        super().__init__( slug, path, settings, None, self )
+        self.settings['data_dir'] = path
         
 class Result(Branch):
     def __init__(self):

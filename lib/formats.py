@@ -38,7 +38,7 @@ class Format():
         self.output_dir = os.path.join( self.parent.settings['output_dir'], relpath )
         self.root_dir = os.getcwd()
         self.output_names = [ filename ]
-        self.link = os.path.join( parent.settings['http_root'], self.relpath, filename )
+        self.link = os.path.join( parent.settings['root'], self.relpath, filename )
     
     def render( self ):
         template_args = {}
@@ -113,7 +113,7 @@ class TeX(Format):
         self.texname = f"{ os.path.splitext(filename)[0] }.tex"
         self.output_names = [ pdfname ]
         self.data['lyrics'] = marktex.marktex(self.data['lyrics'])
-        self.link = os.path.join(  parent.settings['http_root'], self.relpath, pdfname )
+        self.link = os.path.join(  parent.settings['root'], self.relpath, pdfname )
     
     def write(self):
         super().write()
@@ -158,7 +158,7 @@ class HTML(Format):
         super().__init__( slug, data, relpath, filename, parent )
         self.data.update( { 'tree': parent.root } )
         self.data['canonical_url'] = os.path.join( 
-            parent.settings['http_root'], relpath, filename )
+            parent.settings['root'], relpath, filename )
 
 class HTML_index(HTML):
     pass
@@ -166,36 +166,7 @@ class HTML_index(HTML):
 class HTML_page(HTML):
     def __init__(self, slug, data, relpath, filename, parent ):
         super().__init__( slug, data, relpath, filename, parent )
-        pngname = f"{ os.path.splitext(filename)[0] }.png"
-        self.data.update( {
-            'png': os.path.join( parent.settings['http_root'], self.relpath, pngname ) } )
-        self.link = [ os.path.join( parent.settings['http_root'], self.relpath, filename ) ]
-        self.output_names = [ filename, pngname ]
-        
-    def write(self):
-        super().write()
-        
-        try:
-            os.chdir( self.temp_dir )
-        except Exception as e:
-            print( 'Cannot open temporary directory: %s' %
-                e )
-            raise
-        
-        print('Running lilypond...')
-        try:
-            subprocess.run([
-                'lilypond',
-                '--loglevel=ERROR',
-                '--png',
-                f"--output={os.path.splitext(self.filename)[0]}",
-                self.parent.formats['music'].filename],
-                check=True,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE)
-        except subprocess.CalledProcessError as e:
-            functions.runerror(e)
-        os.chdir( self.root_dir )
+        self.data.update( { 'children': self.parent.children } )
 
 class Lilypond(Format):
     def render(self):
@@ -212,4 +183,31 @@ class Lilypond(Format):
         
         super().render()
         
+
+class PNG(Format):
+    def render(self):
+        pass
+    
+    def write(self):
+        try:
+            os.chdir( self.temp_dir )
+        except Exception as e:
+            print( 'Cannot open temporary directory: %s' %
+                e )
+            raise
         
+        print('Running lilypond...')
+        try:
+            subprocess.run([
+                'lilypond',
+                '--loglevel=ERROR',
+                '--png',
+                '-dbackend=svg',
+                f"--output={ self.parent.slug }",
+                self.parent.formats['music'].filename],
+                check=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE)
+        except subprocess.CalledProcessError as e:
+            functions.runerror(e)
+        os.chdir( self.root_dir )

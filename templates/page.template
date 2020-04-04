@@ -21,9 +21,13 @@
         </header>
         
         <main>
-            @!notes!@
-            <img src="@!png!@" />
-            <a href="@!formats['leadsheet'].link!@">pdf</a> <a href="@!formats['music'].link!@">ly</a>
+            <!--(for child in children)-->
+            <article>
+                @!child.data['notes']!@
+                <img src="@!child.formats['image'].link!@" />
+                <a href="@!child.formats['leadsheet'].link!@">pdf</a> <a href="@!child.formats['music'].link!@">ly</a>
+            </article>
+            <!--(end)-->
         </main>
         <footer>
         <ul>

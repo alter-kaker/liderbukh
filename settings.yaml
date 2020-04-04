@@ -6,3 +6,4 @@ settings:
     output_dir: docs
     temp_dir: tmp
     http_root: https://liderbukh.jews.international/
+    local_root: /home/marc/gits/liderbukh/docs/

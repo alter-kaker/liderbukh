@@ -55,14 +55,27 @@ parser.add_argument(
     help='write index.html only',
     action='store_false' )
 
+parser.add_argument(
+    '-r', '--remote-build',
+    help='build with http links',
+    action='store_true' )
+
 if __name__ == "__main__":
     args = parser.parse_args()
+    
+    if args.remote_build:
+        settings['settings'].update( {'root': settings['settings']['http_root'] } )
+    else:
+        settings['settings'].update( {'root': settings['settings']['local_root'] } )
 
     tree = nodes.Book(
         settings['slug'],
         settings['path'],
         settings['settings']
     )
+    
+    print (args.remote_build)
+    print ( settings['settings'])
 
     result = tree.query(args.query)
 

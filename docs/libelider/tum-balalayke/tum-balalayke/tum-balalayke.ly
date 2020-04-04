@@ -3,7 +3,6 @@
   title = "טום־באַלאַלײַקע"
   subtitle = "Tum-Balalayke"
   }
-
 \version "2.18.2"
 \language "english"
 #(set-global-staff-size 17)
