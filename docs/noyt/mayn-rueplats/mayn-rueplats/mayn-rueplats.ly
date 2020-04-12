@@ -1,5 +1,6 @@
 
 \header {
+  poet = "טעקסט: מאָריס ראָזענפֿעלד"
   title = "מײַן רועפּלאַץ"
   subtitle = "Mayn Rueplats"
   }

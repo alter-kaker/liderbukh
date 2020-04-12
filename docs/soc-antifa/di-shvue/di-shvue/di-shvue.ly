@@ -1,5 +1,6 @@
 
 \header {
+  poet = "טעקסט: ש. אנ־סקי"
   title = "די שבֿועה"
   subtitle = "Di Shvue"
   }

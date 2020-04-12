@@ -1,5 +1,6 @@
 
 \header {
+  poet = "טעקסט: מאַרק וואַרשאַווסקי"
   title = "אַפֿן פּריפּעטשיק ברענט אַ פֿײַרל"
   subtitle = "Afn Pripetchik Brent a Fayrl"
   }
@@ -128,7 +129,7 @@ acc-b = \chordmode {
     g4:7 c2:m6 | 
     c4:m6 g2:m | }
   \alternative {
-    { c4:m g:m f: | d2.:7 }
+    { c4:m g:m c:m | d2.:7 }
     { c4:m6 d2:7 | g2.:m }
   }
 }

@@ -1,5 +1,6 @@
 
 \header {
+  poet = "טעקסט: אבֿרהם גאָלדפֿאַדען"
   title = "ראָזשינקעס מיט מאַנדלען"
   subtitle = "Rozhinkes Mit Mandlen"
   }

@@ -1,5 +1,7 @@
 
 \header {
+  poet = "טעקסט: איציק מאַנגער"
+  composer = "מוזיק: פּ. לאַסקאָווסקי"
   title = "אויפֿן וועג שטייט אַ בוים"
   subtitle = "Oyfn Veg Shteyt A Boym"
   }

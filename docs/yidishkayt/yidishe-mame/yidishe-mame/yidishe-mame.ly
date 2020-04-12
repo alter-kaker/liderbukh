@@ -1,5 +1,7 @@
 
 \header {
+  poet = "טעקסט: דזשייק יעלען"
+  composer = "מוזיק: לעוו פּאָלאַק, דזשייק יעלען"
   title = "אַ ייִדישע מאַמע"
   subtitle = "A Yidishe Mame"
   }

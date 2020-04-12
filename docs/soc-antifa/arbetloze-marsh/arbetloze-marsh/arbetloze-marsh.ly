@@ -1,5 +1,6 @@
 
 \header {
+  poet = "טעקסט: מרדכי געבירטיג"
   title = "ארבעטלאָזע מאַרש"
   subtitle = "Arbetloze Marsh"
   }

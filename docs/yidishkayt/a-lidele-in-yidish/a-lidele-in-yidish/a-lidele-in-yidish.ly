@@ -1,5 +1,7 @@
 
 \header {
+  poet = "טעקסט: יוסף קאָטליאַר"
+  composer = "מוזיק: הענעך קאָן"
   title = "(שפּיל זשע מיר) אַ לידעלע אין ייִדיש"
   subtitle = "Shpil Zhe Mir a Lidele in Yidish"
   }

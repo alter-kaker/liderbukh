@@ -1,5 +1,6 @@
 
 \header {
+  poet = "טעקסט: דזשאַנעט פֿליישמאַן"
   title = "ווער האָט אַזאַ מיידעלע?"
   subtitle = "Ver Hot Aza Meydele?"
   }

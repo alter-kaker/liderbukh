@@ -44,7 +44,7 @@ class Format():
         with open( os.path.join( self.parent.settings['template_dir'],
                         f"{ self.slug }.template") ) as template:
             template_args['string'] = template.read()
-        
+        print(self.parent.meta)
         template_args['data'] = {
             **self.data,
             **self.parent.meta

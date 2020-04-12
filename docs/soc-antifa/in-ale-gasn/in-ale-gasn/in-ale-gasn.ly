@@ -1,5 +1,6 @@
 
 \header {
+  composer = "מוזיק: אַראַנזשירן פֿון זאַלמאַן מלאָטעק"
   title = "אין אַלע גאַסן, דאַלאָיי פּאָליציי"
   subtitle = "In Ale Gasn, Daloy Politsey"
   }

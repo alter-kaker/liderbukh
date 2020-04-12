@@ -174,10 +174,10 @@ class Sheet(Node):
         super().__init__(slug, path, settings, parent)
         
         self.meta = {
-            **self.meta['parent'].meta,
-            **self.meta,
             'textby': None,
-            'musicby': None }
+            'musicby': None,
+            **self.meta['parent'].meta,
+            **self.meta}
 
 class Entry(Branch):
     _child = Sheet
