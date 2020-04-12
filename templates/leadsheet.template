@@ -75,9 +75,7 @@
   
   \begin{document}
   
-  \begin{lilypond}
-  @!music!@
-  \end{lilypond}
+  \lilypondfile{@!formats['music'].filename!@}
   
   \begin{multicols}{2}
   \settowidth{\versewidth}{@!linewidth!@}

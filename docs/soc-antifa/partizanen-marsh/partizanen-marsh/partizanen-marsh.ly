@@ -1,5 +1,6 @@
 
 \header {
+  poet = "טעקסט: ש. קאַטשערגינסקי"
   title = "פּאַרטיזאַנען מאַרש"
   subtitle = "Partizanen Marsh"
   }

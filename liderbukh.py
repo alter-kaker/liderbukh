@@ -83,6 +83,4 @@ if __name__ == "__main__":
         print(result)
 
     if not args.no_write:
-        result.write( )
-        if args.query:
-            tree.write( recurse = False )
+        result.write()

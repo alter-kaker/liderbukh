@@ -41,13 +41,13 @@ class Format():
         self.link = os.path.join( parent.settings['root'], self.relpath, filename )
     
     def render( self ):
-        #print(f'rendering {self.filename}')
+        print(f'rendering {self.filename}')
         #print(self.parent.formats['music'].filename)
         template_args = {}
         with open( os.path.join( self.parent.settings['template_dir'],
                         f"{ self.slug }.template") ) as template:
             template_args['string'] = template.read()
-        
+        print(self.parent.meta)
         template_args['data'] = {
             **self.data,
             **self.parent.meta,
@@ -226,18 +226,21 @@ class PNG(Format):
     def __init__(self, slug, data, relpath, filename, parent ):
         super().__init__( slug, data, relpath, filename, parent )
         
-        self.inputname = f"{ os.path.splitext(filename)[0] }.htmly"
+        self.filename = f"{ os.path.splitext(filename)[0] }.htmly"
         
-    def render(self):
-        pass
+    #def render(self):
+        #pass
     
     def write(self):
+        super().write()
         try:
             os.chdir( self.temp_dir )
         except Exception as e:
             print( 'Cannot open temporary directory: %s' %
                 e )
             raise
+        
+        
         
         print('Running lilypond (PNG)...')
         try:
@@ -247,7 +250,7 @@ class PNG(Format):
                 '--format=html',
                 '--lily-output-dir=bah',
                 '--use-source-file-names',
-                self.inputname],
+                self.filename],
                 check=True,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE)
