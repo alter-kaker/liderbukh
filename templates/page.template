@@ -2,7 +2,7 @@
  <!--(macro var_entry)-->
                   @!child.data['notes']!@
                   <img src="@!child.formats['image'].link!@" />
-                  <h2>אַראָפּלאָד די נאָטן</h2>
+                  <h3>אַראָפּלאָד די נאָטן</h3>
                   <ul>
                     <li><a href="@!child.formats['leadsheet'].link!@">pdf</a></li>
                     <li><a href="@!child.formats['music'].link!@">ly</a></li>
