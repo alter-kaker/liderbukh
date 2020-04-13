@@ -28,17 +28,10 @@ from lib import marktex
 from lib import functions
 
 class Format():
-    def __init__(self, slug, data, relpath, filename, parent ):
+    def __init__(self, slug, data, parent ):
         self.slug = slug
         self.data = data
-        self.relpath = relpath
-        self.filename = filename
         self.parent = parent
-        self.temp_dir = os.path.join( self.parent.settings['temp_dir'], relpath )
-        self.output_dir = os.path.join( self.parent.settings['output_dir'], relpath )
-        self.root_dir = os.getcwd()
-        self.output_names = [ filename ]
-        self.link = os.path.join( parent.settings['root'], self.relpath, filename )
     
     def render( self ):
         template_args = {}
@@ -61,8 +54,21 @@ class Format():
                 '\n',
                 f'{ e }' )
             raise
-    
-    def write( self ):        
+
+class WritableFormat(Format):
+    def __init__(self, slug, data, parent, relpath, filename ):
+        super().__init__(slug, data, parent )
+        self.relpath = relpath
+        self.filename = filename
+        self.temp_dir = os.path.join(
+            self.parent.settings['temp_dir'], relpath )
+        self.output_dir = os.path.join(
+            self.parent.settings['output_dir'], relpath )
+        self.root_dir = os.getcwd()
+        self.output_names = [ filename ]
+        self.link = os.path.join(
+            parent.settings['root'], self.relpath, filename )
+    def write( self ):
         if not os.path.isdir(self.temp_dir):
             try:
                 os.makedirs(self.temp_dir)
@@ -104,9 +110,9 @@ class Format():
                 functions.runerror(e)
             print('Success!')
 
-class TeX(Format):
-    def __init__(self, slug, data, relpath, filename, parent ):
-        super().__init__( slug, data, relpath, filename, parent )
+class TeX(WritableFormat):
+    def __init__(self, slug, data, parent, relpath, filename ):
+        super().__init__( slug, data, parent, relpath, filename )
         
         pdfname = f"{ os.path.splitext(filename)[0] }.pdf"
         self.texname = f"{ os.path.splitext(filename)[0] }.tex"
@@ -152,9 +158,9 @@ class TeX(Format):
         
         os.chdir( self.root_dir )
 
-class HTML(Format):
-    def __init__(self, slug, data, relpath, filename, parent ):
-        super().__init__( slug, data, relpath, filename, parent )
+class HTML(WritableFormat):
+    def __init__(self, slug, data, parent, relpath, filename ):
+        super().__init__( slug, data, parent, relpath, filename )
         self.data.update( { 'tree': parent.root } )
         self.data['canonical_url'] = os.path.join( 
             parent.settings['root'], relpath, filename )
@@ -163,11 +169,11 @@ class HTML_index(HTML):
     pass
 
 class HTML_page(HTML):
-    def __init__(self, slug, data, relpath, filename, parent ):
-        super().__init__( slug, data, relpath, filename, parent )
+    def __init__(self, slug, data, parent, relpath, filename ):
+        super().__init__( slug, data, parent, relpath, filename )
         self.data.update( { 'children': self.parent.children } )
 
-class Lilypond(Format):
+class Lilypond(WritableFormat):
     def render(self):
         try:
             os.chdir( os.path.join( self.parent.settings['data_dir'], self.relpath ) )
@@ -183,9 +189,9 @@ class Lilypond(Format):
         super().render()
         
 
-class PNG(Format):
-    def __init__(self, slug, data, relpath, filename, parent ):
-        super().__init__( slug, data, relpath, filename, parent )
+class PNG(WritableFormat):
+    def __init__(self, slug, data, parent, relpath, filename ):
+        super().__init__( slug, data, parent, relpath, filename )
         
         self.filename = f"{ os.path.splitext(filename)[0] }.htmly"
         
@@ -218,3 +224,6 @@ class PNG(Format):
         except subprocess.CalledProcessError as e:
             functions.runerror(e)
         os.chdir( self.root_dir )
+
+class HTML_sheet(Format):
+    pass

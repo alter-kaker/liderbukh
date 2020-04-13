@@ -82,17 +82,23 @@ class Node:
         for template, v in ( ( i[0], i[1] ) for i in self.templates ):
             try:
                 filename = f"{ self.slug }.{ v['ext'] }"
-            except:
-                filename = v['filename']
+            except KeyError:
+                filename = False
+            args = [
+                      template, # slug
+                      self.data, #data
+                      self, # parent
+                      ]
+            print (f'object: {self.__class__}, {self.slug}, filename: {filename}')
+            if filename:
+                args.extend([
+                      self.meta['relpath'], #relpath
+                      filename #filename
+                      ])
             try:
                 self.formats.update( {
                     template:
-                        v['class'](
-                            template, # slug
-                            self.data, #data
-                            self.meta['relpath'], #relpath
-                            filename, #filename
-                            self ) # parent
+                        v['class'](*args) # parent
                     } )
             except:
                 print(f"{self.slug}: Failed to initialize template {template}")
@@ -173,7 +179,10 @@ class Sheet(Node):
                 'ext': 'lytex' } ),
             ( 'image', {
                 'class': formats.PNG,
-                'ext': 'png' } )
+                'ext': 'png' } ),
+            ( 'html', {
+                'class': formats.HTML_sheet
+                } )
                 ]
         
         super().__init__(slug, path, settings, parent, root)
@@ -215,7 +224,7 @@ class Book(Branch):
         self.templates = [
         ( 'index', { 
             'class': formats.HTML_index,
-            'filename': 'index.html' } )
+            'ext': 'html' } )
             ]
         super().__init__( slug, path, settings, None, self )
         self.settings['data_dir'] = path
