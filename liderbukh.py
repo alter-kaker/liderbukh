@@ -74,8 +74,7 @@ if __name__ == "__main__":
         settings['settings']
     )
     
-    print (args.remote_build)
-    print ( settings['settings'])
+    print (f'Remote build: {args.remote_build}')
 
     result = tree.query(args.query)
 

@@ -41,13 +41,10 @@ class Format():
         self.link = os.path.join( parent.settings['root'], self.relpath, filename )
     
     def render( self ):
-        print(f'rendering {self.filename}')
-        #print(self.parent.formats['music'].filename)
         template_args = {}
         with open( os.path.join( self.parent.settings['template_dir'],
                         f"{ self.slug }.template") ) as template:
             template_args['string'] = template.read()
-        print(self.parent.meta)
         template_args['data'] = {
             **self.data,
             **self.parent.meta,
@@ -127,7 +124,7 @@ class TeX(Format):
                 e )
             raise
         
-        print('Running lilypond-book...')
+        print('Running lilypond-book (PDF)...')
         try:
             subprocess.run([
                 'lilypond-book',
