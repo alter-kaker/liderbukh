@@ -170,42 +170,6 @@ class HTML_page(HTML):
         super().__init__( slug, data, relpath, filename, parent )
         self.data.update( { 'children': self.parent.children } )
 
-class HTML_fragment(HTML):
-    def __init__(self, slug, data, relpath, filename, parent ):
-        super().__init__( slug, data, relpath, filename, parent )
-        
-        pdfname = f"{ os.path.splitext(filename)[0] }.pdf"
-        self.texname = f"{ os.path.splitext(filename)[0] }.tex"
-        self.output_names = [ pdfname ]
-        self.data['lyrics'] = marktex.marktex(self.data['lyrics'])
-        self.link = os.path.join(  parent.settings['root'], self.relpath, pdfname )
-        
-    def write(self):
-        
-        super().write()
-        try:
-            os.chdir( self.temp_dir )
-        except Exception as e:
-            print( 'Cannot open temporary directory: %s' %
-                e )
-            raise
-        print(f'Running lilypond-book ({self.filename})...')
-        try:
-            subprocess.run([
-                'lilypond-book',
-                '--loglevel=ERROR',
-                '--format=html',
-                f"--output=out",
-                '--lily-output-dir=bah',
-                '--use-source-file-names',
-                self.filename],
-                check=True,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE)
-        except subprocess.CalledProcessError as e:
-            functions.runerror(e)
-        os.chdir( self.root_dir )
-
 class Lilypond(Format):
     def render(self):
         try:

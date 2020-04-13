@@ -174,9 +174,6 @@ class Sheet(Node):
             ( 'image', {
                 'class': formats.PNG,
                 'ext': 'png' } )
-            #( 'HTML_fragment', {
-                #'class': formats.HTML_fragment,
-                #'ext': 'htmly' } )
                 ]
         
         super().__init__(slug, path, settings, parent, root)
@@ -193,9 +190,9 @@ class Entry(Branch):
     
     def __init__(self, slug, path, settings, parent, root):               
         self.templates = [
-            #( 'page', {
-                #'class': formats.HTML_page,
-                #'ext': 'html' } )
+            ( 'page', {
+                'class': formats.HTML_page,
+                'ext': 'html' } )
                 ]
         
         super().__init__(slug, path, settings, parent, root)

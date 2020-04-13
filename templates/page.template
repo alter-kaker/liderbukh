@@ -1,16 +1,26 @@
  <!--(set_escape)-->None<!--(end)-->
+ <!--(macro var_entry)-->
+                  @!child.data['notes']!@
+                  <img src="@!child.formats['image'].link!@" />
+                  <h2>אַראָפּלאָד די נאָטן</h2>
+                  <ul>
+                    <li><a href="@!child.formats['leadsheet'].link!@">pdf</a></li>
+                    <li><a href="@!child.formats['music'].link!@">ly</a></li>
+                  </ul>
+ <!--(end)-->
+ 
  <!DOCTYPE=html>
 <html lang="yi" dir='rtl'>
     <head>
         <meta charset="utf-8"> 
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>@!name!@</title>
+        <title>@!tree.meta['name']!@—@!name!@</title>
         <link rel="canonical" href="@!canonical_url!@">
         <link rel="stylesheet" type="text/css" href="style.css" media="screen"/>
     </head>
     <body>
         <header>
-            <h1>@!name!@</h1>
+            <h1><a href='@!tree.formats['index'].link!@'>@!tree.meta['name']!@</a></h1>
             <nav>
                 <ul>
                     <!--(for category in tree.children)-->
@@ -21,13 +31,29 @@
         </header>
         
         <main>
-            <!--(for child in children)-->
             <article>
-                @!child.data['notes']!@
-                <img src="@!child.formats['image'].link!@" />
-                <a href="@!child.formats['leadsheet'].link!@">pdf</a> <a href="@!child.formats['music'].link!@">ly</a>
-            </article>
+            <!--(if len(children) == 1 or canon)-->
+@!var_entry(child = children[0])!@
             <!--(end)-->
+            <!--(if len(children) > 1)-->
+            <h1>וואַריאַנטן</h1>
+            <ul>
+              <!--(if canon)-->
+                <!--(for child in children[1:])-->
+                <li>
+@!var_entry(child = child)!@
+                </li>
+                <!--(end)-->
+              <!--(else)-->
+                <!--(for child in children)-->
+                <li>
+@!var_entry(child = child)!@
+                </li>
+                <!--(end)
+              <!--(end)-->
+            </ul>
+            <!--(end)-->
+            </article>
         </main>
         <footer>
         <ul>
