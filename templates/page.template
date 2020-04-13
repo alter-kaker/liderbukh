@@ -1,11 +1,11 @@
  <!--(set_escape)-->None<!--(end)-->
  <!--(macro var_entry)-->
-                  @!child.data['notes']!@
                   <img src="@!child.formats['image'].link!@" />
+                  <p>@!child.data['notes']!@</p>
                   <h3>אַראָפּלאָד די נאָטן</h3>
-                  <ul>
+                  <ul class='download'>
                     <li><a href="@!child.formats['leadsheet'].link!@">pdf</a></li>
-                    <li><a href="@!child.formats['music'].link!@">ly</a></li>
+                    <li><a href="@!child.formats['music'].link!@">lilypond</a></li>
                   </ul>
  <!--(end)-->
  
@@ -16,18 +16,11 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>@!tree.meta['name']!@—@!name!@</title>
         <link rel="canonical" href="@!canonical_url!@">
-        <link rel="stylesheet" type="text/css" href="style.css" media="screen"/>
+        <link rel="stylesheet" type="text/css" href="@!tree.settings['root']!@/style.css" media="screen"/>
     </head>
     <body>
         <header>
             <h1><a href='@!tree.formats['index'].link!@'>@!tree.meta['name']!@</a></h1>
-            <nav>
-                <ul>
-                    <!--(for category in tree.children)-->
-                    <li>@!category.meta['name']!@</li>
-                    <!--(end)-->
-                </ul>
-            </nav>
         </header>
         
         <main>

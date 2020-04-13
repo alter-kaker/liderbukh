@@ -29,28 +29,7 @@
                 <ul>
                 <!--(for entry in category.children)-->
                     <li class="entry">
-                    <!--(if len(entry.children) == 1 or entry.meta['canon'])-->
-@!var_entry(item = entry.children[0])!@
-                    <!--(else)-->
-                        @!entry.meta['name']!@
-                    <!--(end)-->
-                    <!--(if len(entry.children) > 1)-->
-                        <ul>
-                        <!--(if entry.meta['canon'])-->
-                            <!--(for variation in entry.children[1:])-->
-                            <li class="entry">
-@!var_entry(item = variation)!@
-                            </li><!-- variation -->
-                            <!--(end)-->
-                        <!--(else)-->
-                            <!--(for variation in entry.children)-->
-                           <li class="entry">
-@!var_entry(item = variation)!@
-                            </li><!-- variation -->
-                            <!--(end)-->
-                        <!--(end)-->
-                        </ul><!-- variation list -->
-                    <!--(end)-->
+                    <a href='@!entry.formats['page'].link!@'>@!entry.meta['name']!@</a>
                 <!--(end)-->
                     </li><!-- entry -->
                 </ul><!-- entry list-->

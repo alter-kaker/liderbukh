@@ -23,55 +23,12 @@ ul {
     padding: 0
 }
 
-li ul {
-    padding-right: 1.5em;
-}
-
-ul li ul li ul {
-    list-style: outside;
-    padding-right: 2em;
-}
-
 li {
-    padding-bottom: .75em;
-}
-
-.downloads {
-    direction: ltr;
-    display: block;
-    padding-right: 1em;
-    font-size: .75em;
-}
-.downloads:after { 
-    content:  "\00AB" 
-}
-.entry-name {
-    display: block;
-}
-.dots {
-    border-bottom: dotted 2px;
-    overflow: auto;
-    position: relative;
-    top: -6px;
-    display: none;
+  padding-bottom: .75em;
+  padding-right: 2em;
 }
 
     @media screen and (min-width: 27em) {
-        .dots {
-            display: block;
-        }
-        .downloads {
-            padding-right: 5px;
-            float: left;
-            font-size: 1em;
-        }
-        .downloads:after { 
-            content:  "" 
-        }
-        .entry-name {
-            padding-left: 5px;
-            float: right;
-        }
         li {
             padding-bottom: 0;
         }
@@ -80,10 +37,8 @@ li {
         }
 }
 
-.entry:after {
-    content: "";
-    display: table;
-    clear: both;
+ul.download {
+  list-style: inside;
 }
 
 
