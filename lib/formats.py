@@ -224,12 +224,14 @@ class HTML(Format):
 
 class HTML_page(HTML, WritableFormat):
     def __init__(self, slug, data, parent, relpath, filename ):
-        super().__init__( slug, data, parent, relpath, filename )
+        super().__init__( slug, data, parent, relpath, 'index.html' )
         self.data.update( { 
             'tree': parent.root,
             'canonical_url': os.path.join(
                 parent.settings['root'], relpath, filename ),
             'children': self.parent.children } )
+        self.link = os.path.join(
+            self.parent.settings['root'], self.relpath )
 
 class HTML_index(HTML_page):
     pass

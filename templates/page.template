@@ -17,7 +17,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>@!tree.meta['name']!@—@!name!@</title>
         <link rel="canonical" href="@!canonical_url!@">
-        <link rel="stylesheet" type="text/css" href="@!tree.settings['root']!@/style.css" media="screen"/>
+        <link rel="stylesheet" type="text/css" href="@!tree.settings['root']!@style.css" media="screen"/>
     </head>
     <body>
         <header>
