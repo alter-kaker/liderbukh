@@ -51,11 +51,14 @@ class WritableFormat(Format):
         self.output_dir = os.path.join(
             self.parent.settings['output_dir'], relpath )
         self.root_dir = os.getcwd()
-        self.output_names = [ filename ]
+        self.output_filename = filename
         self.link = os.path.join(
-            parent.settings['root'], self.relpath, filename )
+            self.parent.settings['root'], self.relpath, self.output_filename )
+        
     
-    def make(self):
+    def make(self):        
+        print(f'Creating {self.link}')
+        
         self.render()
         self.write()
         self.copy()
@@ -93,11 +96,9 @@ class WritableFormat(Format):
         
         path = os.path.join( self.temp_dir, self.filename )
         
-        print(f"Writing { path }" )
         try:
             with open( path, 'w+', encoding='utf-8') as f:
                 f.write(self.output)
-                print('Success!')
         
         except Exception as e:
             print( 'Error: %s\n' % (e) )
@@ -111,28 +112,24 @@ class WritableFormat(Format):
                 print('Failed to create output directory at %s: %s' % (self.output_dir, e))
                 raise
         
-        for filename in self.output_names:
-            print(f"Copying { filename } to output folder..." )
-            try:
-                subprocess.run([
-                    'cp',
-                    os.path.join( self.temp_dir, filename ),
-                    self.output_dir],
-                    check=True,
-                    stdout=subprocess.PIPE,
-                    stderr=subprocess.PIPE)
-            except subprocess.CalledProcessError as e:
-                functions.runerror(e)
-            print('Success!')
+        try:
+            subprocess.run([
+                'cp',
+                os.path.join( self.temp_dir, self.output_filename ),
+                self.output_dir],
+                check=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE)
+        except subprocess.CalledProcessError as e:
+            functions.runerror(e)
 
 class TeX(WritableFormat):
     def __init__(self, slug, data, parent, relpath, filename ):
         super().__init__( slug, data, parent, relpath, filename )
-        
-        pdfname = f"{ os.path.splitext(filename)[0] }.pdf"
         self.texname = f"{ os.path.splitext(filename)[0] }.tex"
-        self.output_names = [ pdfname ]
-        self.link = os.path.join(  parent.settings['root'], self.relpath, pdfname )
+        self.output_filename = f"{ os.path.splitext(filename)[0] }.pdf"
+        self.link = os.path.join(
+            self.parent.settings['root'], self.relpath, self.output_filename )
     
     def parse(self, datum):
         return parser.parse_tex(datum)
@@ -147,7 +144,6 @@ class TeX(WritableFormat):
                 e )
             raise
         
-        print('Running lilypond-book (PDF)...')
         try:
             subprocess.run([
                 'lilypond-book',
@@ -160,7 +156,6 @@ class TeX(WritableFormat):
         except subprocess.CalledProcessError as e:
             functions.runerror(e)
         
-        print( 'Running XeLaTeX...' )
         try:
             subprocess.run([
                 'xelatex',
@@ -206,9 +201,6 @@ class PNG(WritableFormat):
                 e )
             raise
         
-        
-        
-        print('Running lilypond (PNG)...')
         try:
             subprocess.run([
                 'lilypond-book',
