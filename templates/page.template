@@ -7,6 +7,16 @@
                   <ul class='download'>
                     <li><a href="@!child.formats['leadsheet'].link!@">pdf</a></li>
                     <li><a href="@!child.formats['music'].link!@">lilypond</a></li>
+                  <h3>דאַטן</h3>
+                  <ul>
+                    <li>טיטל: @!child.meta['name']!@</li>
+                  <!--(if child.meta['textby'])-->
+                    <li>טעקסט: @!child.meta['textby']!@</li>
+                  <!--(end)-->
+                  <!--(if child.meta['musicby'])-->
+                    <li>מוזיק: @!child.meta['musicby']!@</li>
+                  <!--(end)-->
+                    <li>טראַנסקריבירן פֿון @!child.meta['transcriber']!@</li>
                   </ul>
  <!--(end)-->
  
