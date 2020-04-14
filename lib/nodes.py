@@ -84,12 +84,16 @@ class Node:
                 filename = f"{ self.slug }.{ v['ext'] }"
             except KeyError:
                 filename = False
+            try:
+              data = { key: self.data[key] for key in v['data'] }
+            except KeyError as e:
+              data = {}
+            
             args = [
                       template, # slug
-                      self.data, #data
+                      data, #data
                       self, # parent
                       ]
-            print (f'object: {self.__class__}, {self.slug}, filename: {filename}')
             if filename:
                 args.extend([
                       self.meta['relpath'], #relpath
@@ -106,9 +110,7 @@ class Node:
         
     def write(self, recurse=True):
         for format in self.formats.values():
-            format.render()
-            format.write()
-            format.copy()
+            format.make()
         
 
 class Branch(Node):
@@ -173,18 +175,20 @@ class Sheet(Node):
         self.templates = [
             ( 'music', { 
                 'class': formats.Lilypond,
+                'data': ['music'],
                 'ext': 'ly' } ),
             ( 'leadsheet', {
                 'class': formats.TeX,
+                'data': ['lyrics', 'notes'],
                 'ext': 'lytex' } ),
             ( 'image', {
                 'class': formats.PNG,
                 'ext': 'png' } ),
             ( 'html', {
-                'class': formats.HTML_sheet
+                'class': formats.HTML_sheet,
+                'data': ['lyrics', 'notes']
                 } )
                 ]
-        
         super().__init__(slug, path, settings, parent, root)
 
         self.meta = {
@@ -224,6 +228,7 @@ class Book(Branch):
         self.templates = [
         ( 'index', { 
             'class': formats.HTML_index,
+            'data': ['intro'],
             'ext': 'html' } )
             ]
         super().__init__( slug, path, settings, None, self )

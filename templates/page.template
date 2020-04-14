@@ -1,7 +1,8 @@
  <!--(set_escape)-->None<!--(end)-->
  <!--(macro var_entry)-->
                   <img src="@!child.formats['image'].link!@" />
-                  <p>@!child.data['notes']!@</p>
+                  <p>@!child.formats['html'].data['notes']!@</p>
+                  <p>@!child.formats['html'].data['lyrics']!@</p>
                   <h3>אַראָפּלאָד די נאָטן</h3>
                   <ul class='download'>
                     <li><a href="@!child.formats['leadsheet'].link!@">pdf</a></li>

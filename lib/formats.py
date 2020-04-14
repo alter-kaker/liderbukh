@@ -24,36 +24,22 @@ import subprocess
 import re
 import os
 import pyratemp
-from lib import marktex
+from lib import parser
 from lib import functions
 
 class Format():
     def __init__(self, slug, data, parent ):
         self.slug = slug
-        self.data = data
+        self.data = { 
+            key: self.parse(value) for key, value in data.items()}
         self.parent = parent
     
-    def render( self ):
-        template_args = {}
-        with open( os.path.join( self.parent.settings['template_dir'],
-                        f"{ self.slug }.template") ) as template:
-            template_args['string'] = template.read()
-        template_args['data'] = {
-            **self.data,
-            **self.parent.meta,
-            'formats': self.parent.formats
-            }
-        template_args['escape'] = None
-        
-        try:
-            self.output = pyratemp.Template( **template_args )()
-        
-        except Exception as e:
-            print( f"{ self.slug }: ",
-                'Error processing template',
-                '\n',
-                f'{ e }' )
-            raise
+    def parse(self, datum):
+        return datum
+    
+    def make(self):
+        return False
+    
 
 class WritableFormat(Format):
     def __init__(self, slug, data, parent, relpath, filename ):
@@ -68,6 +54,35 @@ class WritableFormat(Format):
         self.output_names = [ filename ]
         self.link = os.path.join(
             parent.settings['root'], self.relpath, filename )
+    
+    def make(self):
+        self.render()
+        self.write()
+        self.copy()
+    
+    def render( self ):
+        template_args = {}
+        with open( os.path.join( self.parent.settings['template_dir'],
+                        f"{ self.slug }.template") ) as template:
+            template_args['string'] = template.read()
+        template_args['data'] = {
+            **self.data,
+            **self.parent.meta,
+            'formats': self.parent.formats
+            }
+        
+        template_args['escape'] = None
+        
+        try:
+            self.output = pyratemp.Template( **template_args )()
+        
+        except Exception as e:
+            print( f"{ self.slug }: ",
+                'Error processing template',
+                '\n',
+                f'{ e }' )
+            raise
+        
     def write( self ):
         if not os.path.isdir(self.temp_dir):
             try:
@@ -117,8 +132,10 @@ class TeX(WritableFormat):
         pdfname = f"{ os.path.splitext(filename)[0] }.pdf"
         self.texname = f"{ os.path.splitext(filename)[0] }.tex"
         self.output_names = [ pdfname ]
-        self.data['lyrics'] = marktex.marktex(self.data['lyrics'])
         self.link = os.path.join(  parent.settings['root'], self.relpath, pdfname )
+    
+    def parse(self, datum):
+        return parser.parse_tex(datum)
     
     def write(self):
         super().write()
@@ -158,21 +175,6 @@ class TeX(WritableFormat):
         
         os.chdir( self.root_dir )
 
-class HTML(WritableFormat):
-    def __init__(self, slug, data, parent, relpath, filename ):
-        super().__init__( slug, data, parent, relpath, filename )
-        self.data.update( { 'tree': parent.root } )
-        self.data['canonical_url'] = os.path.join( 
-            parent.settings['root'], relpath, filename )
-
-class HTML_index(HTML):
-    pass
-
-class HTML_page(HTML):
-    def __init__(self, slug, data, parent, relpath, filename ):
-        super().__init__( slug, data, parent, relpath, filename )
-        self.data.update( { 'children': self.parent.children } )
-
 class Lilypond(WritableFormat):
     def render(self):
         try:
@@ -195,9 +197,6 @@ class PNG(WritableFormat):
         
         self.filename = f"{ os.path.splitext(filename)[0] }.htmly"
         
-    #def render(self):
-        #pass
-    
     def write(self):
         super().write()
         try:
@@ -225,5 +224,23 @@ class PNG(WritableFormat):
             functions.runerror(e)
         os.chdir( self.root_dir )
 
-class HTML_sheet(Format):
+
+
+class HTML(Format):
+    def parse(self, datum):
+        return parser.parse_html(datum)
+
+class HTML_page(HTML, WritableFormat):
+    def __init__(self, slug, data, parent, relpath, filename ):
+        super().__init__( slug, data, parent, relpath, filename )
+        self.data.update( { 
+            'tree': parent.root,
+            'canonical_url': os.path.join(
+                parent.settings['root'], relpath, filename ),
+            'children': self.parent.children } )
+
+class HTML_index(HTML_page):
+    pass
+
+class HTML_sheet(HTML):
     pass

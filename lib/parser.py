@@ -93,5 +93,6 @@ output may be broken.' % \
 
         return '\\link{' + (text or link) + '}'
 
-marktex = mistune.Markdown(
+parse_tex = mistune.Markdown(
                 renderer=LyricsRenderer(escape=False))
+parse_html = mistune.Markdown(hard_wrap=True)
