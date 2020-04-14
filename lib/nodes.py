@@ -109,8 +109,11 @@ class Node:
                 raise
         
     def write(self, recurse=True):
-        for format in self.formats.values():
-            format.make()
+        try:
+            for format in self.formats.values():
+              format.make()
+        except AttributeError:
+            pass
         
 
 class Branch(Node):
