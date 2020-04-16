@@ -29,32 +29,39 @@ from lib import functions
 
 class Format():
     def __init__(self, slug, data, parent ):
+        
         self.slug = slug
-        self.data = { 
-            key: self.parse(value) for key, value in data.items()}
         self.parent = parent
+        self.data = self.parse(data)
     
-    def parse(self, datum):
-        return datum
+    def parse(self, data):
+        return { 
+            key:  self.parser(value) for key, value in data.items()}
     
     def make(self):
         return False
     
+    def parser(self, datum):
+        return datum
+    
 
 class WritableFormat(Format):
     def __init__(self, slug, data, parent, relpath, filename ):
-        super().__init__(slug, data, parent )
         self.relpath = relpath
         self.filename = filename
+        self.root_dir = os.getcwd()
+        self.output_filename = filename
+        
+        super().__init__(slug, data, parent )
+        
+        self.link = os.path.join(
+            self.parent.settings['root'], self.relpath, self.output_filename )
         self.temp_dir = os.path.join(
             self.parent.settings['temp_dir'], relpath )
         self.output_dir = os.path.join(
             self.parent.settings['output_dir'], relpath )
-        self.root_dir = os.getcwd()
-        self.output_filename = filename
-        self.link = os.path.join(
-            self.parent.settings['root'], self.relpath, self.output_filename )
         
+        self.template_data = {}
     
     def make(self):        
         print(f'Creating {self.link}')
@@ -65,13 +72,15 @@ class WritableFormat(Format):
     
     def render( self ):
         template_args = {}
+        self.template_data['formats'] = self.parent.formats
+        
         with open( os.path.join( self.parent.settings['template_dir'],
                         f"{ self.slug }.template") ) as template:
             template_args['string'] = template.read()
         template_args['data'] = {
             **self.data,
-            **self.parent.meta,
-            'formats': self.parent.formats
+            **self.template_data,
+            **self.parent.meta
             }
         
         template_args['escape'] = None
@@ -131,7 +140,7 @@ class TeX(WritableFormat):
         self.link = os.path.join(
             self.parent.settings['root'], self.relpath, self.output_filename )
     
-    def parse(self, datum):
+    def parser(self, datum):
         return parser.parse_tex(datum)
     
     def write(self):
@@ -171,26 +180,32 @@ class TeX(WritableFormat):
         os.chdir( self.root_dir )
 
 class Lilypond(WritableFormat):
-    def render(self):
+    def parser(self, datum):
         try:
             os.chdir( os.path.join( self.parent.settings['data_dir'], self.relpath ) )
-            matches = re.findall(r"(?:\\include )[\"](.+)[\"]", self.data['music'], flags=0)
+            matches = re.findall(r"(?:\\include )[\"](.+)[\"]", datum, flags=0)
             for match in matches:
                 with open(match) as include:
-                    self.data['music'] = self.data['music'].replace(f'\include "{match}"', include.read())
+                    datum = datum.replace(f'\include "{match}"', include.read())
             os.chdir( self.root_dir )
+            return datum
         except Exception as e:
             print( e )
             raise
         
-        super().render()
-        
 
-class PNG(WritableFormat):
+class PNG(Lilypond):
     def __init__(self, slug, data, parent, relpath, filename ):
+        
         super().__init__( slug, data, parent, relpath, filename )
         
-        self.filename = f"{ os.path.splitext(filename)[0] }.htmly"
+        self.basename = os.path.splitext(filename)[0]
+    
+    def render(self):
+        self.musicsource = f"{ self.basename }.lily"
+        self.template_data['musicsource'] = self.musicsource
+        
+        super().render()
         
     def write(self):
         super().write()
@@ -200,6 +215,12 @@ class PNG(WritableFormat):
             print( 'Cannot open temporary directory: %s' %
                 e )
             raise
+        try:
+            with open( self.musicsource, 'w+', encoding='utf-8') as f:
+                f.write(self.data['music'])
+        
+        except Exception as e:
+            print( 'Error: %s\n' % (e) )
         
         try:
             subprocess.run([
@@ -214,18 +235,19 @@ class PNG(WritableFormat):
                 stderr=subprocess.PIPE)
         except subprocess.CalledProcessError as e:
             functions.runerror(e)
+        
         os.chdir( self.root_dir )
 
 
 
 class HTML(Format):
-    def parse(self, datum):
+    def parser(self, datum):
         return parser.parse_html(datum)
 
 class HTML_page(HTML, WritableFormat):
     def __init__(self, slug, data, parent, relpath, filename ):
         super().__init__( slug, data, parent, relpath, 'index.html' )
-        self.data.update( { 
+        self.template_data.update( { 
             'tree': parent.root,
             'canonical_url': os.path.join(
                 parent.settings['root'], relpath, filename ),

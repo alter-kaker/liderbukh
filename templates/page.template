@@ -1,15 +1,7 @@
  <!--(set_escape)-->None<!--(end)-->
  <!--(macro var_entry)-->
-                  <img src="@!child.formats['image'].link!@" />
-                  <p>@!child.formats['html'].data['notes']!@</p>
-                  <p>@!child.formats['html'].data['lyrics']!@</p>
-                  <h3>אַראָפּלאָד די נאָטן</h3>
-                  <ul class='download'>
-                    <li><a href="@!child.formats['leadsheet'].link!@">pdf</a></li>
-                    <li><a href="@!child.formats['music'].link!@">lilypond</a></li>
-                  <h3>דאַטן</h3>
+                  <h2>@!child.meta['name']!@</h2>
                   <ul>
-                    <li>טיטל: @!child.meta['name']!@</li>
                   <!--(if child.meta['textby'])-->
                     <li>טעקסט: @!child.meta['textby']!@</li>
                   <!--(end)-->
@@ -18,6 +10,13 @@
                   <!--(end)-->
                     <li>טראַנסקריבירן פֿון @!child.meta['transcriber']!@</li>
                   </ul>
+                  <img src="@!child.formats['image'].link!@" />
+                  <p>@!child.formats['html'].data['notes']!@</p>
+                  <p>@!child.formats['html'].data['lyrics']!@</p>
+                  <h3>אַראָפּלאָד די נאָטן</h3>
+                  <ul class='download'>
+                    <li><a href="@!child.formats['leadsheet'].link!@">pdf</a></li>
+                    <li><a href="@!child.formats['music'].link!@">lilypond</a></li>
  <!--(end)-->
  
  <!DOCTYPE=html>
@@ -25,7 +24,7 @@
     <head>
         <meta charset="utf-8"> 
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>@!tree.meta['name']!@—@!name!@</title>
+        <title>@!name!@—@!tree.meta['name']!@</title>
         <link rel="canonical" href="@!canonical_url!@">
         <link rel="stylesheet" type="text/css" href="@!tree.settings['root']!@style.css" media="screen"/>
     </head>

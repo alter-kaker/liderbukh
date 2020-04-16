@@ -108,12 +108,14 @@ class Node:
                 print(f"{self.slug}: Failed to initialize template {template}")
                 raise
         
-    def write(self, recurse=True):
+    def make(self, recurse=True):
+        #for format in self.formats.values():
+          #format.parse()
         try:
             for format in self.formats.values():
               format.make()
         except AttributeError:
-            pass
+                pass
         
 
 class Branch(Node):
@@ -159,14 +161,14 @@ class Branch(Node):
         return self.children[key]
     
     def write(self, recurse=True):
-        super().write(recurse = recurse)
+        super().make(recurse = recurse)
         if recurse:
                 #try:
                     for child in self.children:
                         try:
-                            child.write( recurse=True )
+                            child.make( recurse=True )
                         except Exception as e:
-                            print(f'Error writing: {child.slug}, {e}')
+                            print(f'Error making: {child.slug}, {e}')
                             raise
                 #except:
                     #pass
@@ -186,6 +188,7 @@ class Sheet(Node):
                 'ext': 'lytex' } ),
             ( 'image', {
                 'class': formats.PNG,
+                'data': ['music'],
                 'ext': 'png' } ),
             ( 'html', {
                 'class': formats.HTML_sheet,
