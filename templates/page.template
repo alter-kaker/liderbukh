@@ -10,7 +10,7 @@
                   <!--(end)-->
                     <li>טראַנסקריבירן פֿון @!child.meta['transcriber']!@</li>
                   </ul>
-                  <img src="@!child.formats['image'].link!@" />
+                  <img class="score" src="@!child.formats['image'].link!@" />
                   <p>@!child.formats['html'].data['notes']!@</p>
                   <p>@!child.formats['html'].data['lyrics']!@</p>
                   <h3>אַראָפּלאָד די נאָטן</h3>
