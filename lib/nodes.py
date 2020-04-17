@@ -108,12 +108,10 @@ class Node:
                 print(f"{self.slug}: Failed to initialize template {template}")
                 raise
         
-    def make(self, recurse=True):
-        #for format in self.formats.values():
-          #format.parse()
+    def make(self):
         try:
             for format in self.formats.values():
-              format.make()
+                format.make()
         except AttributeError:
                 pass
         
@@ -160,18 +158,15 @@ class Branch(Node):
     def __getitem__(self, key):
         return self.children[key]
     
-    def write(self, recurse=True):
-        super().make(recurse = recurse)
+    def make(self, recurse=True):
+        super().make()
         if recurse:
-                #try:
-                    for child in self.children:
-                        try:
-                            child.make( recurse=True )
-                        except Exception as e:
-                            print(f'Error making: {child.slug}, {e}')
-                            raise
-                #except:
-                    #pass
+            for child in self.children:
+                try:
+                    child.make()
+                except Exception as e:
+                    print(f'Error making: {child.slug}, {e}')
+                    raise
         
 class Sheet(Node):
     _level = 3
@@ -244,6 +239,3 @@ class Result(Branch):
     def __init__(self):
         self.children = []
         self.slug = 'result'
-    def write(self):
-        for child in self.children:
-            child.write( recurse=True )

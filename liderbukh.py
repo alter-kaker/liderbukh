@@ -75,11 +75,16 @@ if __name__ == "__main__":
     )
     
     print (f'Remote build: {args.remote_build}')
-
-    result = tree.query(args.query)
-
-    if args.display:
-        print(result)
-
-    if not args.no_write:
-        result.write()
+    
+    if len(args.query) > 0:
+        result = tree.query(args.query)
+        if args.display:
+            print(result)
+        if not args.no_write:
+            tree.make(recurse=False)
+            result.make()
+    else:
+        if args.display:
+            print(tree)
+        if not args.no_write:
+            tree.make(recurse=True)

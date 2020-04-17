@@ -64,7 +64,7 @@ class WritableFormat(Format):
         self.template_data = {}
     
     def make(self):        
-        print(f'Creating {self.link}')
+        print(f'Creating { os.path.join(self.output_dir, self.output_filename) }')
         
         self.render()
         self.write()
