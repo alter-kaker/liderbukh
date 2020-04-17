@@ -106,6 +106,7 @@ class WritableFormat(Format):
         path = os.path.join( self.temp_dir, self.filename )
         
         try:
+            print('writing', path)
             with open( path, 'w+', encoding='utf-8') as f:
                 f.write(self.output)
         
@@ -200,9 +201,11 @@ class PNG(Lilypond):
         super().__init__( slug, data, parent, relpath, filename )
         
         self.basename = os.path.splitext(filename)[0]
+        self.output_filename = self.filename
+        self.filename = f"{ self.basename }.htmly"
     
     def render(self):
-        self.musicsource = f"{ self.basename }.lily"
+        self.musicsource = f"{ self.basename }.pngly"
         self.template_data['musicsource'] = self.musicsource
         
         super().render()
@@ -227,7 +230,7 @@ class PNG(Lilypond):
                 'lilypond-book',
                 '--loglevel=ERROR',
                 '--format=html',
-                '--lily-output-dir=bah',
+                '--lily-output-dir=lily',
                 '--use-source-file-names',
                 self.filename],
                 check=True,
