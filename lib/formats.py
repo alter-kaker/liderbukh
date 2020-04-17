@@ -106,7 +106,6 @@ class WritableFormat(Format):
         path = os.path.join( self.temp_dir, self.filename )
         
         try:
-            print('writing', path)
             with open( path, 'w+', encoding='utf-8') as f:
                 f.write(self.output)
         
