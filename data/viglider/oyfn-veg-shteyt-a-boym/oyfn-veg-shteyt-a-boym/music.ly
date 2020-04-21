@@ -3,88 +3,88 @@
 
 \include "../../../../templates/preamble.ly"
 mel = \relative a'{
-  g8 g d'2 	|
-  c8 c bf2	|
-  c8 c bf4. a8 	|
-  a4 bf2		|
-  g8 g d' d4. 	|
-  c8 c bf2	|
-  c8 c bf4.a8	|
-  a4 g2		|
-  g8 g d'4 d	|
-  c8 c bf4 bf	|
-  c8 c bf4 a	|
-  a4 bf2	|
-  g8 g d'4. d8	|
-  c8 c bf2	|
-  c8 c bf4. a8	|
-  a4 g2		|
-  f'8 f g4. g8	|
-  f8 f bf,2	|
-  f'4. ef8 f ef	|
-  d4 d2		|
-  f8 f g4. f8	|
-  bf a g2	|
-  f4. ef8 f ef	|
-  d4 d2		|
-  bf8 d f4. d8	|
-  d c c2		|
-  d8 bf bf4 g	|
-  g f2		|
-  bf8 a c4 bf |
-  df8 c c2	|
-  bf4. a8 a g	|
-  g4 g2		|
-  g4 d'8 c c bf	|
-  bf c c bf bf a	|
-  a bf bf a a g	|
-  g bf a c bf4	|
-  g d'8 c c bf	|
-  bf c c bf bf a 	|
-  bf4. a8 a g	|
-  g2.
+  a8 a e'2 	|
+  d8 d c2	|
+  d8 d c4. b8 	|
+  b4 c2		|
+  a8 a e' e4. 	|
+  d8 d c2	|
+  d8 d c4.b8	|
+  b4 a2		|
+  a8 a e'4 e	|
+  d8 d c4 c	|
+  d8 d c4 b	|
+  b4 c2	|
+  a8 a e'4. e8	|
+  d8 d c2	|
+  d8 d c4. b8	|
+  b4 a2		|
+  g'8 g a4. a8	|
+  g8 g c,2	|
+  g'4. f8 g f	|
+  e4 e2		|
+  g8 g a4. g8	|
+  c b a2	|
+  g4. f8 g f	|
+  e4 e2		|
+  c8 e g4. e8	|
+  e d d2		|
+  e8 c c4 a	|
+  a g2		|
+  c8 b d4 c |
+  ef8 d d2	|
+  c4. b8 b a	|
+  a4 a2		|
+  a4 e'8 d d c	|
+  c d d c c b	|
+  b c c b b a	|
+  a c b d c4	|
+  a e'8 d d c	|
+  c d d c c b 	|
+  c4. b8 b a	|
+  a2.
 }
 acc = \chordmode { 
-  g2.:m		|
-  c4:m g2:m	|
-  c4:m d2:	|
-  g2.:m		|
-  g2.:m		|
-  c4:m g2:m	|
-  c4:m d2:	|
-  g2.:m		|
-  g2.:m		|
-  c4:m g2:m	|
-  c4:m d2:	|
-  g2.:m		|
-  g:m		|
-  c4:m g2:m	|
-  d2.:7		|
-  g:m		|
-  bf4: ef2:	|
-  bf2.:		|
-  f:7		|
-  bf:		|
-  bf4: ef2:	|
-  g4:m ef2:	|
-  f2.:7		|
-  bf:		|
-  bf:		|
-  d:7		|
-  g:m		|
-  f:7		|
-  bf:		|
-  c:m		|
-  d:7		|
-  g:m		|
-  g:m		|
-  c:m		|
-  d:7		|
-  g4:m d: g:m	|
-  g2.:m		|
-  c:m		|
-  d:7		|
-  g:m		|
+  a2.:m		|
+  d4:m a2:m	|
+  d4:m e2:	|
+  a2.:m		|
+  a2.:m		|
+  d4:m a2:m	|
+  d4:m e2:	|
+  a2.:m		|
+  a2.:m		|
+  d4:m a2:m	|
+  d4:m e2:	|
+  a2.:m		|
+  a:m		|
+  d4:m a2:m	|
+  e2.:7		|
+  a:m		|
+  c4: f2:	|
+  c2.:		|
+  g:7		|
+  c:		|
+  c4: f2:	|
+  a4:m f2:	|
+  g2.:7		|
+  c:		|
+  c:		|
+  e:7		|
+  a:m		|
+  g:7		|
+  c:		|
+  d:m		|
+  e:7		|
+  a:m		|
+  a:m		|
+  d:m		|
+  e:7		|
+  a4:m e: a:m	|
+  a2.:m		|
+  d:m		|
+  e:7		|
+  a:m		|
 }
 
 \score {
@@ -95,7 +95,7 @@ acc = \chordmode {
       }
     \new Staff {
       \clef treble
-      \key g \minor
+      \key a \minor
       \time 3/4
       \tempo "Ballad style"
       \new Voice = "melody" {

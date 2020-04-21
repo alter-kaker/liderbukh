@@ -3,46 +3,46 @@
 \include "../../../../templates/preamble.ly"
 
 mel = \relative b {
-  d8 g g g |
-  bf g g g |
-  bf a16 bf c8 bf16( a) |
-  bf4 bf8 r |
-  bf16 bf a bf c8 bf16( a) |
-  bf4 bf8 r |
+  e8 a a a |
+  c a a a |
+  c b16 c d8 c16( b) |
+  c4 c8 r |
+  c16 c b c d8 c16( b) |
+  c4 c8 r |
   \repeat volta 2 {
-    d16 d d d d d d d |
-    g8 g, g16 g g8 |
+    e16 e e e e e e e |
+    a8 a, a16 a a8 |
   }
   \alternative {
     {
-      bf a16( bf) c8 bf16( a) |
-      g8( bf) d r
+      c b16( c) d8 c16( b) |
+      a8( c) e r
     }
     {
-      bf a16( bf) c8 bf16( a) |
-      g4 g8 r
+      c b16( c) d8 c16( b) |
+      a4 a8 r
     }
   }
 }
 acc = \chordmode {
-  g2:m |
-  g:m |
-  ef4: f: |
-  bf2: |
-  c4:m7 d:7 |
-  g2:m |
+  a2:m |
+  a:m |
+  f4: g: |
+  c2: |
+  d4:m7 e:7 |
+  a2:m |
   \repeat volta 2 {
-    g2: |
-    c4:m7+ g:m |
+    a2: |
+    d4:m7+ a:m |
   }
   \alternative {
     { 
-      ef4: f: |
-      bf2:
+      f4: g: |
+      c2:
       }
     {
-      ef4: d:7 |
-      g2:m
+      f4: e:7 |
+      a2:m
     }
   }
 }
@@ -54,7 +54,7 @@ acc = \chordmode {
     }
     \new Staff {
       \clef treble
-      \key g \minor
+      \key a \minor
       \time 2/4
       \tempo Andantino
       \new Voice = "melody" {

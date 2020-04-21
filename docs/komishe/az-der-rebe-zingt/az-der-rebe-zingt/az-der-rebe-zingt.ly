@@ -88,36 +88,36 @@ end =
       }
     }
   }
-mel = \relative a {
-    \partial 8 {d8} |
-    g a bf c d4. d,8 |
-    g a bf c d4 r8 d( |
-    ef4) r8 ef g4 f8 ef |
-    d4.( bf8) d4 b |
-    c8 c c c c4 a |
-    bf8 bf bf bf bf2 |
-    a4 a d8( c) bf a |
-    g4( a bf) b |
-    c8 c c c c4 a |
-    bf8 bf bf bf bf2 |
-    a4 a d8( c) bf a |
-    \end 7/8 g2 g4 r8
+mel = \relative a' {
+    \partial 8 {e8} |
+    a b c d e4. e,8 |
+    a b c d e4 r8 e( |
+    f4) r8 f a4 g8 f |
+    e4.( c8) e4 cs |
+    d8 d d d d4 b |
+    c8 c c c c2 |
+    b4 b e8( d) c b |
+    a4( b c) cs |
+    d8 d d d d4 b |
+    c8 c c c c2 |
+    b4 b e8( d) c b |
+    \end 7/8 a2 a4 r8
   }
 
 acc = \chordmode {
   \partial 8 { s8 }
-  g1:m |
-  g:m |
-  c:m |
-  g:m |
-  c:m |
-  g:m |
-  c2:m7 d:7 |
-  g2.:m g4:7 |
-  c1:m |
-  g:m |
-  c2:m7 d:7 |
-  g8*7:m
+  a1:m |
+  a:m |
+  d:m |
+  a:m |
+  d:m |
+  a:m |
+  d2:m7 e:7 |
+  a2.:m a4:7 |
+  d1:m |
+  a:m |
+  d2:m7 e:7 |
+  a8*7:m
   }
 
 \score {
@@ -128,7 +128,7 @@ acc = \chordmode {
         }
     \new Staff {
       \clef treble
-      \key g \minor
+      \key a \minor
       \time 4/4
       \tempo Allegretto
       \new Voice = "melody" {

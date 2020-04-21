@@ -3,49 +3,49 @@
 \include "../../../../templates/preamble.ly"
 
 mel = \relative g' {
-  g8 r d r    |
-  g r bf r    |
-  a bf c d    |
-  bf a g4     |
-  g8 a bf c   |
-  d ef d4     |
-  d8 g f ef   |
-  d ef d4     |
-  c8 d ef c   |
-  bf c d bf   |
-  a bf c d    |
-  c bf a g    |
-  fs g a d,   |
-  g bf d4     |
-  c8 d16( ef) d8 c |
-  bf a g4     |
-  fs8 g a d,  |
-  bf' r a r   |
-  g2~   |
-  g4 r
+  a8 r e r    |
+  a r c r    |
+  b c d e    |
+  c b a4     |
+  a8 b c d   |
+  e f e4     |
+  e8 a g f   |
+  e f e4     |
+  d8 e f d   |
+  c d e c   |
+  b c d e    |
+  d c b a    |
+  gs a b e,   |
+  a c e4     |
+  d8 e16( f) e8 d |
+  c b a4     |
+  gs8 a b e,  |
+  c' r b r   |
+  a2~   |
+  a4 r
   }
 
 acc = \chordmode {
-  g2:m  |
-  g:m   |
-  d:7      |
-  g:m      |
-  f:7      |
-  bf       |
+  a2:m  |
+  a:m   |
+  e:7      |
+  a:m      |
   g:7      |
-  bf       |
-  c:m      |
-  g:m      |
-  d:7      |
-  g:m      |
-  d:7      |
-  g:m      |
-  c:m      |
-  g:m      |
-  d:7      |
-  bf4 d4:7  |
-  g2:m      |
-  g:m
+  c       |
+  a:7      |
+  c       |
+  d:m      |
+  a:m      |
+  e:7      |
+  a:m      |
+  e:7      |
+  a:m      |
+  d:m      |
+  a:m      |
+  e:7      |
+  c4 e4:7  |
+  a2:m      |
+  a:m
   }
 
 \score {
@@ -56,7 +56,7 @@ acc = \chordmode {
         }
     \new Staff {
       \clef treble
-      \key g \minor
+      \key a \minor
       \time 2/4
       \tempo Allegretto
       \new Voice = "melody" {

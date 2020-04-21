@@ -7,39 +7,39 @@
     \new ChordNames = "mainChords" {
       \chordmode { 
         s4. |
-        g2.:m |
-        bf |
-        c2:m6 d4:7 |
-        g2.:m |
-        g2:m bf4:7 |
-        ef4: f2: |
-        f2: bf4: |
-        g2.:m |
-        g2:m c4:m |
-        g2:m d4:7 |
-        g2.:m | g:m
+        a2.:m |
+        c |
+        d2:m6 e4:7 |
+        a2.:m |
+        a2:m c4:7 |
+        f4: g2: |
+        g2: c4: |
+        a2.:m |
+        a2:m d4:m |
+        a2:m e4:7 |
+        a2.:m | a:m
       }
     }
     \new Staff = "main" {
       \clef treble
-      \key g \minor
+      \key a \minor
       \time 3/4
       \tempo Andante
       \new Voice = "melody" {
-        \relative d'{ 
-          \partial 4. { g8 g8. c16 }
-          d4. f8 g8. f16 |
-          d4 bf8 r16 bf d8. d16 |
-          d4. bf8 c a |
-          g4 r8 g bf d |
-          g4. d8 bf'8. a16 |
-          g4 f a8. g16 |
-          f4. c8 d ef |
-          d2 d8 d |
-          d4.( c16 d ef8) c |
-          bf4.( a16 bf c8) a |
-          g2.~ |
-          \end 3/8 { g4 r8 } |
+        \relative d''{ 
+          \partial 4. { a8 a8. d16 }
+          e4. g8 a8. g16 |
+          e4 c8 r16 c e8. e16 |
+          e4. c8 d b |
+          a4 r8 a c e |
+          a4. e8 c'8. b16 |
+          a4 g b8. a16 |
+          g4. d8 e f |
+          e2 e8 e |
+          e4.( d16 e f8) d |
+          c4.( b16 c d8) b |
+          a2.~ |
+          \end 3/8 { a4 r8 } |
           \bar "|."
         }
       }

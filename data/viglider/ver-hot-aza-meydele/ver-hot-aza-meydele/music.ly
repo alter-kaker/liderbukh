@@ -6,87 +6,87 @@
   <<
     \new ChordNames {
       \chordmode { 
-        g2:m |
-        g2:m |
-        g2:m |
-        d2:7 |
-        g:m |
-        g:m |
-        g:m |
-        d:7 |
-        d:7 |
-        g:m |
-        ef: |
-        d:7 |
-        d:7 |
-        c:m6 |
-        ef: |
-        d:7 |
+        a2:m |
+        a2:m |
+        a2:m |
+        e2:7 |
+        a:m |
+        a:m |
+        a:m |
+        e:7 |
+        e:7 |
+        a:m |
+        f: |
+        e:7 |
+        e:7 |
+        d:m6 |
+        f: |
+        e:7 |
         \repeat volta 2 {
-          g:m |
-          d:7 |
-          d:7 |
-          g:m |
-          g:m |
-          d:7 |
-          c:m6 |
-          g4:m d4:7 |
-          bf2: |
-          c:m6 |
-          c:m6 |
-          g:m |
-          g:m |
-          d:7 |
+          a:m |
+          e:7 |
+          e:7 |
+          a:m |
+          a:m |
+          e:7 |
+          d:m6 |
+          a4:m e4:7 |
+          c2: |
+          d:m6 |
+          d:m6 |
+          a:m |
+          a:m |
+          e:7 |
         }
         \alternative {
-          { c4:m6 d:7 | g4.:m d8:7 }
-          { c4:m6 d:7 | g2.:m }
+          { d4:m6 e:7 | a4.:m e8:7 }
+          { d4:m6 e:7 | a2.:m }
         }
       }
     }
     \new Staff {
       \clef treble
-      \key g \minor
+      \key a \minor
       \time 2/4
       \tempo "Allegro moderato"
       \new Voice = "melody" {
         \relative d'{
-          d8 d d d |
-          fs16 ef d4. |
-          ef8 d ef g |
-          fs2 |
-          g8 fs g a |
-          bf16 a g4. |
-          bf8 g bf d |
-          a2 |
-          c8 a fs d |
-          bf'16 a g4. |
-          fs8 g a bf |
-          a4. r8|
-          bf a fs d8 |
-          bf'16 a g4 r16 g |
-          fs8 c ef g |
-          fs2 |
+          e8 e e e |
+          gs16 f e4. |
+          f8 e f a |
+          gs2 |
+          a8 gs a b |
+          c16 b a4. |
+          c8 a c e |
+          b2 |
+          d8 b gs e |
+          c'16 b a4. |
+          gs8 a b c |
+          b4. r8|
+          c b gs e8 |
+          c'16 b a4 r16 a |
+          gs8 d f a |
+          gs2 |
           
           \repeat volta 2 {
-            d'8 bf a g |
-            fs8. eff16 d8. d16 |
-            a'8 a bf a |
-            g2 |
-            d8 bf' a g |
-            fs8. ef16 d8 d16 d |
-            a'8 a bf a |
-            g2 |
-            bf8 d d d |
-            c8. bf16 a4 |
-            c8 ef d c |
-            bf8. a16 g4 |
-            d'8 bf a g  |
-            fs8. ef16 d8 d |
+            e'8 c b a |
+            gs8. ff16 e8. e16 |
+            b'8 b c b |
+            a2 |
+            e8 c' b a |
+            gs8. f16 e8 e16 e |
+            b'8 b c b |
+            a2 |
+            c8 e e e |
+            d8. c16 b4 |
+            d8 f e d |
+            c8. b16 a4 |
+            e'8 c b a  |
+            gs8. f16 e8 e |
             }
             \alternative {
-              { a' a bf a | g2 | }
-              { d'8 c bf a | g2 }
+              { b' b c b | a2 | }
+              { e'8 d c b | a2 }
             }
           }
         \bar "|."

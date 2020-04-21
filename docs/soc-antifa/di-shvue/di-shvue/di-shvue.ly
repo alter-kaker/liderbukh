@@ -92,45 +92,45 @@ end =
   }
 
 
-mel-a = \relative d' {
-  g4 bf8. bf16 a4 g8. g16 |
-  a4 a8. a16 a4 r |
-  a c8. c16 bf4 a8. g16 |
-  bf4 bf8. bf16 bf4 r8 bf |
-  bf4  d8. d16 c4 bf8. bf16 |
-  a4 c8. c16 bf4( a8.) a16 |
-  g8( a) bf d c( bf) a g |
-  d'4 d8. d16 d4 r8 d |
-  g( d)ef c bf4 a8. a16 |
-  g4 bf8 d g,4 r |
-  f'4 ef8 d g( f ef d) |
-  c4 c8 c f( ef d) c |
-  d4 f8. f16 ef4( d16) r16 g,8  |
-  c4 c8 c  c( a) bf c |
-  d4 ef8 c bf4 a8. g16 |
-  g'4 g8 g g( d) ef c |
-  d4 ef8 c bf4 a |
-  g bf8( d) g,2 
+mel-a = \relative d'' {
+  a4 c8. c16 b4 a8. a16 |
+  b4 b8. b16 b4 r |
+  b d8. d16 c4 b8. a16 |
+  c4 c8. c16 c4 r8 c |
+  c4  e8. e16 d4 c8. c16 |
+  b4 d8. d16 c4( b8.) b16 |
+  a8( b) c e d( c) b a |
+  e'4 e8. e16 e4 r8 e |
+  a( e)f d c4 b8. b16 |
+  a4 c8 e a,4 r |
+  g'4 f8 e a( g f e) |
+  d4 d8 d g( f e) d |
+  e4 g8. g16 f4( e16) r16 a,8  |
+  d4 d8 d  d( b) c d |
+  e4 f8 d c4 b8. a16 |
+  a'4 a8 a a( e) f d |
+  e4 f8 d c4 b |
+  a c8( e) a,2 
 }
 acc-a = \chordmode {
-  g1:m |
-  d:7 |
-  d:7 |
-  g:m |
-  bf: |
-  d:7 |
-  g2:m c:m |
-  d1:7 |
-  g4:m c:m d2:7 |
-  g1:m |
-  g:7 |
-  c2:m f:7 |
-  bf: c4:m g:7 |
-  c2:m d:7 |
-  g4:m c:m  d2:7 |
-  g:m  g4:m c:m |
-  g:m c:m  d2:7 |
-  g4:m d:7 g2:m
+  a1:m |
+  e:7 |
+  e:7 |
+  a:m |
+  c: |
+  e:7 |
+  a2:m d:m |
+  e1:7 |
+  a4:m d:m e2:7 |
+  a1:m |
+  a:7 |
+  d2:m g:7 |
+  c: d4:m a:7 |
+  d2:m e:7 |
+  a4:m d:m  e2:7 |
+  a:m  a4:m d:m |
+  a:m d:m  e2:7 |
+  a4:m e:7 a2:m
 }
 
 \score {
@@ -141,7 +141,7 @@ acc-a = \chordmode {
         }
     \new Staff {
       \clef treble
-      \key g \minor
+      \key a \minor
       \time 4/4
       \tempo Moderato
       \new Voice = "melody" {

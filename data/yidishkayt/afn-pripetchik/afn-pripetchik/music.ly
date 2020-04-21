@@ -4,53 +4,53 @@
 \include "../../../../templates/preamble.ly"
 
 mel-a = \relative g'{ 
-  g8 a bf bf bf4 |
-  a8 c bf a g4 |
-  bf8 a bf4 c |
-  d2. 
+  a8 b c c c4 |
+  b8 d c b a4 |
+  c8 b c4 d |
+  e2. 
 }
 mel-b = \relative g''{ 
   \repeat volta 2 {
-    g8 d f ef c a |
-    c ef d bf g4 |
+    a8 e g f d b |
+    d f e c a4 |
   }
   \alternative {
-    { a8( c) bf4 c | 
-      d2. 
+    { b8( d) c4 d | 
+      e2. 
     }
-    { a8( c) bf4 a | 
-      g2. 
+    { b8( d) c4 b | 
+      a2. 
     }
   }
 }
 mel-c = \relative g'{ 
-  g8 bf a fs d4 | 
-  a'8 c bf a g4 | 
-  bf8 a bf4 c | 
-  d2. | 
+  a8 c b gs e4 | 
+  b'8 d c b a4 | 
+  c8 b c4 d | 
+  e2. | 
 }
 
 acc-a = \chordmode { 
-  g2.:m | 
-  d2:7 g4:m | 
-  ef2.: | 
-  bf |  
+  a2.:m | 
+  e2:7 a4:m | 
+  f2.: | 
+  c |  
 }
 acc-b = \chordmode { 
   \repeat volta 2 { 
-    g4:7 c2:m6 | 
-    c4:m6 g2:m | }
+    a4:7 d2:m6 | 
+    d4:m6 a2:m | }
   \alternative {
-    { c4:m g:m c:m | d2.:7 }
-    { c4:m6 d2:7 | g2.:m }
+    { d4:m a:m d:m | e2.:7 }
+    { d4:m6 e2:7 | a2.:m }
   }
 }
                       
 acc-c = \chordmode { 
-  g4:m d2:7 | 
-  d2:7 g4:m | 
-  ef2.: | 
-  bf2.: | 
+  a4:m e2:7 | 
+  e2:7 a4:m | 
+  f2.: | 
+  c2.: | 
 }
 
 \score {
@@ -64,7 +64,7 @@ acc-c = \chordmode {
         }
     \new Staff {
       \clef treble
-      \key g \minor
+      \key a \minor
       \time 3/4
       \tempo Andantino
       \new Voice = "melody" {

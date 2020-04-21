@@ -3,47 +3,47 @@
 \include "../../../../templates/preamble.ly"
 
 mel-a = \relative d'' {
-  \partial 8 { d8 }
-  g d g d ef ef d4 |
-  bf8 bf c c d d4.
+  \partial 8 { e8 }
+  a e a e f f e4 |
+  c8 c d d e e4.
   \repeat volta 2 {
-    g8 d g d ef ef d4 |
-    bf8 bf a a g g4.
+    a8 e a e f f e4 |
+    c8 c b b a a4.
   }
 }
 mel-b = \relative d'' {
-  d4 bf8. a16 g4 d' |
-  \tuplet 3/2 { ef8 c c } \tuplet 3/2 { c c c } c2 |
-  d8. d16 d8 ef d c bf a |
-  bf4 g8 g g2 |
+  e4 c8. b16 a4 e' |
+  \tuplet 3/2 { f8 d d } \tuplet 3/2 { d d d } d2 |
+  e8. e16 e8 f e d c b |
+  c4 a8 a a2 |
   \repeat volta 2 {
-    d'2 c4. f8 |
-    d4 d8 d c4. c8 |
-    bf4 \tuplet 3/2 { bf8 bf bf } a4 d |
+    e'2 d4. g8 |
+    e4 e8 e d4. d8 |
+    c4 \tuplet 3/2 { c8 c c } b4 e |
     }
   \alternative {
-    { r g, g8( a bf c) | }
-    { r4 g'4 g2 | }
+    { r a, a8( b c d) | }
+    { r4 a'4 a2 | }
   }  
 }
       
 acc-a = \chordmode {
   \partial 8 { s8 }
-  g2:m c4:m g:m |
-  ef: c:m g2:m |
-  g:m c4:m g:m |
-  ef:m d:7 g2:m |
+  a2:m d4:m a:m |
+  f: d:m a2:m |
+  a:m d4:m a:m |
+  f:m e:7 a2:m |
 }
 acc-b = \chordmode {
-  bf: g:m |
-  c1:m |
-  d:7 |
-  g:m |
-  g2:7 c:m |
-  g:7 c:m |
-  g:m d:7 |
-  c:m g:m |
-  \once \set chordChanges = ##f c:m g:m |
+  c: a:m |
+  d1:m |
+  e:7 |
+  a:m |
+  a2:7 d:m |
+  a:7 d:m |
+  a:m e:7 |
+  d:m a:m |
+  \once \set chordChanges = ##f d:m a:m |
 }
 
 \score {
@@ -55,7 +55,7 @@ acc-b = \chordmode {
         }
     \new Staff {
       \clef treble
-      \key g \minor
+      \key a \minor
       \time 4/4
       \tempo Allegretto
       \new Voice = "melody" {
@@ -80,7 +80,7 @@ acc-b = \chordmode {
     }
     \new Staff {
       \clef treble
-      \key g \minor
+      \key a \minor
       \time 4/4
       \tempo Allegretto
       \new Voice = "melody" {

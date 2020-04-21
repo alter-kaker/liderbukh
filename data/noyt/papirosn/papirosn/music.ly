@@ -2,69 +2,69 @@
 \language "english"
 \include "../../../../templates/preamble.ly"
 mel = \relative a' {
-  \partial 8 { g8 }
-  g bf bf d d g g bf |
-  bf a a g d2 |
-  bf'8 a a g g f f ef |
-  ef d d c c4 r8 c |
-  c d d a' a g g fs |
-  fs ef ef d d c c bf |
-  bf c c bf d c bf a |
-  bf2. r8 g |
+  \partial 8 { a8 }
+  a c c e e a a c |
+  c b b a e2 |
+  c'8 b b a a g g f |
+  f e e d d4 r8 d |
+  d e e b' b a a gs |
+  gs f f e e d d c |
+  c d d c e d c b |
+  c2. r8 a |
   
-  g bf bf d d g g bf |
-  bf a a g d2 |
-  bf'8 a a g g f f ef |
-  ef d d c c4 r8 c |
-  c d d a' a g g fs |
-  fs ef ef d d c c bf |
-  bf c c bf d c bf a |
-  g2~ g8 d' g a |
+  a c c e e a a c |
+  c b b a e2 |
+  c'8 b b a a g g f |
+  f e e d d4 r8 d |
+  d e e b' b a a gs |
+  gs f f e e d d c |
+  c d d c e d c b |
+  a2~ a8 e' a b |
   
-  bf4. a8 bf a g fs |
-  g4 d2. |
-  g8 fs g fs g f ef d |
-  d( ef) c2.
-  c8 d d a' a g g fs |
-  fs ef ef d d c c bf |
-  bf c c bf d c bf a |
-  bf2~ bf8 d g a |
-  bf4. a8 bf a g fs |
-  g4 d2 r8 d |
-  g fs g fs g f ef d |
-  d( ef) c2 r8 c |
-  c d d a' a g g fs |
-  fs ef ef d d c c bf |
-  bf c c bf d c bf a |
-  \end 7/8 g2. r8
+  c4. b8 c b a gs |
+  a4 e2. |
+  a8 gs a gs a g f e |
+  e( f) d2.
+  d8 e e b' b a a gs |
+  gs f f e e d d c |
+  c d d c e d c b |
+  c2~ c8 e a b |
+  c4. b8 c b a gs |
+  a4 e2 r8 e |
+  a gs a gs a g f e |
+  e( f) d2 r8 d |
+  d e e b' b a a gs |
+  gs f f e e d d c |
+  c d d c e d c b |
+  \end 7/8 a2. r8
 }
     
 acc = \chordmode {
   \partial 8 { s8 }
   \repeat unfold 2 {
-    g1:m |
-    g:m |
-    g2:m g:7 |
-    c4:m g:7  c2:m |
-    d1: |
-    d: |
-    ef2: d:7 |
+    a1:m |
+    a:m |
+    a2:m a:7 |
+    d4:m a:7  d2:m |
+    e1: |
+    e: |
+    f2: e:7 |
   }
   \alternative{
-    {g1:m |}
-    {g2.:m d4:7 |}
+    {a1:m |}
+    {a2.:m e4:7 |}
   }
   \repeat unfold 2 {
-    g2:m d:7 |
-    g1:m |
-    g:7 |
-    c:m |
-    d: |
-    d: |
-    ef2: d:7 |}
+    a2:m e:7 |
+    a1:m |
+    a:7 |
+    d:m |
+    e: |
+    e: |
+    f2: e:7 |}
   \alternative{
-    {g2.:m d4:7 |}
-    {g2.:m g8:m |}
+    {a2.:m e4:7 |}
+    {a2.:m a8:m |}
   }
 }
 
@@ -75,7 +75,7 @@ acc = \chordmode {
     }
     \new Staff {
       \clef treble
-      \key g \minor
+      \key a \minor
       \time 4/4
       \tempo Moderato
       \new Voice = "melody" {

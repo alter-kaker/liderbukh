@@ -91,53 +91,53 @@ end =
   }
 
 mel = \relative d'' {
-  d4. bf8       |
-  ef d c bf     |
-  c4.( bf16 a   |
-  bf4.) r8      |
-  f'4. d8       |
-  g8 f bf, c    |
-  d2~           |
-  d8 r d d      |
+  e4. c8       |
+  f e d c     |
+  d4.( c16 b   |
+  c4.) r8      |
+  g'4. e8       |
+  a8 g c, d    |
+  e2~           |
+  e8 r e e      |
 
 \repeat volta 2 {
-   g4 f8 g      |
-   ef ef d g,   |
-   c4.( bf16 a  | 
-   bf4.) r8     |
-   a4 d8 d      |
-   f ef d c     | 
+   a4 g8 a      |
+   f f e a,   |
+   d4.( c16 b  | 
+   c4.) r8     |
+   b4 e8 e      |
+   g f e d     | 
 }
 \alternative {
-  {g'2~ | g8 r d d}
-  {g,2~ | g4 r }
+  {a'2~ | a8 r e e}
+  {a,2~ | a4 r }
   }
 }
 
 acc = \chordmode {
-  { g2:m    	|
-    c:m 		|
-    d:7   	|
-    g:m     	|
-    bf     	|
-    ef4: \parenthesize f:7 |
-    bf2     	|
-    \parenthesize d4:7 \once \set chordChanges = ##f d:7 |
+  { a2:m    	|
+    d:m 		|
+    e:7   	|
+    a:m     	|
+    c     	|
+    f4: \parenthesize g:7 |
+    c2     	|
+    \parenthesize e4:7 \once \set chordChanges = ##f e:7 |
   }
   \repeat volta 2 {
-    g2:7    	| 
-    c4:m g:m 	| 
-    d2:7    	| 
-    g:m      	|
-    d:7     	| 
-    \parenthesize c4:m \parenthesize d:7 | 
+    a2:7    	| 
+    d4:m a:m 	| 
+    e2:7    	| 
+    a:m      	|
+    e:7     	| 
+    \parenthesize d4:m \parenthesize e:7 | 
   }
   \alternative {
-    { g2:m  	|
-      \parenthesize d4:7 \once \set chordChanges = ##f d:7 |
+    { a2:m  	|
+      \parenthesize e4:7 \once \set chordChanges = ##f e:7 |
     }
-    { g2:m  	|
-      g2:m 
+    { a2:m  	|
+      a2:m 
     }
   }
 }
@@ -150,7 +150,7 @@ acc = \chordmode {
     }
     \new Staff {
       \clef treble
-      \key g \minor
+      \key a \minor
       \time 2/4
       \tempo Andantino
       \new Voice = "melody" {

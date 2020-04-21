@@ -4,100 +4,100 @@
 \include "../../../../templates/preamble.ly"
 
 mel = \relative a' {
-  \partial 4 { a4 } |
-    d d a |
-    d d2 |
-    c8 c b4 c |
-    d a2 |
-    c4 b4 c |
-    e d c |
-    d c b |
-    a2 a8 a
-    c4 c c |
-    c c c |
-    c f, g |
-    a c,4. c8 |
-    c4 f g |
-    a g f |
-    g f e |
-    d2. |
-    d'8( e) d( e) d( e) |
-    d2 \repeat unfold 2 {
-      d,8 f |
-      a4 a a |
-      a4.( g8) f( g) |
-      a2.~ |
-      a4 r } a |
-    e8 e e4 f8 f |
-    g( a16 g f4) e |
-    f d2~ |
-    d2. |
-    bf'2 bf4 |
-    bf cs d |
-    a2.~ |
-    a |
-    e2 f4 |
-    g4( f) e |
-    f d2~ |
-    d2. |
-    a'2 a4 |
-    cs bf a |
-    d2 e4 |
-    f e d |
-    e( f) g |
-    g f e |
-    d4.( a8) f'e|
-    \end 2/4 d2
+  \partial 4 { b4 } |
+    e e b |
+    e e2 |
+    d8 d cs4 d |
+    e b2 |
+    d4 cs4 d |
+    fs e d |
+    e d cs |
+    b2 b8 b
+    d4 d d |
+    d d d |
+    d g, a |
+    b d,4. d8 |
+    d4 g a |
+    b a g |
+    a g fs |
+    e2. |
+    e'8( fs) e( fs) e( fs) |
+    e2 \repeat unfold 2 {
+      e,8 g |
+      b4 b b |
+      b4.( a8) g( a) |
+      b2.~ |
+      b4 r } b |
+    fs8 fs fs4 g8 g |
+    a( b16 a g4) fs |
+    g e2~ |
+    e2. |
+    c'2 c4 |
+    c ds e |
+    b2.~ |
+    b |
+    fs2 g4 |
+    a4( g) fs |
+    g e2~ |
+    e2. |
+    b'2 b4 |
+    ds c b |
+    e2 fs4 |
+    g fs e |
+    fs( g) a |
+    a g fs |
+    e4.( b8) g'fs|
+    \end 2/4 e2
   }
 
 acc = \chordmode {
   \partial 4 {s4}
-  d2.:m |
-  d:m |
-  c: |
-  d:m |
+  e2.:m |
+  e:m |
+  d: |
+  e:m |
+  b:m |
+  b:m
+  fs:7 |
+  b:m |
+  g:  |
+  \parenthesize d: |
+  g2: d4:7|
+  e2.:m |
+  g2: d4:7 |
+  e2.:m |
+  a2:m b4:7 |
+  e2.:m |
   a:m |
-  a:m
-  e:7 |
+  e:m |
+  e:m |
+  b:7 |
+  e:m |
+  e:m |
+  e:m |
+  d:7 |
+  g: |
+  g: |
+  a:m6 |
+  b:7 |
+  e:m |
+  e:m |
   a:m |
-  f:  |
-  \parenthesize c: |
-  f2: c4:7|
-  d2.:m |
-  f2: c4:7 |
-  d2.:m |
-  g2:m a4:7 |
-  d2.:m |
-  g:m |
-  d:m |
-  d:m |
-  a:7 |
-  d:m |
-  d:m |
-  d:m |
-  c:7 |
-  f: |
-  f: |
-  g:m6 |
-  a:7 |
-  d:m |
-  d:m |
-  g:m |
-  g:m |
-  d:m |
-  d:m |
-  g:m6 |
-  a:7 |
-  d:m |
-  d:m |
-  a:7 |
-  a:7 |
-  d2:m c4: |
-  bf2.: |
-  g:m |
-  a:7 |
-  d2:m a4:7 |
-  d2:m
+  a:m |
+  e:m |
+  e:m |
+  a:m6 |
+  b:7 |
+  e:m |
+  e:m |
+  b:7 |
+  b:7 |
+  e2:m d4: |
+  c2.: |
+  a:m |
+  b:7 |
+  e2:m b4:7 |
+  e2:m
   }
 
 \score {
@@ -107,7 +107,7 @@ acc = \chordmode {
     }
     \new Staff {
       \clef treble
-      \key d \minor
+      \key e \minor
       \time 3/4
       \tempo Andante
       \new Voice = "melody" {

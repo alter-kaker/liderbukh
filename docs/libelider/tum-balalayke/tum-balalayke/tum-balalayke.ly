@@ -90,57 +90,57 @@ end =
   }
 
 mel-a = \relative fs''{ 
+  e2 e4 |
+  e2 e4 |
+  e( d) c |
+  b2. |
   d2 d4 |
-  d2 d4 |
-  d( c) bf |
+  d2 e4 |
+  d( c) b |
   a2. |
-  c2 c4 |
-  c2 d4 |
-  c( bf) a |
-  g2. |
-  g4 bf d |
-  g2 g4 |
-  bf a g |
-  d2 d4 |
-  f ef d |
-  a2 c4 |
-  c bf a |
-  g2 g4 |
+  a4 c e |
+  a2 a4 |
+  c b a |
+  e2 e4 |
+  g f e |
+  b2 d4 |
+  d c b |
+  a2 a4 |
 }
 mel-b = \relative fs'' {
-  d4 d d |
+  e4 e e |
+  e e e |
+  e d c |
+  b2 b4 |
   d d d |
-  d c bf |
+  d d d |
+  d c b |
   a2 a4 |
-  c c c |
-  c c c |
-  c bf a |
-  g2 g4 |
-  g bf d |
-  g2 g4 |
-  bf a g | 
-  d2 f4 |
-  f ef d |
-  a2 c4 |
-  c bf a |
-  g2.
+  a c e |
+  a2 a4 |
+  c b a | 
+  e2 g4 |
+  g f e |
+  b2 d4 |
+  d c b |
+  a2.
 }
 
 acc-a = \chordmode { 
-  g2.:m |
-  g:m |
-  g:m |
-  d:7 |
-  c:m6 |
-  c:m6 |
-  d:7 |
-  \repeat unfold 3 { g:m }
-  c:m6
-  d:7 |
-  c:m6 |
-  c:m6 |
-  d:7 |
-  g:m |
+  a2.:m |
+  a:m |
+  a:m |
+  e:7 |
+  d:m6 |
+  d:m6 |
+  e:7 |
+  \repeat unfold 3 { a:m }
+  d:m6
+  e:7 |
+  d:m6 |
+  d:m6 |
+  e:7 |
+  a:m |
 }
 
 \score {
@@ -153,7 +153,7 @@ acc-a = \chordmode {
     }
     \new Staff {
       \clef treble
-      \key g \minor
+      \key a \minor
       \time 3/4
       \tempo Moderato
       \new Voice = "melody" {

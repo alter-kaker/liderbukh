@@ -90,71 +90,71 @@ end =
   }
 
 mel = \relative d'{
-  d8 d d d |
-  fs ef d4 |
-  ef8 d ef g |
-  fs4. r8 |
-  g fs g a |
-  bf a g8. g16 |
-  bf8 g bf d |
+  e8 e e e |
+  gs f e4 |
+  f8 e f a |
+  gs4. r8 |
+  a gs a b |
+  c b a8. a16 |
+  c8 a c e |
+  b4. r8 |
+  d b gs e |
+  c'16 b a4. |
+  a8 a b c |
+  b4 r8 b |
+  c b gs e16 e |
+  c' b a4 r8 |
+  a8 f gs16 a gs f |
+  e4. r8 |
+  e8 a gs a gs8. f16 e8 e |
+  b' b c b |
   a4. r8 |
-  c a fs d |
-  bf'16 a g4. |
-  g8 g a bf |
-  a4 r8 a |
-  bf a fs d16 d |
-  bf' a g4 r8 |
-  g8 ef fs16 g fs ef |
-  d4. r8 |
-  d8 g fs g fs8. ef16 d8 d |
-  a' a bf a |
-  g4. r8 |
-  d8 bf' a g |
-  fs8. ef16 d8 d16 d |
-  a'8 a bf a |
-  g4 r |
-  bf8 d d d |
-  c8. bf16 a4 |
-  c8 ef d c |
-  bf8. a16 g4 |
-  d8 d' c bf  |
-  a8. g16 fs8 a |
-  c ef d c |
-  g2 |
+  e8 c' b a |
+  gs8. f16 e8 e16 e |
+  b'8 b c b |
+  a4 r |
+  c8 e e e |
+  d8. c16 b4 |
+  d8 f e d |
+  c8. b16 a4 |
+  e8 e' d c  |
+  b8. a16 gs8 b |
+  d f e d |
+  a2 |
 }
 acc = \chordmode { 
-  g2:m |
-  g2:m |
-  g2:m |
-  d2:7 |
-  g:m |
-  g:m |
-  g:m |
-  d:7 |
-  d:7 |
-  g:m |
-  ef: |
-  d:7 |
-  d:7 |
-  c:m6 |
-  ef: |
-  d:7 |
-  g:m |
-  d:7 |
-  d:7 |
-  g:m |
-  g:m |
-  d:7 |
-  c:m6 |
-  g4.:m d8:7 |
-  bf2: |
-  c:m6 |
-  c:m6 |
-  g:m |
-  g:m |
-  d:7 |
-  c4:m6 d:7 |
-  g4.:m \parenthesize d8:7
+  a2:m |
+  a2:m |
+  a2:m |
+  e2:7 |
+  a:m |
+  a:m |
+  a:m |
+  e:7 |
+  e:7 |
+  a:m |
+  f: |
+  e:7 |
+  e:7 |
+  d:m6 |
+  f: |
+  e:7 |
+  a:m |
+  e:7 |
+  e:7 |
+  a:m |
+  a:m |
+  e:7 |
+  d:m6 |
+  a4.:m e8:7 |
+  c2: |
+  d:m6 |
+  d:m6 |
+  a:m |
+  a:m |
+  e:7 |
+  d4:m6 e:7 |
+  a4.:m \parenthesize e8:7
 }
 
 \score {
@@ -165,7 +165,7 @@ acc = \chordmode {
         }
     \new Staff {
       \clef treble
-      \key g \minor
+      \key a \minor
       \time 2/4
       \tempo Allegretto
       \new Voice = "melody" {

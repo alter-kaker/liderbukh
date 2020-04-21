@@ -4,121 +4,121 @@
 \include "../../../../templates/preamble.ly"
 
 mel = \relative d' {
-    \partial 8 {d8} |
-    g g a a bf bf c c |
-    d d ef c d4~d8 d, |
-    g g a a bf bf c c |
-    bf bf a g a4~a8 f |
-    bf bf c c df df ef ef |
-    df df ef df c4~c8 c |
-    df df c c bf bf a a |
-    bf bf c bf a4. d,8 |
-    g g a a bf bf c c |
-    d d ef c d2 |
-    ef ef8 d c ef |
-    d2 bf |
-    a4 gs8 a bf4 a |
-    d\fermata \breathe d, g8d g4 |
+    \partial 8 {e8} |
+    a a b b c c d d |
+    e e f d e4~e8 e, |
+    a a b b c c d d |
+    c c b a b4~b8 g |
+    c c d d ef ef f f |
+    ef ef f ef d4~d8 d |
+    ef ef d d c c b b |
+    c c d c b4. e,8 |
+    a a b b c c d d |
+    e e f d e2 |
+    f f8 e d f |
+    e2 c |
+    b4 as8 b c4 b |
+    e\fermata \breathe e, a8e a4 |
     \repeat volta 2 {
-      bf2 g~ |
-      g8 bf a bf c bf a g |
-      a1~ |
-      a8 r d,4 a'8 d, a'4 |
       c2 a~ |
-      a8 c bf c d c bf a |
-      bf1~ |
-      bf8 r bf4 c d |
-      ef ef ef ef |
-      ef f8 ef d4 cs |
-      d1~ |
-      d4 g, a bf |
-      c c c c |
-      c d8c bf a g a |
-      bf1~ |
-      bf8 r d,4 g8 d g4 |
-      bf2 g~ |
-      g8 bf a bf c bf a g |
-      a1~ |
-      a8 r d,4 a'8 d, a'4 |
+      a8 c b c d c b a |
+      b1~ |
+      b8 r e,4 b'8 e, b'4 |
+      d2 b~ |
+      b8 d c d e d c b |
+      c1~ |
+      c8 r c4 d e |
+      f f f f |
+      f g8 f e4 ds |
+      e1~ |
+      e4 a, b c |
+      d d d d |
+      d e8d c b a b |
+      c1~ |
+      c8 r e,4 a8 e a4 |
       c2 a~ |
-      a8 c bf c d c bf a |
-      bf1~ |
-      bf2 c4 d |
-      ef f8 ef d4 c8 d |
-      ef4 c c bf8 c |
-      d4 ef8 d c4 bf8 c |
-      d4 bf bf a8 bf |
-      c4 d8 c bf4 a8 g |
-      g'2 ef |
+      a8 c b c d c b a |
+      b1~ |
+      b8 r e,4 b'8 e, b'4 |
+      d2 b~ |
+      b8 d c d e d c b |
+      c1~ |
+      c2 d4 e |
+      f g8 f e4 d8 e |
+      f4 d d c8 d |
+      e4 f8 e d4 c8 d |
+      e4 c c b8 c |
+      d4 e8 d c4 b8 a |
+      a'2 f |
     }
       \alternative {
         {
-          d4( ef8 d c bf) a( d) |
-          g,4 d g8 d g4
+          e4( f8 e d c) b( e) |
+          a,4 e a8 e a4
         }
         {
-          r4 d( ef) d |
-          \end 7/8 g2. r8
+          r4 e( f) e |
+          \end 7/8 a2. r8
         }
       }
     }
 
 acc = \chordmode {
   \partial 8 { s8 }
-  g1:m |
-  g:m |
-  g:m |
-  g2:m d4.: f8:7 |
-  bf1:m |
-  bf2:m f:7 |
-  bf1:m |
-  ef2:m f4.:7 d8: |
-  g1:m |
-  g2:m d:7 |
+  a1:m |
+  a:m |
+  a:m |
+  a2:m e4.: g8:7 |
   c1:m |
-  g:m |
-  c:m |
-  d2:7 g:m |
+  c2:m g:7 |
+  c1:m |
+  f2:m g4.:7 e8: |
+  a1:m |
+  a2:m e:7 |
+  d1:m |
+  a:m |
+  d:m |
+  e2:7 a:m |
   \repeat volta 2 {
-    g1:m |
-    g2:m c:m6 |
-    d2: c:m6 |
-    d1:7 |
-    c:m6 |
-    c2:m6 d:7 |
-    g1:m |
-    g:m |
-    c:m |
-    f: |
-    bf: |
-    bf: |
-    c:m |
-    d:7 |
-    g:m |
-    g:m |
-    g:m |
-    g2:m c:m6 |
-    d: c:m6 |
-    d1:7 |
-    c:m6 |
-    c2:m6 d:7 |
-    g1:m |
-    g:m |
-    c:m |
-    c:m |
-    g:m |
-    g:m |
-    c:m |
-    ef2: c:m|
+    a1:m |
+    a2:m d:m6 |
+    e2: d:m6 |
+    e1:7 |
+    d:m6 |
+    d2:m6 e:7 |
+    a1:m |
+    a:m |
+    d:m |
+    g: |
+    c: |
+    c: |
+    d:m |
+    e:7 |
+    a:m |
+    a:m |
+    a:m |
+    a2:m d:m6 |
+    e: d:m6 |
+    e1:7 |
+    d:m6 |
+    d2:m6 e:7 |
+    a1:m |
+    a:m |
+    d:m |
+    d:m |
+    a:m |
+    a:m |
+    d:m |
+    f2: d:m|
   }
   \alternative {
     { 
-      d1:7 |
-      g:m
+      e1:7 |
+      a:m
     }
     {
-      d:7 |
-      g8*7:m
+      e:7 |
+      a8*7:m
     }
   }
 }
@@ -130,7 +130,7 @@ acc = \chordmode {
     }
     \new Staff {
       \clef treble
-      \key g \minor
+      \key a \minor
       \time 4/4
       \tempo Andante
       \new Voice = "melody" {

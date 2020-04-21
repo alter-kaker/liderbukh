@@ -91,34 +91,34 @@ end =
   }
 
 mel = \relative f''{
-  g8 g g g g g f ef  | 
-  d4( g) d4. d8     |
-  g a bf a g g f ef | 
-  d2 r4 r8 d8       |
+  a8 a a a a a g f  | 
+  e4( a) e4. e8     |
+  a b c b a a g f | 
+  e2 r4 r8 e8       |
   \repeat volta 2 {
-    f8( ef) f( g) f4( ef8) d |
-    c4 bf8 a g4 bf16 r bf8  | 
-    d d d d f ef d c 
+    g8( f) g( a) g4( f8) e |
+    d4 c8 b a4 c16 r c8  | 
+    e e e e g f e d 
   }
   \alternative {
-    { d2( g4) r8 f }
-    { g,2. r4 }
+    { e2( a4) r8 g }
+    { a,2. r4 }
   }
 }
 
 acc = \chordmode {
-  g1:m  | 
-  g:m   | 
-  g:m   | 
-  g:m   |
+  a1:m  | 
+  a:m   | 
+  a:m   | 
+  a:m   |
   \repeat volta 2 { 
-    g:7   | 
-    c:m7  | 
-    d:7   | 
+    a:7   | 
+    d:m7  | 
+    e:7   | 
   }
   \alternative { 
-    { g1:m }
-    { \once \set chordChanges = ##f g1:m }
+    { a1:m }
+    { \once \set chordChanges = ##f a1:m }
   }
 }
 
@@ -129,7 +129,7 @@ acc = \chordmode {
         }
     \new Staff {
       \clef treble
-      \key g \minor
+      \key a \minor
       \time 4/4
       \tempo Andante
       \new Voice = "melody" {

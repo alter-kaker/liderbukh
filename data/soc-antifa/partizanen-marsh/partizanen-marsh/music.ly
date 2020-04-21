@@ -2,44 +2,44 @@
 \language "english"
 \include "../../../../templates/preamble.ly"
 
-mel = \relative a{ 
-  \partial 4 d4 | 
-  g g bf g |
-  a a4 r4 d, |
-  a' r8 a c4 r8 a |
-  d4 r r8 g g g |
-  d4. d8 f4 f |
-  ef d c bf8 bf |
-  a4. a8 d4 d |
-  g, r r r8 d' |
-  g,4 g g r8 d' |
-  a4 a a r |
-  d8 d d d f4 f8 f |
-  ef2 r4 c8 d |
-  ef4 ef8 ef ef4 d8 c |
-  d4 bf8 a g4 bf8 c |
-  d4 c8 c bf4 a8 a |
-  \end 3/4 g2 r4  
+mel = \relative a'{ 
+  \partial 4 e4 | 
+  a a c a |
+  b b4 r4 e, |
+  b' r8 b d4 r8 b |
+  e4 r r8 a a a |
+  e4. e8 g4 g |
+  f e d c8 c |
+  b4. b8 e4 e |
+  a, r r r8 e' |
+  a,4 a a r8 e' |
+  b4 b b r |
+  e8 e e e g4 g8 g |
+  f2 r4 d8 e |
+  f4 f8 f f4 e8 d |
+  e4 c8 b a4 c8 d |
+  e4 d8 d c4 b8 b |
+  \end 3/4 a2 r4  
 }
 
 acc = \chordmode { 
   \partial 4 s4 |
-  g1:m |
-  d:7 |
-  d:7 |
-  g:m |
-  g:7 |
-  c:m |
-  d:7 |
-  g:m |
-  g:m |
-  c:m6 |
-  g:7 |
-  c:m |
-  c:m |
-  g:m |
-  d:7 |
-  g2.:m
+  a1:m |
+  e:7 |
+  e:7 |
+  a:m |
+  a:7 |
+  d:m |
+  e:7 |
+  a:m |
+  a:m |
+  d:m6 |
+  a:7 |
+  d:m |
+  d:m |
+  a:m |
+  e:7 |
+  a2.:m
 }
 
 \score {
@@ -49,7 +49,7 @@ acc = \chordmode {
     }
     \new Staff {
       \clef treble
-      \key g \minor
+      \key a \minor
       \time 4/4
       \tempo "Tempo di marcia"
       \new Voice = "melody" {

@@ -95,40 +95,40 @@ end =
   <<
     \new ChordNames = "mainChords" {
       \chordmode { 
-        g1:m |
-        g:m |
-        bf |
-        bf: |
-        g2:m bf: |
-        f: c:m |
-        g:m bf:7 |
-        g1:m |
-        g:m |
-        c:m |
-        ef: |
-        bf: |
-        g:7 |
-        bf:7 |
-        f2: bf:7 |
-        g1:m
+        a1:m |
+        a:m |
+        c |
+        c: |
+        a2:m c: |
+        g: d:m |
+        a:m c:7 |
+        a1:m |
+        a:m |
+        d:m |
+        f: |
+        c: |
+        a:7 |
+        c:7 |
+        g2: c:7 |
+        a1:m
       }
     }
     \new Staff = "main" {
       \clef treble
-      \key g \minor
+      \key a \minor
       \time 4/4
       \tempo Moderato
       \new Voice = "melody" {
         \relative f'{ 
-          g8 a bf c bf a g a |
-          bf g~g4 r4. c8 |
-          bf8 c d ef d c bf c | \break
-          d8 bf~bf4 r4. d8 |
+          a8 b c d c b a b |
+          c a~a4 r4. d8 |
+          c8 d e f e d c d | \break
+          e8 c~c4 r4. e8 |
           
           << 
             { 
-              d8 ef f ef f4. r8 |
-              f ef d c g'4.\fermata c,8 |
+              e8 f g f g4. r8 |
+              g f e d a'4.\fermata d,8 |
             }
             <<
               \new ChordNames \with {
@@ -138,8 +138,8 @@ end =
                 
                 \chordmode { 
                   \override ChordName #'font-size = #-1 {
-                  g1:m |
-                  ef2: d:7 |
+                  a1:m |
+                  f2: e:7 |
                 }
               }
               \new Staff \with {
@@ -158,22 +158,22 @@ end =
               
               \new Voice = "variation"
               \relative d''{
-                d8 ef f g f ef d( c) |
-                ef8 d8 c bf a4.\fermata c8 |
+                e8 f g a g f e( d) |
+                f8 e8 d c b4.\fermata d8 |
               }
             >>
           >>
           
-          bf8 c d c bf f g af |
-          g2. r4 |\bar "||"\break
-          g'2 g |
-          g4 f16( ef8.) f4. r8 |
-          g8. f16 ef8 d ef f g ef |
-          d2. r4 |
-          f2 f4 r8 g |
-          af g f ef d r d ef |
-          f ef d c bf8. c16 bf8 af |
-          g2. r4 \bar "|."
+          c8 d e d c g a bf |
+          a2. r4 |\bar "||"\break
+          a'2 a |
+          a4 g16( f8.) g4. r8 |
+          a8. g16 f8 e f g a f |
+          e2. r4 |
+          g2 g4 r8 a |
+          bf a g f e r e f |
+          g f e d c8. d16 c8 bf |
+          a2. r4 \bar "|."
         }
       }
     }
