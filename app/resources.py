@@ -1,13 +1,19 @@
 from app import api, db
 from app.models import Song, Author
 from flask_restful import Resource, reqparse, abort
-# from flask_marshmallow import Marshmallow
+from app.output_schema import SongSchema, AuthorSchema
+
+songs_schema = SongSchema(many=True)
+song_schema = SongSchema()
+authors_schema = AuthorSchema(many=True)
+author_schema = AuthorSchema()
 
 
 class Songs(Resource):
     def get(self):
         songs = Song.query.all()
-        return {'Songs': [s.json() for s in songs]}
+
+        return songs_schema.dump(songs)
 
     def post(self):
         parser = reqparse.RequestParser()
@@ -23,13 +29,15 @@ class Songs(Resource):
         new_song = Song(name=data['name'], author=author)
         db.session.add(new_song)
         db.session.commit()
-        return new_song.json(), 201
+
+        return song_schema.dump(new_song), 201
 
 
 class Authors(Resource):
     def get(self):
         authors = Author.query.all()
-        return {'Authors': [a.json() for a in authors]}
+
+        return authors_schema.dump(authors)
 
     def post(self):
         parser = reqparse.RequestParser()
@@ -39,7 +47,9 @@ class Authors(Resource):
         new_author = Author(name=data['name'])
         db.session.add(new_author)
         db.session.commit()
-        return new_author.json(), 201
+
+        return author_schema.dump(new_author), 201
+
 
 api.add_resource(Songs, '/songs')
 api.add_resource(Authors, '/authors')

@@ -6,22 +6,14 @@ class Author(db.Model):
     name = db.Column(db.String(), index=True,
                      unique=True)
 
-    songs = db.relationship('Song', backref='author', lazy='dynamic')
-
     def __repr__(self):
-        return '<Author {} {}>'.format(self.id, self.name)
-
-    def json(self):
-        return {'name': self.name, 'songs': [s.name for s in self.songs.all()]}
-
+        return '<Author {}>'.format(self.name)
 
 class Song(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(), unique=True, nullable=False)
-    id_author = db.Column(db.ForeignKey('author.id'), nullable=False)
+    id_author = db.Column(db.ForeignKey('author.id'))
+    author = db.relationship('Author', backref='songs')
 
     def __repr__(self):
         return '<Song {} by {}>'.format(self.name, self.author.name)
-
-    def json(self):
-        return {'name': self.name, 'author': self.author.name}
