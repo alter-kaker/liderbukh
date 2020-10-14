@@ -19,6 +19,7 @@ class Songs(Resource):
         parser = reqparse.RequestParser()
         parser.add_argument('name', type=str, required=True)
         parser.add_argument('author', type=str, required=True)
+        parser.add_argument('ly', type=str, required=True)
 
         data = parser.parse_args(strict=True)
         author = Author.query.filter(Author.name == data['author']).first()
@@ -26,7 +27,7 @@ class Songs(Resource):
             abort(
                 404, message="Author {} does not exist".format(data['author'])
             )
-        new_song = Song(name=data['name'], author=author)
+        new_song = Song(name=data['name'], author=author, ly=data['ly'])
         db.session.add(new_song)
         db.session.commit()
 

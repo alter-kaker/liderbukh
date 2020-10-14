@@ -26,3 +26,4 @@ class SongSchema(ma.SQLAlchemySchema):
         model = Song
     name = ma.auto_field()
     author = ma.Nested(ShallowAuthorSchema)
+    ly = ma.auto_field()
