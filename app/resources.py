@@ -9,12 +9,7 @@ authors_schema = AuthorSchema(many=True)
 author_schema = AuthorSchema()
 
 
-class Songs(Resource):
-    def get(self):
-        songs = Song.query.all()
-
-        return songs_schema.dump(songs)
-
+class SongResource(Resource):
     def post(self):
         parser = reqparse.RequestParser()
         parser.add_argument('name', type=str, required=True)
@@ -34,12 +29,14 @@ class Songs(Resource):
         return song_schema.dump(new_song), 201
 
 
-class Authors(Resource):
+class SongsResource(Resource):
     def get(self):
-        authors = Author.query.all()
+        songs = Song.query.all()
 
-        return authors_schema.dump(authors)
+        return songs_schema.dump(songs)
 
+
+class AuthorResource(Resource):
     def post(self):
         parser = reqparse.RequestParser()
         parser.add_argument('name', type=str, required=True)
@@ -52,5 +49,13 @@ class Authors(Resource):
         return author_schema.dump(new_author), 201
 
 
-api.add_resource(Songs, '/songs')
-api.add_resource(Authors, '/authors')
+class AuthorsResource(Resource):
+    def get(self):
+        authors = Author.query.all()
+
+        return authors_schema.dump(authors)
+
+api.add_resource(SongResource, '/song')
+api.add_resource(SongsResource, '/songs')
+api.add_resource(AuthorResource, '/author')
+api.add_resource(AuthorsResource, '/authors')
