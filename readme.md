@@ -46,8 +46,6 @@ optional arguments:
 ## TODO (in no particular order):
 
 * Add option to create a single, book-style pdf 
-* Add html export (partly done)
-* Add metadata fields for source, arranger, etc
 * Add transposition support?
 * Make some meta fields required
 * Add auto generated "version" and "last updated" field to song meta, and display it in the index and possibly in the pdf.
