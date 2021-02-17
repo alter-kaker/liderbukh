@@ -8,19 +8,27 @@ song_schema = SongSchema()
 authors_schema = AuthorSchema(many=True)
 author_schema = AuthorSchema()
 
-
 class SongResource(Resource):
+    def get(self, id):
+        song = Song.query.get(id)
+        if not song:
+            abort(
+                404, message="Song id {} does not exist".format(id)
+            )
+        return song_schema.dump(song)
+
+class AddSongResource(Resource):
     def post(self):
         parser = reqparse.RequestParser()
         parser.add_argument('name', type=str, required=True)
-        parser.add_argument('author', type=str, required=True)
+        parser.add_argument('author_id', type=int, required=True)
         parser.add_argument('ly', type=str, required=True)
 
         data = parser.parse_args(strict=True)
-        author = Author.query.filter(Author.name == data['author']).first()
+        author = Author.query.get(data['author_id'])
         if not author:
             abort(
-                404, message="Author {} does not exist".format(data['author'])
+                404, message="Author id {} does not exist".format(data['author_id'])
             )
         new_song = Song(name=data['name'], author=author, ly=data['ly'])
         db.session.add(new_song)
@@ -36,7 +44,7 @@ class SongsResource(Resource):
         return songs_schema.dump(songs)
 
 
-class AuthorResource(Resource):
+class AddAuthorResource(Resource):
     def post(self):
         parser = reqparse.RequestParser()
         parser.add_argument('name', type=str, required=True)
@@ -48,6 +56,14 @@ class AuthorResource(Resource):
 
         return author_schema.dump(new_author), 201
 
+class AuthorResource(Resource):
+    def get(self, id):
+        author = Author.query.get(id)
+        if not author:
+            abort(
+                404, message="Author id {} does not exist".format(id)
+            )
+        return song_schema.dump(author)
 
 class AuthorsResource(Resource):
     def get(self):
@@ -55,7 +71,9 @@ class AuthorsResource(Resource):
 
         return authors_schema.dump(authors)
 
-api.add_resource(SongResource, '/song')
+api.add_resource(SongResource, '/song/<int:id>')
+api.add_resource(AddSongResource, '/song')
 api.add_resource(SongsResource, '/songs')
-api.add_resource(AuthorResource, '/author')
+api.add_resource(AddAuthorResource, '/author')
+api.add_resource(AuthorResource, '/author/<int:id>')
 api.add_resource(AuthorsResource, '/authors')
