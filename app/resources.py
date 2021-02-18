@@ -1,12 +1,14 @@
-from app import api, db
-from app.models import Song, Author
-from flask_restful import Resource, reqparse, abort
+from app.models import db, Song, Author
 from app.output_schema import SongSchema, AuthorSchema
+from flask_restful import Api, Resource, reqparse, abort
+
+api = Api()
 
 songs_schema = SongSchema(many=True)
 song_schema = SongSchema()
 authors_schema = AuthorSchema(many=True)
 author_schema = AuthorSchema()
+
 
 class SongResource(Resource):
     def get(self, id):
@@ -16,6 +18,7 @@ class SongResource(Resource):
                 404, message="Song id {} does not exist".format(id)
             )
         return song_schema.dump(song)
+
 
 class AddSongResource(Resource):
     def post(self):
@@ -56,6 +59,7 @@ class AddAuthorResource(Resource):
 
         return author_schema.dump(new_author), 201
 
+
 class AuthorResource(Resource):
     def get(self, id):
         author = Author.query.get(id)
@@ -65,11 +69,13 @@ class AuthorResource(Resource):
             )
         return song_schema.dump(author)
 
+
 class AuthorsResource(Resource):
     def get(self):
         authors = Author.query.all()
 
         return authors_schema.dump(authors)
+
 
 api.add_resource(SongResource, '/song/<int:id>')
 api.add_resource(AddSongResource, '/song')

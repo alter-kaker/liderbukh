@@ -1,4 +1,8 @@
-from app import db
+from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
+
+db = SQLAlchemy()
+migrate = Migrate(db)
 
 
 class Author(db.Model):
@@ -8,6 +12,7 @@ class Author(db.Model):
 
     def __repr__(self):
         return '<Author {}>'.format(self.name)
+
 
 class Song(db.Model):
     id = db.Column(db.Integer, primary_key=True)

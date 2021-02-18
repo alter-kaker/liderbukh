@@ -1,17 +1,14 @@
-from app import resources, models
+from app.resources import api
+from app.models import db, migrate
+from app.output_schema import ma
+
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
-from flask_restful import Api
-from flask_marshmallow import Marshmallow
 from config import Config
 
 app = Flask(__name__)
 app.config.from_object(Config)
 
-api = Api(app)
-
-db = SQLAlchemy(app)
-migrate = Migrate(app, db)
-
-ma = Marshmallow(app)
+api.init_app(app)
+db.init_app(app)
+ma.init_app(app)
+migrate.init_app(app)

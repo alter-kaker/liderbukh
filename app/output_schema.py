@@ -1,6 +1,7 @@
-from app import ma
 from app.models import Song, Author
+from flask_marshmallow import Marshmallow
 
+ma = Marshmallow()
 
 class ShallowSongSchema(ma.SQLAlchemySchema):
     class Meta:
