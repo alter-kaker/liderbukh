@@ -1,8 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
 
 db = SQLAlchemy()
-migrate = Migrate(db)
 
 
 class Author(db.Model):
@@ -19,7 +17,9 @@ class Song(db.Model):
     name = db.Column(db.String(), unique=True, nullable=False)
     ly = db.Column(db.String())
     id_author = db.Column(db.ForeignKey('author.id'))
-    author = db.relationship('Author', backref='songs')
+    id_composer = db.Column(db.ForeignKey('author.id'))
+    author = db.relationship('Author', foreign_keys=id_author)
+    composer = db.relationship('Author', foreign_keys=id_composer)
 
     def __init__(self, **args):
         super().__init__(**args)
