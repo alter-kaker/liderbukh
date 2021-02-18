@@ -3,6 +3,7 @@ from flask_marshmallow import Marshmallow
 
 ma = Marshmallow()
 
+
 class ShallowSongSchema(ma.SQLAlchemySchema):
     class Meta:
         model = Song
@@ -31,4 +32,5 @@ class SongSchema(ma.SQLAlchemySchema):
     id = ma.auto_field()
     name = ma.auto_field()
     author = ma.Nested(ShallowAuthorSchema)
+    composer = ma.Nested(ShallowAuthorSchema)
     ly = ma.auto_field()

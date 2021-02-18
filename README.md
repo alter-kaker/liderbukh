@@ -16,7 +16,6 @@ An app to upload and convert music to beautiful lead sheets. This is the reposit
 
 ## TODO:
 - Set up a deployment with lilypond
-- Support author/composer credits
 - Generate score images
 - Store and retrieve images on CDN (cloudinary)
 - Store and retrieve lyrics
